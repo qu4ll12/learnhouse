@@ -148,3 +148,70 @@ class TestFoldersService:
 
         assert result == {"detail": "Folder deleted"}
         assert exc_info.value.status_code == 404
+
+
+class TestFolderHardening:
+    @pytest.mark.asyncio
+    @patch("src.services.folders.folders.dispatch_webhooks", new_callable=AsyncMock)
+    async def test_create_folder_needs_update_on_parent(self, mock_webhooks, db, org):
+        from datetime import datetime
+        from fastapi import HTTPException
+        from starlette.requests import Request
+        from src.db.folders.folders import Folder, FolderCreate
+        from src.db.resource_authors import (
+            ResourceAuthor,
+            ResourceAuthorshipEnum,
+            ResourceAuthorshipStatusEnum,
+        )
+        from src.db.roles import Permission, Role, RoleTypeEnum
+        from src.db.user_organizations import UserOrganization
+        from src.db.users import PublicUser, User
+        from src.tests.conftest import USER_RIGHTS
+        from src.services.folders import folders as folders_service
+
+        now = str(datetime.now())
+        folder_rights = Permission(
+            action_create=True, action_read=True, action_update=False, action_delete=False,
+        ).model_dump()
+        rights = USER_RIGHTS.model_dump()
+        rights.update(folders=folder_rights)
+
+        role = Role(
+            id=303, name="maker", org_id=org.id, role_type=RoleTypeEnum.TYPE_ORGANIZATION,
+            role_uuid="role_maker_f", rights=rights, creation_date=now, update_date=now,
+        )
+        db.add(role)
+        for uid, uname in ((110, "alice"), (111, "bob")):
+            db.add(User(
+                id=uid, username=uname, first_name=uname, last_name="User",
+                email=f"{uname}@test.com", password="x", user_uuid=f"user_{uname}",
+                creation_date=now, update_date=now,
+            ))
+            db.add(UserOrganization(
+                user_id=uid, org_id=org.id, role_id=role.id, creation_date=now, update_date=now,
+            ))
+        parent = Folder(
+            id=150, name="alices", description="", public=False, org_id=org.id,
+            folder_uuid="folder_alices", creation_date=now, update_date=now,
+        )
+        db.add(parent)
+        db.add(ResourceAuthor(
+            resource_uuid=parent.folder_uuid, user_id=110,
+            authorship=ResourceAuthorshipEnum.CREATOR,
+            authorship_status=ResourceAuthorshipStatusEnum.ACTIVE,
+            creation_date=now, update_date=now,
+        ))
+        await db.commit()
+
+        alice = PublicUser(id=110, username="alice", first_name="alice", last_name="User", email="alice@test.com", user_uuid="user_alice")
+        bob = PublicUser(id=111, username="bob", first_name="bob", last_name="User", email="bob@test.com", user_uuid="user_bob")
+
+        req = Request({"type": "http", "method": "GET", "path": "/", "headers": [], "query_string": b"", "path_params": {}})
+        body = FolderCreate(name="child", org_id=org.id, parent_folder_uuid=parent.folder_uuid)
+
+        with pytest.raises(HTTPException) as exc:
+            await folders_service.create_folder(req, body, bob, db)
+        assert exc.value.status_code == 403
+
+        child = await folders_service.create_folder(req, body, alice, db)
+        assert child.parent_folder_id == parent.id

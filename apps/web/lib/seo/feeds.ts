@@ -1,11 +1,9 @@
 /**
  * Syndication feeds: RSS 2.0, Atom 1.0 and JSON Feed 1.1 from one neutral
- * description, plus the podcast flavour of RSS (Apple Podcasts / Spotify
- * namespaces). Pure functions: the route handler fetches and maps the data.
+ * description. Pure functions: the route handler fetches and maps the data.
  */
 import { xmlEscape } from './sitemap'
 import { toIsoDate } from './jsonld'
-import { clipDescription } from './meta'
 
 export type FeedFormat = 'rss' | 'atom' | 'json'
 
@@ -28,9 +26,7 @@ export type FeedItem = {
   categories?: string[]
   image?: string
   enclosure?: { url: string; length: number; type: string }
-  /** Podcasts only. */
   durationSeconds?: number
-  episode?: number
 }
 
 export type FeedDoc = {
@@ -193,123 +189,4 @@ export function buildFeed(format: FeedFormat, doc: FeedDoc): string {
 }
 
 /** `HH:MM:SS` for itunes:duration. */
-export function itunesDuration(seconds: number): string {
-  const s = Math.max(0, Math.round(seconds || 0))
-  const h = Math.floor(s / 3600)
-  const m = Math.floor((s % 3600) / 60)
-  const sec = s % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
-}
-
 /** Audio MIME type from a file name (Apple rejects a wrong enclosure type). */
-export function audioMime(file: string): string {
-  const ext = String(file).toLowerCase().split('?')[0].split('.').pop()
-  switch (ext) {
-    case 'm4a':
-    case 'mp4':
-      return 'audio/x-m4a'
-    case 'aac':
-      return 'audio/aac'
-    case 'ogg':
-    case 'oga':
-      return 'audio/ogg'
-    case 'opus':
-      return 'audio/opus'
-    case 'wav':
-      return 'audio/wav'
-    case 'flac':
-      return 'audio/flac'
-    case 'webm':
-      return 'audio/webm'
-    default:
-      return 'audio/mpeg'
-  }
-}
-
-export type PodcastFeedInput = FeedDoc & {
-  category?: string
-  explicit?: boolean
-  ownerName?: string
-  ownerEmail?: string
-  /** Podcast directories still need the feed; keep the page out of their search. */
-  block?: boolean
-  guid?: string
-}
-
-/**
- * Podcast RSS with the Apple Podcasts (itunes:) and Podcasting 2.0
- * (podcast:) namespaces: artwork, category, explicit flag, owner, per-episode
- * enclosure with byte length and type, guid, duration and episode number.
- */
-export function buildPodcastRss(doc: PodcastFeedInput): string {
-  const items = doc.items
-    .map((i) => {
-      const parts = [
-        `<title>${esc(i.title)}</title>`,
-        `<link>${esc(i.url)}</link>`,
-        `<guid isPermaLink="false">${esc(i.id)}</guid>`,
-      ]
-      const date = rfc822(i.published)
-      if (date) parts.push(`<pubDate>${date}</pubDate>`)
-      const summary = i.summary || ''
-      parts.push(`<description>${cdata(xmlSafe(summary))}</description>`)
-      if (i.enclosure?.url) parts.push(`<enclosure url="${esc(i.enclosure.url)}" length="${Math.max(0, Math.round(i.enclosure.length || 0))}" type="${esc(i.enclosure.type)}"/>`)
-      if (i.durationSeconds) parts.push(`<itunes:duration>${itunesDuration(i.durationSeconds)}</itunes:duration>`)
-      if (i.episode) parts.push(`<itunes:episode>${Math.round(i.episode)}</itunes:episode>`)
-      parts.push('<itunes:episodeType>full</itunes:episodeType>')
-      parts.push(`<itunes:explicit>${doc.explicit ? 'true' : 'false'}</itunes:explicit>`)
-      if (i.image) parts.push(`<itunes:image href="${esc(i.image)}"/>`)
-      return `    <item>${parts.join('')}</item>`
-    })
-    .join('\n')
-  const category = doc.category || 'Education'
-  const channel = [
-    `<title>${esc(doc.title)}</title>`,
-    `<link>${esc(doc.homeUrl)}</link>`,
-    doc.feedUrls.rss ? `<atom:link href="${esc(doc.feedUrls.rss)}" rel="self" type="application/rss+xml"/>` : '',
-    `<description>${cdata(xmlSafe(doc.description || doc.title))}</description>`,
-    `<language>${esc(doc.language || 'en')}</language>`,
-    `<lastBuildDate>${new Date(latest(doc)).toUTCString()}</lastBuildDate>`,
-    '<generator>LearnHouse</generator>',
-    `<itunes:author>${esc(doc.author || doc.ownerName || doc.title)}</itunes:author>`,
-    `<itunes:summary>${esc(clipDescription(doc.description || doc.title, 4000))}</itunes:summary>`,
-    `<itunes:type>episodic</itunes:type>`,
-    `<itunes:explicit>${doc.explicit ? 'true' : 'false'}</itunes:explicit>`,
-    `<itunes:category text="${esc(category)}"/>`,
-    `<itunes:owner><itunes:name>${esc(doc.ownerName || doc.author || doc.title)}</itunes:name>${doc.ownerEmail ? `<itunes:email>${esc(doc.ownerEmail)}</itunes:email>` : ''}</itunes:owner>`,
-    doc.image ? `<itunes:image href="${esc(doc.image)}"/>` : '',
-    doc.image ? `<image><url>${esc(doc.image)}</url><title>${esc(doc.title)}</title><link>${esc(doc.homeUrl)}</link></image>` : '',
-    doc.block ? '<itunes:block>Yes</itunes:block>' : '',
-    doc.guid ? `<podcast:guid>${esc(doc.guid)}</podcast:guid>` : '',
-  ]
-    .filter(Boolean)
-    .join('\n    ')
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-  <channel>
-    ${channel}
-${items}
-  </channel>
-</rss>
-`
-}
-
-/**
- * Podcasting 2.0 GUID: a UUIDv5 of the feed URL without scheme and trailing
- * slashes (namespace ead4c236-bf58-58c6-a2c6-a6b28d128cb6), so every app
- * derives the same id from the feed.
- */
-export async function podcastGuid(feedUrl: string): Promise<string> {
-  const name = feedUrl.replace(/^[a-z]+:\/\//i, '').replace(/\/+$/, '')
-  const ns = 'ead4c236bf5858c6a2c6a6b28d128cb6'
-  const nsBytes = new Uint8Array(ns.match(/../g)!.map((h) => parseInt(h, 16)))
-  const nameBytes = new TextEncoder().encode(name)
-  const data = new Uint8Array(nsBytes.length + nameBytes.length)
-  data.set(nsBytes)
-  data.set(nameBytes, nsBytes.length)
-  const hash = new Uint8Array(await crypto.subtle.digest('SHA-1', data)).slice(0, 16)
-  hash[6] = (hash[6] & 0x0f) | 0x50
-  hash[8] = (hash[8] & 0x3f) | 0x80
-  const hex = Array.from(hash, (b) => b.toString(16).padStart(2, '0')).join('')
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
-}

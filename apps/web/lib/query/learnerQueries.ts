@@ -9,7 +9,7 @@ import { getOrgFolders, getOrgRootItems } from '@services/folders/folders'
 // Public (org site) pages whose body is a client component that loads its own
 // data through React Query. Their route payload carries no data, so a full
 // prefetch is safe to keep for Next's prefetch window: nothing in it can go
-// stale. Pages that render server-fetched data (communities, podcasts, boards,
+// stale. Pages that render server-fetched data (boards,
 // profiles...) are deliberately left out; they keep Next's default prefetch.
 const CLIENT_ROUTES: RegExp[] = [
   /^\/$/,

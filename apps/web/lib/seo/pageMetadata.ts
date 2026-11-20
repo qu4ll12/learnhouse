@@ -6,7 +6,7 @@ import { toIsoDate } from './jsonld'
 import { PAGE_CARDS } from './ogCard'
 
 /**
- * Metadata for a resource page (course, path, podcast, ...), applying the
+ * Metadata for a resource page (course, path, ...), applying the
  * resource's SEO settings over defaults derived from the resource itself.
  * Image priority: custom social image → thumbnail → generated OG image →
  * org default.
@@ -141,12 +141,11 @@ export async function buildListMetadata(opts: {
  */
 export async function seoAlternates(
   ctx: SeoContext,
-  opts: { indexable: boolean; markdown?: string; feed?: string; podcastFeed?: string },
+  opts: { indexable: boolean; markdown?: string; feed?: string },
 ): Promise<Record<string, string>> {
   const types: Record<string, string> = {}
   if (!opts.indexable || ctx.seo.indexing_disabled) return types
   if (opts.markdown && llmsEnabled(ctx.seo)) types['text/markdown'] = await ctx.url(opts.markdown)
-  if (opts.podcastFeed) types['application/rss+xml'] = await ctx.url(opts.podcastFeed)
   else if (opts.feed && feedsEnabled(ctx.seo)) {
     types['application/rss+xml'] = await ctx.url(`${opts.feed}feed.xml`)
     types['application/atom+xml'] = await ctx.url(`${opts.feed}feed.atom`)

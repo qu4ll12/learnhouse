@@ -1,8 +1,8 @@
-"""Keep a course's (or podcast's) update_date in step with edits to its content.
+"""Keep a course's update_date in step with edits to its content.
 
 "Last updated" on a course should move when anything inside it is edited, not
 only the course row itself. Service code stamps update_date on the activity,
-chapter, assignment or episode it edits; these hooks carry that stamp up to the
+chapter, or assignment it edits; these hooks carry that stamp up to the
 parent, together with content being added, removed or reordered. Background
 writes (indexing status, transcoding and caption progress, reader-side gating)
 leave the child's update_date alone, so they don't count as edits.
@@ -20,8 +20,6 @@ from src.db.courses.chapter_activities import ChapterActivity
 from src.db.courses.chapters import Chapter
 from src.db.courses.course_chapters import CourseChapter
 from src.db.courses.courses import Course
-from src.db.podcasts.episodes import PodcastEpisode
-from src.db.podcasts.podcasts import Podcast
 
 # Child rows whose update_date marks an author edit: child -> (parent, foreign key).
 STAMPED_CHILDREN = {
@@ -29,7 +27,6 @@ STAMPED_CHILDREN = {
     Chapter: (Course, "course_id"),
     Assignment: (Course, "course_id"),
     AssignmentTask: (Course, "course_id"),
-    PodcastEpisode: (Podcast, "podcast_id"),
 }
 # Rows that only place content in a course (ordering links).
 LINK_CHILDREN = {

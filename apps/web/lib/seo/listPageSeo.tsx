@@ -4,12 +4,10 @@ import { fetchSitemapData } from './sitemapData.server'
 import { breadcrumbJsonLd, itemListJsonLd } from './jsonld'
 import type { SitemapData } from './sitemap'
 
-type ListKind = 'courses' | 'paths' | 'podcasts' | 'communities' | 'folders'
+type ListKind = 'courses' | 'paths' | 'folders'
 const SEGMENT: Record<ListKind, string> = {
   courses: '/course/',
   paths: '/path/',
-  podcasts: '/podcast/',
-  communities: '/community/',
   folders: '/library/folder/',
 }
 

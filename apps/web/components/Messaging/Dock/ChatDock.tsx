@@ -21,7 +21,6 @@ import NewConversationDialog from '@components/Messaging/Dialogs/NewConversation
 import AgentAvatar from '@components/Messaging/Agents/AgentAvatar'
 import { ConversationAvatar } from '@components/Messaging/ui/Avatars'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip'
-import { usePodcastPlayer } from '@components/Contexts/PodcastPlayerContext'
 import { getUriWithOrg } from '@services/config/config'
 import { Conversation, conversationTitle, openAgentChat } from '@services/messaging/messaging'
 import { DOCK_OPEN_EVENT, setDockMounted } from '@components/Messaging/Dock/dockBus'
@@ -92,7 +91,6 @@ function Dock({ orgslug, orgId }: { orgslug: string; orgId: number }) {
   const qc = useQueryClient()
   const { token, userId, unreadTotal, subscribe } = useMessaging()
   const { data: conversations = [] } = useConversations()
-  const podcast = usePodcastPlayer()
   const [state, setState] = useState<DockState>(EMPTY)
   const [listOpen, setListOpen] = useState(false)
   const [slots, setSlots] = useState(3)
@@ -184,14 +182,13 @@ function Dock({ orgslug, orgId }: { orgslug: string; orgId: number }) {
     [subscribe, qc, orgId, userId]
   )
 
-  const offset = podcast.state.isVisible ? (podcast.state.isMinimized ? 64 : 96) : 0
   const heads = state.heads.map((u) => byUuid.get(u)).filter(Boolean) as Conversation[]
 
   return (
     <div
       data-chat-dock
       className="pointer-events-none fixed end-4 z-40 hidden md:flex items-end"
-      style={{ bottom: offset, gap: GAP }}
+      style={{ bottom: 0, gap: GAP }}
     >
       {state.open.map((uuid) => (
         <DockWindow key={uuid}>

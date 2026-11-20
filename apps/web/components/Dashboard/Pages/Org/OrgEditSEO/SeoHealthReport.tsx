@@ -23,10 +23,6 @@ function editHref(orgslug: string, item: SeoHealthItem): string {
       return getUriWithOrg(orgslug, `/dash/courses/course/${id}/seo`)
     case 'path':
       return getUriWithOrg(orgslug, `/dash/paths/path/${id}/seo`)
-    case 'podcast':
-      return getUriWithOrg(orgslug, `/dash/podcasts/podcast/${id}/seo`)
-    case 'community':
-      return getUriWithOrg(orgslug, `/dash/communities/${id}/seo`)
     default:
       return getUriWithOrg(orgslug, `/dash/library/folder/${id}?seo=1`)
   }

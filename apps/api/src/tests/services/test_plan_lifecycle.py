@@ -14,6 +14,7 @@ from sqlmodel import select
 from src.db.courses.certifications import Certifications
 from src.db.courses.courses import Course
 from src.db.nudges import EmailPreference, NudgeSend
+from src.db.org_onboarding import OrgOnboarding
 from src.db.org_plan_state import OrgDowngrade, OrgTrial, TrialStatus
 from src.db.organization_config import OrganizationConfig
 from src.db.organizations import Organization
@@ -602,27 +603,6 @@ class TestGates:
             await set_plan(db, org.id, "pro")
             assert await _certificates_in_plan(cert, db) is True
         assert await _certificates_in_plan(Certifications(id=2, course_id=99, config={}, certification_uuid="c2"), db) is False
-
-    async def test_podcast_episodes_follow_the_plan(self, db, org):
-        from src.services.podcasts.episodes import _podcasts_enabled
-
-        assert await _podcasts_enabled(org.id, db) is True  # no config: nothing taken away
-        await set_plan(db, org.id, "free")
-        with saas():
-            assert await _podcasts_enabled(org.id, db) is False
-            await set_plan(db, org.id, "standard")
-            assert await _podcasts_enabled(org.id, db) is True
-
-    async def test_episode_list_404s_without_the_plan(self, db, org, admin_user):
-        from src.db.podcasts.podcasts import Podcast
-        from src.services.podcasts.episodes import get_episodes_by_podcast
-
-        db.add(Podcast(id=1, name="Pod", description="", org_id=org.id, podcast_uuid="podcast_1", public=True, published=True))
-        await db.commit()
-        await set_plan(db, org.id, "free")
-        with saas(), pytest.raises(HTTPException) as exc:
-            await get_episodes_by_podcast(MagicMock(), 1, db, admin_user)
-        assert exc.value.status_code == 404
 
     async def test_collab_needs_the_plan(self, db, org, admin_user):
         from src.services.courses.activities import collab

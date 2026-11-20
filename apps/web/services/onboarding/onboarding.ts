@@ -3,8 +3,8 @@ import { errorHandling } from '@services/utils/ts/requests'
 
 // Client for /api/v1/onboarding (apps/api/src/routers/onboarding.py).
 
-export type OnboardingGoal = 'sell' | 'team' | 'school' | 'customers' | 'community'
-export const ONBOARDING_GOALS: OnboardingGoal[] = ['sell', 'team', 'school', 'customers', 'community']
+export type OnboardingGoal = 'sell' | 'team' | 'school' | 'customers'
+export const ONBOARDING_GOALS: OnboardingGoal[] = ['sell', 'team', 'school', 'customers']
 
 export type ServerStep = {
   id: string

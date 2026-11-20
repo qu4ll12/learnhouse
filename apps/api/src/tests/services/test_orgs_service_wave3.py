@@ -8,12 +8,14 @@ import pytest
 from fastapi import HTTPException
 from sqlmodel import select
 
+from src.db.landing_pages import LandingPage
 from src.db.organization_config import (
     AuthBrandingConfig,
     OrganizationConfig,
     OrganizationConfigV2Base,
     SeoOrgConfig,
 )
+from src.db.organization_plan_history import OrganizationPlanHistory
 from src.db.organizations import (
     Organization,
     OrganizationCreate,
@@ -36,7 +38,6 @@ from src.services.orgs.orgs import (
     update_org_auth_branding_config,
     update_org_color_config,
     update_org_folders_config,
-    update_org_communities_config,
     update_org_courses_config,
     update_org_favicon,
     update_org_square_logo,
@@ -46,7 +47,6 @@ from src.services.orgs.orgs import (
     update_org_logo,
     update_org_payments_config,
     update_org_playgrounds_config,
-    update_org_podcasts_config,
     update_org_preview,
     update_org_seo_config,
     update_org_signup_mechanism,
@@ -465,10 +465,8 @@ class TestOrgCreationAndListingWave3:
             (delete_org, tuple()),
             (update_org_signup_mechanism, ("inviteOnly",)),
             (update_org_ai_config, (True,)),
-            (update_org_communities_config, (True,)),
             (update_org_folders_config, (True,)),
             (update_org_courses_config, (True,)),
-            (update_org_podcasts_config, (True,)),
             (update_org_boards_config, (True,)),
             (update_org_playgrounds_config, (True,)),
             (update_org_color_config, ("#123456",)),
@@ -556,7 +554,6 @@ class TestOrgCreationAndListingWave3:
                 (update_org_square_logo, (SimpleNamespace(filename="square.png"),)),
                 (update_org_signup_mechanism, ("inviteOnly",)),
                 (update_org_ai_config, (True,)),
-                (update_org_communities_config, (True,)),
                 (update_org_folders_config, (True,)),
                 (update_org_boards_config, (True,)),
                 (update_org_color_config, ("#abcdef",)),
@@ -866,13 +863,6 @@ class TestOrgConfigBranchesWave3:
                 db,
                 copilot_enabled=True,
             )
-            await update_org_communities_config(
-                mock_request,
-                False,
-                org.id,
-                admin_user,
-                db,
-            )
             await update_org_payments_config(
                 mock_request,
                 True,
@@ -883,13 +873,6 @@ class TestOrgConfigBranchesWave3:
             await update_org_courses_config(
                 mock_request,
                 False,
-                org.id,
-                admin_user,
-                db,
-            )
-            await update_org_podcasts_config(
-                mock_request,
-                True,
                 org.id,
                 admin_user,
                 db,
@@ -916,10 +899,8 @@ class TestOrgConfigBranchesWave3:
         assert stored.config["features"]["members"]["signup_mode"] == "inviteOnly"
         assert "model" not in stored.config["features"]["ai"]
         assert stored.config["features"]["ai"]["enabled"] is False
-        assert stored.config["features"]["communities"]["enabled"] is False
         assert stored.config["features"]["payments"]["enabled"] is True
         assert stored.config["features"]["courses"]["enabled"] is False
-        assert stored.config["features"]["podcasts"]["enabled"] is True
         assert stored.config["features"]["playgrounds"]["enabled"] is False
         assert mock_webhooks.await_count >= 2
 
@@ -1054,13 +1035,6 @@ class TestOrgConfigBranchesWave3:
                 db,
                 copilot_enabled=False,
             )
-            await update_org_communities_config(
-                mock_request,
-                True,
-                other_org.id,
-                admin_user,
-                db,
-            )
             await update_org_payments_config(
                 mock_request,
                 False,
@@ -1083,7 +1057,6 @@ class TestOrgConfigBranchesWave3:
         assert stored.config["admin_toggles"]["members"]["signup_mode"] == "inviteOnly"
         assert stored.config["admin_toggles"]["ai"]["disabled"] is False
         assert stored.config["admin_toggles"]["ai"]["copilot_enabled"] is False
-        assert stored.config["admin_toggles"]["communities"]["org_disabled"] is False
         assert stored.config["admin_toggles"]["payments"]["org_disabled"] is True
 
 

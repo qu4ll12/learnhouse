@@ -46,7 +46,6 @@ export function useValueText(lookups: Lookups) {
       if (c.field === 'user.groups') return lookups.names.usergroups[key] ?? key
       if (c.field === 'progress.completed_activities') return lookups.names.activities[key] ?? key
       if (c.field === 'assignments.submitted') return lookups.names.assignments[key] ?? key
-      if (c.field === 'community.active_in') return lookups.names.communities[key] ?? key
       if (c.field === 'user.role') return t(`editor.dynamic.roles.${key}`, key)
       return key
     }
@@ -239,11 +238,9 @@ export function ValueInput(props: {
         ? props.lookups.activities
         : picker === 'assignments'
           ? props.lookups.assignments
-          : picker === 'communities'
-            ? props.lookups.communities
-            : picker === 'roles'
-              ? ROLES.map((r) => ({ value: r, label: t(`editor.dynamic.roles.${r}`, r) }))
-              : []
+          : picker === 'roles'
+            ? ROLES.map((r) => ({ value: r, label: t(`editor.dynamic.roles.${r}`, r) }))
+            : []
 
   if (options.length > 0 || picker) {
     return <MultiPicker options={options} selected={selected} onChange={onChange} />

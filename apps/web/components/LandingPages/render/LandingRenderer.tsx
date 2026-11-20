@@ -29,8 +29,6 @@ const LAZY = {
   courses: React.lazy(() => data().then((m) => ({ default: m.CoursesBlock }))),
   course: React.lazy(() => data().then((m) => ({ default: m.CourseBlock }))),
   paths: React.lazy(() => data().then((m) => ({ default: m.PathsBlock }))),
-  communities: React.lazy(() => data().then((m) => ({ default: m.CommunitiesBlock }))),
-  podcasts: React.lazy(() => data().then((m) => ({ default: m.PodcastsBlock }))),
   live_sessions: React.lazy(() => data().then((m) => ({ default: m.LiveSessionsBlock }))),
   pricing: React.lazy(() => data().then((m) => ({ default: m.PricingBlock }))),
   newsletter: React.lazy(() => forms().then((m) => ({ default: m.NewsletterBlock }))),

@@ -4,9 +4,7 @@ import { sitePage as home } from '@/app/orgs/[orgslug]/(withmenu)/page.search'
 import { sitePage as courses } from '@/app/orgs/[orgslug]/(withmenu)/courses/page.search'
 import { sitePage as paths } from '@/app/orgs/[orgslug]/(withmenu)/paths/page.search'
 import { sitePage as library } from '@/app/orgs/[orgslug]/(withmenu)/library/page.search'
-import { sitePage as podcasts } from '@/app/orgs/[orgslug]/(withmenu)/podcasts/page.search'
 import { sitePage as liveSessions } from '@/app/orgs/[orgslug]/(withmenu)/live/page.search'
-import { sitePage as communities } from '@/app/orgs/[orgslug]/(withmenu)/communities/page.search'
 import { sitePage as playgrounds } from '@/app/orgs/[orgslug]/(withmenu)/playgrounds/page.search'
 import { sitePage as store } from '@/app/orgs/[orgslug]/(withmenu)/store/page.search'
 import { sitePage as trail } from '@/app/orgs/[orgslug]/(withmenu)/trail/page.search'
@@ -39,9 +37,7 @@ export const sitePages: SitePageMeta[] = [
   courses,
   paths,
   library,
-  podcasts,
   liveSessions,
-  communities,
   playgrounds,
   store,
   trail,

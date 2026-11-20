@@ -1,25 +1,21 @@
 import { ImageResponse } from 'next/og'
 import { getCourseMetadata } from '@services/courses/courses'
 import { getPath } from '@services/paths/paths'
-import { getPodcastMeta } from '@services/podcasts/podcasts'
-import { getCommunity } from '@services/communities/communities'
 import { getFolderById } from '@services/folders/folders'
 import { orgThemeColors } from '@/lib/theme/orgTheme'
 import { getSeoContext } from '@/lib/seo/context.server'
 import { resolvePublicKey } from '@/lib/seo/resolve.server'
 import { OG_SIZE, PAGE_CARDS, brandColor, clampText, readableOn, titleFontSize } from '@/lib/seo/ogCard'
-import { THREAD_SEGMENT_RE, type SeoResourceType } from '@/lib/seo/paths'
-import { fetchThreadJsonLd } from '@/lib/seo/publicData.server'
-import { prosemirrorText } from '@/lib/seo/meta'
+import { type SeoResourceType } from '@/lib/seo/paths'
 
 /**
  * Generated social card for a resource without its own image:
- * `/og/{course|path|podcast|community}/{slug-or-uuid}` (1200×630 PNG), in the
+ * `/og/{course|path|folder}/{slug-or-uuid}` (1200×630 PNG), in the
  * org's colors with its logo. Only public content is drawn; anything else
  * gets a neutral org card, so private titles never leak through an image URL.
  */
 
-const KIND_LABEL: Record<string, string> = { course: 'Course', path: 'Learning path', podcast: 'Podcast', community: 'Community', folder: 'Collection' }
+const KIND_LABEL: Record<string, string> = { course: 'Course', path: 'Learning path', folder: 'Collection' }
 const CACHE = 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800'
 
 type Card = { kind: string; title: string; description: string; meta: string[] }
@@ -53,18 +49,6 @@ async function loadCard(type: SeoResourceType, uuid: string): Promise<Card | nul
         description: p.seo?.og_description || p.description || '',
         meta: [p.course_count ? `${p.course_count} courses` : '', p.level ? String(p.level) : '', p.certificate_enabled ? 'Certificate' : ''].filter(Boolean),
       }
-    }
-    case 'podcast': {
-      const m = await getPodcastMeta(uuid, null).catch(() => null)
-      const p = m?.podcast
-      if (!p?.public || !p?.published) return null
-      const episodes = (m?.episodes || []).filter((e) => e.published !== false).length
-      return { kind: KIND_LABEL.podcast, title: p.seo?.og_title || p.name, description: p.seo?.og_description || p.description || '', meta: episodes ? [`${episodes} episodes`] : [] }
-    }
-    case 'community': {
-      const c = await getCommunity(uuid, null).catch(() => null)
-      if (!c?.public) return null
-      return { kind: KIND_LABEL.community, title: c.seo?.og_title || c.name, description: c.seo?.og_description || c.description || '', meta: [] }
     }
     case 'folder': {
       const f: any = await getFolderById(uuid, undefined, null).catch(() => null)
@@ -107,19 +91,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ orgslug
     if (page) {
       const orgDescription = ctx.org?.description && ctx.org.description !== ctx.org?.name ? ctx.org.description : ''
       card = { kind: '', title: key === 'home' ? ctx.org?.name || page : page, description: orgDescription, meta: [] }
-    }
-  } else if (type === 'thread') {
-    // `{communityKey}~{id-slug}`: drawn only for indexable threads (anonymous
-    // view), so a private or sold thread's title never reaches an image.
-    const [communityKey, segment] = decodeURIComponent(key).split('~')
-    const t = communityKey && segment && THREAD_SEGMENT_RE.test(segment) ? await fetchThreadJsonLd(orgslug, communityKey, segment) : null
-    if (t?.indexable) {
-      card = {
-        kind: t.community_name || KIND_LABEL.community,
-        title: t.title,
-        description: prosemirrorText(t.content, 300),
-        meta: [`${t.reply_count} ${t.reply_count === 1 ? 'reply' : 'replies'}`, `${t.upvotes} upvotes`],
-      }
     }
   } else if (type in KIND_LABEL) {
     const resolved = await resolvePublicKey(orgslug, type as SeoResourceType, key)

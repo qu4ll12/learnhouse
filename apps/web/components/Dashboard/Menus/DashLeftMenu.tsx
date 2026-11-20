@@ -21,7 +21,6 @@ import {
   PencilSimple,
   Book,
   ChatCircleDots,
-  Headphones,
   VideoCamera,
   ChartBar,
   DotsThree,
@@ -45,7 +44,6 @@ import {
   FlowArrow,
   Circuitry,
   SlidersHorizontal,
-  Garage,
   Newspaper,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
@@ -306,8 +304,6 @@ function DashLeftMenu() {
 
   const showLibrary = isOn('folders')
   const showPaths = isOn('paths')
-  const showCommunities = isOn('communities')
-  const showPodcasts = isOn('podcasts')
   const showLiveSessions = isOn('live_sessions')
   const showBoards = isOn('boards')
   const showPlaygrounds = isOn('playgrounds')
@@ -317,7 +313,7 @@ function DashLeftMenu() {
   const showCustomers = getDeploymentMode() !== 'oss' && rf?.company_seats?.enabled === true
   // Org analytics ship with Enterprise Edition.
   const showAnalytics = isOrgAnalyticsAvailable()
-  const showEngage = showCommunities || showPodcasts || showLiveSessions || showBoards || showNewsletter
+  const showEngage = showLiveSessions || showBoards || showNewsletter
 
   // When the user is on the Atlas page, the left nav drops into a slightly
   // darker flat dark color than the Atlas content (same family), with the
@@ -651,26 +647,6 @@ function DashLeftMenu() {
 
           {showEngage && (
             <NavSection label={t('dashboard.nav.section_engage', { defaultValue: 'Engage' })} collapsed={isCollapsed}>
-              {showCommunities && (
-                <NavRow
-                  href="/dash/communities"
-                  icon={Garage}
-                  label={t('communities.title')}
-                  collapsed={isCollapsed}
-                  tooltipSide={tooltipSide}
-                  active={isActivePath('/dash/communities')}
-                />
-              )}
-              {showPodcasts && (
-                <NavRow
-                  href="/dash/podcasts"
-                  icon={Headphones}
-                  label={t('podcasts.podcasts')}
-                  collapsed={isCollapsed}
-                  tooltipSide={tooltipSide}
-                  active={isActivePath('/dash/podcasts')}
-                />
-              )}
               {showLiveSessions && (
                 <NavRow
                   href="/dash/live-sessions"

@@ -93,10 +93,6 @@
           "title": "ميزة الخطة القياسية",
           "description": "المجتمعات هي ميزة مميزة متاحة فقط للمنظمات في خطتنا القياسية أو أعلى. قم بالترقية لفتح مجتمعات النقاش لأعضائك."
         },
-        "podcasts": {
-          "title": "ميزة قياسية",
-          "description": "البودكاست هي ميزة مميزة متاحة فقط للمنظمات ذات الخطة القياسية أو أعلى. قم بالترقية لإنشاء ومشاركة البودكاست مع أعضائك."
-        },
         "audit_logs": {
           "title": "ميزة خطة المؤسسات",
           "description": "سجلات التدقيق هي ميزة مميزة متاحة فقط للمؤسسات على خطة المؤسسات الخاصة بنا. قم بالترقية للحصول على رؤية كاملة لأنشطة مؤسستك."
@@ -251,12 +247,6 @@
           "b2": "تُرسل التذكيرات تلقائيًا",
           "b3": "تبقى التسجيلات بجانب الدورة"
         },
-        "podcasts": {
-          "title": "اصل إلى المتعلمين أينما كانوا",
-          "b1": "انشر حلقات صوتية إلى جانب دوراتك",
-          "b2": "مشغّل يتذكر أين توقف كل مستمع",
-          "b3": "حوّل الدروس إلى حلقات بالذكاء الاصطناعي"
-        },
         "usergroups": {
           "title": "نظّم المتعلمين في مجموعات",
           "b1": "امنح كل مجموعة الوصول إلى الدورات المخصصة لها",
@@ -397,7 +387,6 @@
           "library": "مكتبة",
           "folders": "مكتبة",
           "communities": "المجتمعات",
-          "podcasts": "البودكاست",
           "payments": "المدفوعات",
           "trail": "تتبع التقدم",
           "boards": "اللوحات",
@@ -3281,335 +3270,12 @@
       "hand_place": "يدك مرفوعة · #{{place}} في الدور"
     }
   },
-  "podcasts": {
-    "podcasts": "البودكاست",
-    "browse_description": "استمع إلى البودكاست من هذه المنظمة",
-    "new_podcast": "بودكاست جديد",
-    "search_placeholder": "البحث عن البودكاست...",
-    "no_podcasts": "لا يوجد بودكاست بعد",
-    "no_podcasts_description": "لا يوجد بودكاست متاح حالياً",
-    "create_podcasts_placeholder": "أنشئ بودكاست لمشاركة المحتوى الصوتي مع جمهورك",
-    "no_search_results": "لم يتم العثور على بودكاست",
-    "try_different_search": "جرب مصطلح بحث مختلف",
-    "search_results_zero": "تم العثور على {{count}} بودكاست لـ \"{{query}}\"",
-    "search_results_one": "تم العثور على {{count}} بودكاست لـ \"{{query}}\"",
-    "search_results_two": "تم العثور على بودكاستَين لـ \"{{query}}\"",
-    "search_results_few": "تم العثور على {{count}} بودكاست لـ \"{{query}}\"",
-    "search_results_many": "تم العثور على {{count}} بودكاست لـ \"{{query}}\"",
-    "search_results_other": "تم العثور على {{count}} بودكاست لـ \"{{query}}\"",
-    "podcast_name": "اسم البودكاست",
-    "podcast_name_required": "اسم البودكاست مطلوب",
-    "podcast_thumbnail": "صورة البودكاست المصغرة",
-    "podcast_tags": "الوسوم",
-    "podcast_visibility": "الظهور",
-    "create_podcast": "إنشاء بودكاست",
-    "create_new_podcast": "إنشاء بودكاست جديد لمؤسستك",
-    "create_podcast_btn": "إنشاء بودكاست",
-    "creating_podcast": "جاري إنشاء البودكاست...",
-    "podcast_created_success": "تم إنشاء البودكاست بنجاح",
-    "failed_to_create_podcast": "فشل إنشاء البودكاست",
-    "episodes": "الحلقات",
-    "no_episodes": "لا يوجد حلقات بعد",
-    "hosted_by": "يقدمه",
-    "tags": "الوسوم",
-    "manage_podcast": "إدارة البودكاست",
-    "published": "منشور",
-    "unpublished": "غير منشور",
-    "public": "عام",
-    "private": "خاص",
-    "listen_now": "استمع الآن",
-    "delete_podcast": "حذف البودكاست",
-    "delete_podcast_title": "حذف البودكاست؟",
-    "delete_podcast_confirm": "هل أنت متأكد من حذف هذا البودكاست؟ هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع الحلقات.",
-    "deleting_podcast": "جاري حذف البودكاست...",
-    "podcast_deleted_success": "تم حذف البودكاست بنجاح",
-    "podcast_deleted_error": "فشل في حذف البودكاست",
-    "edit_content": "تعديل المحتوى",
-    "form": {
-      "name_required": "اسم البودكاست مطلوب",
-      "name_min_length": "يجب أن يكون الاسم 3 أحرف على الأقل",
-      "name_max_length": "يجب أن يكون الاسم 100 حرف أو أقل",
-      "description_max_length": "يجب أن يكون الوصف 500 حرف أو أقل"
-    },
-    "modals": {
-      "create": {
-        "title": "إنشاء بودكاست جديد",
-        "description": "املأ التفاصيل لإنشاء بودكاست جديد",
-        "form": {
-          "name_label": "اسم البودكاست",
-          "name_placeholder": "أدخل اسم البودكاست",
-          "description_label": "الوصف",
-          "description_placeholder": "أدخل وصف البودكاست",
-          "public_label": "اجعل هذا البودكاست عاماً"
-        },
-        "cancel": "إلغاء",
-        "submit": "إنشاء بودكاست",
-        "generated_image_failed": "تعذّر تحميل الصورة المُنشأة",
-        "draft_hint": "تبدأ البودكاست الجديدة كمسودات. انشر عندما تكون أول حلقة جاهزة."
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "عام",
-        "episodes": "الحلقات",
-        "distribution": "التوزيع"
-      },
-      "view_podcast": "عرض البودكاست",
-      "saving": "جاري الحفظ...",
-      "saved": "تم حفظ التغييرات",
-      "save_error": "فشل حفظ التغييرات",
-      "save_changes": "حفظ التغييرات",
-      "form": {
-        "thumbnail": "الصورة المصغرة",
-        "upload_thumbnail": "رفع صورة مصغرة",
-        "thumbnail_hint": "الحجم الموصى به: 1400x1400 بكسل. JPG أو PNG.",
-        "about": "حول",
-        "about_placeholder": "أخبر المستمعين المزيد عن هذا البودكاست...",
-        "about_max_length": "يجب أن يكون الوصف 2000 حرف أو أقل",
-        "tags_placeholder": "موسيقى، تعليم، تقنية",
-        "tags_hint": "افصل الوسوم بفواصل",
-        "visibility": "إعدادات الظهور",
-        "public_hint": "يمكن لأي شخص العثور على هذا البودكاست والاستماع إليه",
-        "published_hint": "اجعل هذا البودكاست مرئياً على صفحة مؤسستك",
-        "private_hint": "يمكن الاستماع فقط للأعضاء المسجّلين في مؤسستك"
-      },
-      "episodes": {
-        "new_episode": "حلقة جديدة",
-        "new_episode_description": "إضافة حلقة جديدة لهذا البودكاست",
-        "no_episodes_description": "ابدأ بإضافة أول حلقة لك",
-        "create_first": "إنشاء أول حلقة",
-        "creating": "جاري إنشاء الحلقة...",
-        "created": "تم إنشاء الحلقة",
-        "create_error": "فشل إنشاء الحلقة",
-        "create": "إنشاء حلقة",
-        "deleting": "جاري حذف الحلقة...",
-        "deleted": "تم حذف الحلقة",
-        "delete_error": "فشل حذف الحلقة",
-        "delete": "حذف",
-        "delete_title": "حذف الحلقة؟",
-        "delete_confirm": "هل أنت متأكد من رغبتك في حذف هذه الحلقة؟ لا يمكن التراجع عن هذا الإجراء.",
-        "updating": "جاري تحديث الحلقة...",
-        "updated": "تم تحديث الحلقة",
-        "update_error": "فشل تحديث الحلقة",
-        "edit": "تعديل",
-        "edit_episode": "تعديل الحلقة",
-        "edit_episode_description": "تحديث تفاصيل الحلقة",
-        "save": "حفظ التغييرات",
-        "publish": "نشر",
-        "unpublish": "إلغاء النشر",
-        "no_audio": "لا يوجد ملف صوتي",
-        "title_label": "العنوان",
-        "title_placeholder": "أدخل عنوان الحلقة",
-        "description_label": "الوصف",
-        "description_placeholder": "أدخل وصف الحلقة",
-        "audio_label": "ملف الصوت",
-        "upload_audio": "رفع ملف صوتي",
-        "replace_audio": "استبدال ملف الصوت",
-        "audio_hint": "ملفات MP3, WAV, أو M4A مدعومة",
-        "actions": "إجراءات الحلقة",
-        "cover_drop_hint": "صورة مربعة بصيغة JPG أو PNG. يُستخدم غلاف البودكاست إن تُرك فارغًا.",
-        "cover_hint": "اختياري",
-        "cover_label": "غلاف الحلقة",
-        "drag_to_reorder": "اسحب لإعادة الترتيب",
-        "drop_hint": "أفلت ملفًا هنا أو انقر للتصفح",
-        "move_down": "نقل لأسفل",
-        "move_up": "نقل لأعلى",
-        "pause": "إيقاف مؤقت",
-        "play": "تشغيل",
-        "publish_hint": "تظهر الحلقات المنشورة للمستمعين وفي خلاصة RSS.",
-        "publish_now": "النشر فورًا",
-        "remove_file": "إزالة الملف",
-        "reorder_error": "تعذّر حفظ الترتيب الجديد",
-        "reorder_hint": "اسحب المقبض لتغيير الترتيب، أو استخدم «نقل لأعلى / لأسفل» من القائمة.",
-        "replace_cover": "استبدال الغلاف",
-        "section_description": "أضف حلقات صوتية. يسمعها المستمعون بهذا الترتيب.",
-        "summary_one": "{{count}} حلقة · {{published}} منشورة · {{duration}} إجمالًا",
-        "summary_other": "{{count}} حلقة · {{published}} منشورة · {{duration}} إجمالًا",
-        "upload_cover": "رفع غلاف",
-        "wrong_file_type": "نوع الملف هذا غير مدعوم هنا",
-        "summary_zero": "{{count}} حلقات · {{published}} منشورة · {{duration}} إجمالًا",
-        "summary_few": "{{count}} حلقات · {{published}} منشورة · {{duration}} إجمالًا",
-        "summary_many": "{{count}} حلقة · {{published}} منشورة · {{duration}} إجمالًا",
-        "summary_two": "حلقتين · {{published}} منشورة · {{duration}} إجمالًا"
-      },
-      "back_to_podcasts": "العودة إلى البودكاست",
-      "general": {
-        "cover_drop": "أفلت صورة هنا أو انقر للتصفح",
-        "details_description": "الاسم والملخص والوسوم التي يراها المستمعون.",
-        "details_title": "التفاصيل",
-        "discard_cover": "تجاهل الغلاف الجديد",
-        "replace_cover": "استبدال الغلاف",
-        "visibility_description": "تُحفظ هذه المفاتيح بمجرد تبديلها."
-      },
-      "list": {
-        "clear_filters": "مسح عوامل التصفية",
-        "columns": {
-          "authors": "المؤلفون",
-          "podcast": "البودكاست",
-          "updated": "آخر تحديث",
-          "visibility": "الظهور"
-        },
-        "copy_failed": "تعذّر نسخ الرابط",
-        "copy_link": "نسخ الرابط",
-        "draft": "مسودة",
-        "edit_episodes": "تعديل الحلقات",
-        "episodes_count_one": "{{count}} حلقة",
-        "episodes_count_other": "{{count}} حلقة",
-        "episodes_short": "الحلقات",
-        "filters": {
-          "all": "الكل",
-          "drafts": "المسودات",
-          "published": "المنشورة"
-        },
-        "make_private": "جعله خاصًا",
-        "make_public": "جعله عامًا",
-        "no_description": "لا يوجد وصف بعد",
-        "published_toast": "تم نشر البودكاست",
-        "showing_count": "عرض {{shown}} من {{total}}",
-        "sort": {
-          "episodes": "الأكثر حلقات",
-          "name": "الاسم",
-          "newest": "الأحدث",
-          "updated": "آخر تحديث"
-        },
-        "sort_label": "فرز البودكاست",
-        "stats": {
-          "drafts": "المسودات",
-          "episodes": "الحلقات",
-          "published": "المنشورة",
-          "total": "كل البودكاست"
-        },
-        "status_filter": "التصفية حسب الحالة",
-        "subtitle": "انشر سلاسل صوتية وأدر حلقاتها.",
-        "unpublished_toast": "تم إلغاء نشر البودكاست",
-        "episodes_count_zero": "{{count}} حلقات",
-        "episodes_count_few": "{{count}} حلقات",
-        "episodes_count_many": "{{count}} حلقة",
-        "episodes_count_two": "حلقتين"
-      }
-    },
-    "distribution": {
-      "copied": "تم النسخ إلى الحافظة",
-      "rss_title": "موجز RSS",
-      "rss_description": "يُنشأ موجز RSS لبودكاستك تلقائيًا. استخدم هذا الرابط لإرسال بودكاستك إلى الأدلة.",
-      "copy": "نسخ",
-      "preview": "معاينة",
-      "unpublished_warning": "بودكاستك غير منشور حاليًا. انشره أولًا قبل الإرسال إلى الأدلة.",
-      "directories_title": "الإرسال إلى أدلة البودكاست",
-      "directories_description": "اتبع هذه الخطوات لإدراج بودكاستك في المنصات الكبرى. تتطلب كل منصة إرسال رابط موجز RSS الخاص بك.",
-      "apple": {
-        "subtitle": "يُوزَّع أيضًا على Apple Music",
-        "step1": "انتقل إلى <link>podcastsconnect.apple.com</link> وسجّل الدخول بمعرّف Apple ID",
-        "step2": "انقر على الزر <strong>+</strong> واختر \"New Show\"",
-        "step3": "اختر \"Add a show with an RSS feed\" والصق رابط موجز RSS",
-        "step4": "ستتحقق Apple من موجزك؛ تستغرق المراجعة عادةً من 1 إلى 5 أيام عمل"
-      },
-      "spotify": {
-        "subtitle": "أكبر منصة للاستماع إلى البودكاست",
-        "step1": "انتقل إلى <link>podcasters.spotify.com</link> وسجّل الدخول أو أنشئ حسابًا",
-        "step2": "انقر على \"Get started\" ثم اختر \"I have a podcast with a hosting provider\"",
-        "step3": "الصق رابط موجز RSS وانقر على \"Next\"",
-        "step4": "تحقق من الملكية، واملأ التفاصيل، ثم أرسل (يصبح متاحًا عادةً خلال ساعات)"
-      },
-      "youtube_music": {
-        "subtitle": "انتقل Google Podcasts إلى YouTube Music",
-        "step1": "انتقل إلى <link>podcasts.google.com/publish</link>",
-        "step2": "سجّل الدخول بحساب Google وانقر على \"Add a podcast\"",
-        "step3": "الصق رابط موجز RSS وتحقق من الملكية عبر البريد الإلكتروني",
-        "step4": "سيظهر بودكاستك على YouTube Music وفي نتائج بحث Google"
-      },
-      "amazon": {
-        "subtitle": "متاح أيضًا على أجهزة Alexa",
-        "step1": "انتقل إلى <link>podcasters.amazon.com</link> وسجّل الدخول بحساب Amazon",
-        "step2": "انقر على \"Add your podcast\" والصق رابط موجز RSS",
-        "step3": "راجع تفاصيل بودكاستك وأرسله للمراجعة"
-      },
-      "tips_title": "نصائح لتوزيع ناجح",
-      "tip_thumbnail": "تأكد من أن بودكاستك يحتوي على <strong>صورة مصغّرة</strong> (1400x1400 كحد أدنى لـ Apple Podcasts)",
-      "tip_episode": "احرص على وجود <strong>حلقة منشورة واحدة</strong> على الأقل قبل الإرسال",
-      "tip_description": "اكتب <strong>وصفًا</strong> واضحًا للبودكاست؛ فهذا يساعد على سهولة الاكتشاف",
-      "tip_auto": "ستظهر الحلقات الجديدة تلقائيًا على جميع المنصات بمجرد إرسال موجزك",
-      "tip_propagate": "قد يستغرق انتشار التحديثات عبر المنصات بضع ساعات",
-      "check_cover": "للبودكاست صورة غلاف",
-      "check_description": "للبودكاست وصف",
-      "check_episode": "حلقة منشورة واحدة على الأقل",
-      "check_published": "البودكاست منشور",
-      "checklist_description": "ما تتحقق منه الأدلة قبل قبول الخلاصة.",
-      "checklist_title": "هل أنت جاهز للإرسال؟",
-      "tips_description": "أشياء صغيرة تساعد على قبول برنامجك والعثور عليه."
-    },
-    "player": {
-      "minimize": "تصغير"
-    },
-    "actions": "إجراءات البودكاست",
-    "load_failed": "تعذّر تحميل البودكاست",
-    "failed_to_load": "تعذّر تحميل البودكاست",
-    "listen": {
-      "about": "نبذة",
-      "all_podcasts": "كل البودكاست",
-      "by": "بواسطة {{names}}",
-      "close_player": "إغلاق المشغّل",
-      "continue_listening": "تابع الاستماع",
-      "episode_count_one": "{{count}} حلقة",
-      "episode_count_other": "{{count}} حلقة",
-      "eyebrow": "بودكاست",
-      "feed_hint": "تابعه في أي تطبيق بودكاست عبر خلاصة RSS هذه",
-      "latest": "الأحدث",
-      "latest_on": "آخر إصدار {{date}}",
-      "length_hr_min": "{{h}} س {{m}} د",
-      "length_min_one": "{{count}} د",
-      "length_min_other": "{{count}} د",
-      "length_sec_one": "{{count}} ث",
-      "length_sec_other": "{{count}} ث",
-      "link_copied": "تم نسخ الرابط",
-      "mute": "كتم الصوت",
-      "new": "جديد",
-      "no_episodes_description": "ستظهر الحلقات الجديدة هنا فور نشرها.",
-      "now_playing": "قيد التشغيل الآن",
-      "open_player": "فتح المشغّل",
-      "pause": "إيقاف مؤقت",
-      "pause_episode": "إيقاف {{title}} مؤقتًا",
-      "play": "تشغيل",
-      "play_episode": "تشغيل {{title}}",
-      "play_error": "تعذّر تشغيل هذه الحلقة. حاول لاحقًا.",
-      "play_latest": "تشغيل الأحدث",
-      "play_latest_of": "تشغيل أحدث حلقة من {{name}}",
-      "played": "تم تشغيلها",
-      "player": "مشغّل البودكاست",
-      "resume": "استئناف",
-      "seek": "تقديم/ترجيع",
-      "share": "مشاركة",
-      "sort_label": "ترتيب الحلقات",
-      "sort_newest": "الأحدث",
-      "sort_order": "بالترتيب",
-      "speed": "سرعة التشغيل",
-      "time_left": "متبقي {{time}}",
-      "total_length": "المدة الإجمالية",
-      "unmute": "إلغاء الكتم",
-      "up_next": "التالي",
-      "updated": "آخر تحديث",
-      "volume": "مستوى الصوت",
-      "episode_count_zero": "{{count}} حلقات",
-      "episode_count_few": "{{count}} حلقات",
-      "episode_count_many": "{{count}} حلقة",
-      "episode_count_two": "حلقتين",
-      "length_min_zero": "{{count}} د",
-      "length_min_two": "{{count}} د",
-      "length_min_few": "{{count}} د",
-      "length_min_many": "{{count}} د",
-      "length_sec_zero": "{{count}} ث",
-      "length_sec_two": "{{count}} ث",
-      "length_sec_few": "{{count}} ث",
-      "length_sec_many": "{{count}} ث"
-    }
-  },
   "library": {
     "library": "المكتبة",
     "my_library": "مكتبتي",
     "new_folder": "مجلد جديد",
     "tabs": {
       "courses": "الدورات",
-      "podcasts": "البودكاست",
       "communities": "المجتمعات",
       "boards": "اللوحات",
       "playgrounds": "Plays",
@@ -3969,7 +3635,6 @@
       "no_resource": "لم يتم إعداد أي مورد",
       "open": "فتح",
       "kind_course": "دورة",
-      "kind_podcast": "بودكاست",
       "kind_community": "مجتمع",
       "kind_board": "لوحة",
       "kind_playground": "Play"
@@ -4305,7 +3970,6 @@
       "communities": "مجتمعات",
       "discussions": "مناقشات",
       "playgrounds": "Plays",
-      "podcasts": "بودكاست",
       "activities": "الدروس",
       "folders": "المجلدات"
     },
@@ -4334,7 +3998,6 @@
         "communities": "المجتمعات",
         "discussions": "النقاشات",
         "playgrounds": "Plays",
-        "podcasts": "البودكاست",
         "users": "الأعضاء"
       },
       "keys": {
@@ -4355,10 +4018,6 @@
         "library": {
           "description": "مجلدات المحتوى المجمّع",
           "keywords": "المكتبة, المجلدات, المجموعات, الحزم, المسارات, library"
-        },
-        "podcasts": {
-          "description": "استمع إلى الحلقات",
-          "keywords": "البودكاست, الصوت, الحلقات, البرامج, استماع, podcasts"
         },
         "communities": {
           "description": "نقاشات مع بقية الأعضاء",
@@ -4462,7 +4121,6 @@
         "folder": "مجلد",
         "page": "صفحة",
         "playground": "Play",
-        "podcast": "بودكاست",
         "user": "عضو"
       },
       "updated": "آخر تحديث",
@@ -5298,7 +4956,6 @@
       "settings": "الإعدادات",
       "courses": "الدورات",
       "communities": "المجتمعات",
-      "podcasts": "البودكاست",
       "boards": "اللوحات",
       "published": "منشور",
       "draft": "مسودة",
@@ -7581,10 +7238,6 @@
             "title": "المدفوعات",
             "description": "تفعيل معالجة المدفوعات للدورات والاشتراكات"
           },
-          "podcasts": {
-            "title": "البودكاست",
-            "description": "تمكين إنشاء البودكاست والمحتوى الصوتي لمؤسستك"
-          },
           "boards": {
             "title": "اللوحات",
             "description": "أنشئ لوحات تعاونية بقوائم وبطاقات لإدارة المشاريع"
@@ -8443,7 +8096,6 @@
             "assignments": "الواجبات",
             "folders": "المجلدات",
             "paths": "مسارات التعلّم",
-            "podcasts": "البودكاست",
             "boards": "اللوحات",
             "playgrounds": "Plays",
             "versioning": "سجل الإصدارات",
@@ -9908,7 +9560,6 @@
             "usergroups": "المجموعات",
             "communities": "المجتمعات",
             "boards": "اللوحات",
-            "podcasts": "البودكاست",
             "roles": "الأدوار",
             "organizations": "المؤسسة"
           },
@@ -11235,8 +10886,7 @@
         "users": "المستخدمون",
         "communities": "المجتمعات",
         "discussions": "المناقشات",
-        "playgrounds": "Plays",
-        "podcasts": "البودكاست"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -11254,10 +10904,6 @@
         "communities": {
           "description": "إدارة المجتمعات",
           "keywords": "منتديات, مناقشات, أعضاء, منشورات"
-        },
-        "podcasts": {
-          "description": "إدارة البودكاست",
-          "keywords": "صوت, حلقات, برامج"
         },
         "boards": {
           "description": "إدارة اللوحات",
@@ -13819,10 +13465,7 @@
         "topic_required": "أضف موضوعًا أو نصًا لإنشاء نص برمجي منه.",
         "script_ready": "النص جاهز. راجعه ثم أنشئ الصوت",
         "script_failed": "تعذّر إنشاء النص. يرجى المحاولة مرة أخرى.",
-        "loading_playlist": "جارٍ تحميل قائمة التشغيل...",
         "tab_generate": "إنشاء",
-        "tab_episode": "حلقة",
-        "tab_playlist": "قائمة التشغيل",
         "uploading_progress": "جارٍ الرفع... {{progress}}%",
         "drop_or_browse": "أسقط ملفًا صوتيًا أو انقر للاستعراض",
         "supported_formats": "يدعم MP3 وWAV وOGG وM4A",
@@ -13845,10 +13488,7 @@
         "generating": "جارٍ الإنشاء…",
         "generate_audio": "إنشاء الصوت",
         "credits_with_script": "النص: {{scriptCost}} رصيد · الصوت: {{audioCost}} رصيد · بدعم من Gemini",
-        "credits_audio_only": "يستهلك {{cost}} رصيد ذكاء اصطناعي · بدعم من Gemini",
-        "no_podcasts": "لم يتم العثور على بودكاست",
-        "back_to_podcasts": "العودة إلى البودكاست",
-        "no_episodes": "لم يتم العثور على حلقات"
+        "credits_audio_only": "يستهلك {{cost}} رصيد ذكاء اصطناعي · بدعم من Gemini"
       },
       "callout_block": {
         "change_type": "تغيير نوع التنبيه",
@@ -13857,7 +13497,8 @@
         "type_tip": "نصيحة",
         "type_success": "نجاح",
         "type_error": "خطأ"
-      }
+      },
+      "audio_removed": "مصدر الصوت هذا لم يعد متاحًا."
     },
     "dynamic": {
       "add_condition": "إضافة شرط",
@@ -16856,8 +16497,6 @@
           "payments_desc": "بِع الدورات وقدم اشتراكات لتحقيق الإيرادات.",
           "communities": "مناقشات المجتمع",
           "communities_desc": "دع المتعلمين يتواصلون ويطرحون الأسئلة ويتشاركون الأفكار.",
-          "podcasts": "إنشاء البودكاست",
-          "podcasts_desc": "قدم محتوى صوتي وصل للمتعلمين أينما كانوا.",
           "playgrounds": "Plays تفاعلية",
           "playgrounds_desc": "دع المتعلمين يتدرّبون بأنشطة تفاعلية خطوة بخطوة ويكسبون الشارات.",
           "ai": "1,000 رصيد ذكاء اصطناعي",
@@ -26041,7 +25680,6 @@
       "types": {
         "course": "دورة",
         "path": "مسار",
-        "podcast": "بودكاست",
         "community": "مجتمع",
         "folder": "مجلد"
       },
@@ -26051,7 +25689,6 @@
         "courses": "الدورات",
         "activities": "دروس مجانية",
         "paths": "مسارات التعلم",
-        "podcasts": "البودكاست",
         "communities": "المجتمعات",
         "library": "المكتبة",
         "live": "الجلسات المباشرة",
@@ -28467,7 +28104,6 @@
       "course": "دورة مميزة",
       "paths": "مسارات التعلّم",
       "communities": "المجتمعات",
-      "podcasts": "البودكاست",
       "live_sessions": "الجلسات المباشرة",
       "instructors": "الأشخاص",
       "testimonials": "آراء المتعلمين",
@@ -28514,7 +28150,6 @@
       "course": "دورة مميزة",
       "paths": "المسارات",
       "communities": "المجتمعات",
-      "podcasts": "البودكاست",
       "live_sessions": "الجلسات المباشرة",
       "pricing": "الأسعار",
       "form": "نموذج تواصل",
@@ -28540,7 +28175,6 @@
       "featured_course": "دورة مميزة",
       "paths": "مسارات التعلّم",
       "communities": "المجتمعات",
-      "podcasts": "البودكاست",
       "live_sessions": "الجلسات المباشرة",
       "instructors": "المدربون",
       "testimonials": "آراء المتعلمين",
@@ -30797,7 +30431,6 @@
         "course": "دورة",
         "path": "مسار",
         "community": "مجتمع",
-        "podcast": "بودكاست",
         "live_session": "جلسة مباشرة",
         "board": "لوحة",
         "folder": "مجلد المكتبة",

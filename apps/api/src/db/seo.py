@@ -9,8 +9,8 @@ from sqlmodel import Field, SQLModel
 
 # Resource kinds that have public URLs with slugs. The key is the URL segment
 # used by the public pages (/course/{slug}, /path/{slug}, ...).
-SLUG_RESOURCE_TYPES = ("course", "path", "podcast", "community", "folder")
-SlugResourceType = Literal["course", "path", "podcast", "community", "folder"]
+SLUG_RESOURCE_TYPES = ("course", "path", "folder")
+SlugResourceType = Literal["course", "path", "folder"]
 
 
 class ResourceSlugRedirect(SQLModel, table=True):

@@ -12,10 +12,10 @@ const en = load('en.json')
 const get = (obj, path) => path.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), obj)
 const placeholders = (s) => [...String(s).matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map((m) => m[1]).sort()
 
-const STEPS = ['create_course', 'add_content', 'brand_school', 'share_grow', 'invite_learners', 'build_community', 'publish_course', 'create_group', 'setup_payments']
+const STEPS = ['create_course', 'add_content', 'brand_school', 'share_grow', 'invite_learners', 'publish_course', 'create_group', 'setup_payments']
 // Steps that predate the per-goal `why` copy (newer steps fall back to their description).
-const WHY_STEPS = ['create_course', 'add_content', 'brand_school', 'share_grow', 'invite_learners', 'build_community']
-const INTENTS = ['customers', 'team', 'sell', 'school', 'community']
+const WHY_STEPS = ['create_course', 'add_content', 'brand_school', 'share_grow', 'invite_learners']
+const INTENTS = ['customers', 'team', 'sell', 'school']
 const WHY_INTENTS = ['customers', 'team', 'sell', 'school']
 const NEXT = ['certificates', 'analytics', 'next_course']
 

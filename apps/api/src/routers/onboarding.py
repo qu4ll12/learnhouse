@@ -67,7 +67,7 @@ def enforce_limit(kind: str, user_id: int) -> None:
         )
 
 
-Goal = Literal["sell", "team", "school", "customers", "community"]
+Goal = Literal["sell", "team", "school", "customers"]
 
 
 class CreateOrgBody(BaseModel):

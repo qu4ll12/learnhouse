@@ -93,10 +93,6 @@
           "title": "Standaard Functie",
           "description": "Community's is een premium functie die alleen beschikbaar is voor organisaties met ons Standaard abonnement of hoger. Upgrade om discussiecommunity's voor je leden te ontgrendelen."
         },
-        "podcasts": {
-          "title": "Standard-functie",
-          "description": "Podcasts is een premiumfunctie alleen beschikbaar voor organisaties met een Standard-plan of hoger. Upgrade om podcasts te maken en delen."
-        },
         "audit_logs": {
           "title": "Enterprise Functie",
           "description": "Auditlogboeken zijn een premiumfunctie die alleen beschikbaar is voor organisaties met ons Enterprise-abonnement. Upgrade om volledige zichtbaarheid van de activiteiten van uw organisatie te krijgen."
@@ -247,12 +243,6 @@
           "b2": "Herinneringen gaan automatisch de deur uit",
           "b3": "Opnames blijven bij de cursus"
         },
-        "podcasts": {
-          "title": "Bereik cursisten onderweg",
-          "b1": "Publiceer audioafleveringen naast je cursussen",
-          "b2": "Een speler die onthoudt waar elke luisteraar was gebleven",
-          "b3": "Maak met AI afleveringen van lessen"
-        },
         "usergroups": {
           "title": "Deel cursisten in groepen in",
           "b1": "Geef een groep toegang tot de cursussen die ervoor bedoeld zijn",
@@ -393,7 +383,6 @@
           "library": "Bibliotheek",
           "folders": "Bibliotheek",
           "communities": "Gemeenschappen",
-          "podcasts": "Podcasts",
           "payments": "Betalingen",
           "trail": "Voortgang bijhouden",
           "boards": "Borden",
@@ -3041,311 +3030,12 @@
       "hand_place": "Je hand is omhoog · #{{place}} in de rij"
     }
   },
-  "podcasts": {
-    "podcasts": "Podcasts",
-    "browse_description": "Luister naar podcasts van deze organisatie",
-    "new_podcast": "Nieuwe Podcast",
-    "search_placeholder": "Podcasts zoeken...",
-    "no_podcasts": "Nog geen podcasts",
-    "no_podcasts_description": "Er zijn momenteel geen podcasts beschikbaar",
-    "create_podcasts_placeholder": "Maak podcasts om audio-inhoud te delen",
-    "no_search_results": "Geen podcasts gevonden",
-    "try_different_search": "Probeer een andere zoekterm",
-    "search_results_one": "{{count}} podcast gevonden voor \"{{query}}\"",
-    "search_results_other": "{{count}} podcasts gevonden voor \"{{query}}\"",
-    "podcast_name": "Podcastnaam",
-    "podcast_name_required": "Podcastnaam is verplicht",
-    "podcast_thumbnail": "Podcastminiatuur",
-    "podcast_tags": "Tags",
-    "podcast_visibility": "Zichtbaarheid",
-    "create_podcast": "Podcast aanmaken",
-    "create_new_podcast": "Maak een nieuwe podcast voor uw organisatie",
-    "create_podcast_btn": "Podcast aanmaken",
-    "creating_podcast": "Podcast aanmaken...",
-    "podcast_created_success": "Podcast succesvol aangemaakt",
-    "failed_to_create_podcast": "Podcast aanmaken mislukt",
-    "episodes": "Afleveringen",
-    "no_episodes": "Nog geen afleveringen",
-    "hosted_by": "Gepresenteerd door",
-    "tags": "Tags",
-    "manage_podcast": "Podcast beheren",
-    "published": "Gepubliceerd",
-    "unpublished": "Niet gepubliceerd",
-    "public": "Openbaar",
-    "private": "Privé",
-    "listen_now": "Nu luisteren",
-    "delete_podcast": "Podcast verwijderen",
-    "delete_podcast_title": "Podcast verwijderen?",
-    "delete_podcast_confirm": "Weet je zeker dat je deze podcast wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt en alle afleveringen worden verwijderd.",
-    "deleting_podcast": "Podcast verwijderen...",
-    "podcast_deleted_success": "Podcast succesvol verwijderd",
-    "podcast_deleted_error": "Kan podcast niet verwijderen",
-    "edit_content": "Inhoud bewerken",
-    "form": {
-      "name_required": "Podcastnaam is verplicht",
-      "name_min_length": "Naam moet minstens 3 tekens zijn",
-      "name_max_length": "Naam mag maximaal 100 tekens zijn",
-      "description_max_length": "Beschrijving mag maximaal 500 tekens zijn"
-    },
-    "modals": {
-      "create": {
-        "title": "Nieuwe podcast aanmaken",
-        "description": "Vul de details in om een nieuwe podcast te maken",
-        "form": {
-          "name_label": "Podcastnaam",
-          "name_placeholder": "Voer de podcastnaam in",
-          "description_label": "Beschrijving",
-          "description_placeholder": "Voer de beschrijving van de podcast in",
-          "public_label": "Maak deze podcast openbaar"
-        },
-        "cancel": "Annuleren",
-        "submit": "Podcast aanmaken",
-        "generated_image_failed": "Laden van de gegenereerde afbeelding is mislukt",
-        "draft_hint": "Nieuwe podcasts beginnen als concept. Publiceer zodra je eerste aflevering klaar is."
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "Algemeen",
-        "episodes": "Afleveringen",
-        "distribution": "Distributie"
-      },
-      "view_podcast": "Podcast bekijken",
-      "saving": "Opslaan...",
-      "saved": "Wijzigingen opgeslagen",
-      "save_error": "Wijzigingen opslaan mislukt",
-      "save_changes": "Wijzigingen opslaan",
-      "form": {
-        "thumbnail": "Miniatuur",
-        "upload_thumbnail": "Miniatuur uploaden",
-        "thumbnail_hint": "Aanbevolen formaat: 1400x1400px. JPG of PNG.",
-        "about": "Over",
-        "about_placeholder": "Vertel luisteraars meer over deze podcast...",
-        "about_max_length": "Over mag maximaal 2000 tekens zijn",
-        "tags_placeholder": "muziek, educatie, tech",
-        "tags_hint": "Scheid tags met komma's",
-        "visibility": "Zichtbaarheidsinstellingen",
-        "public_hint": "Iedereen kan deze podcast vinden en beluisteren",
-        "published_hint": "Maak deze podcast zichtbaar op uw organisatiepagina",
-        "private_hint": "Alleen ingelogde leden van je organisatie kunnen luisteren"
-      },
-      "episodes": {
-        "new_episode": "Nieuwe aflevering",
-        "new_episode_description": "Voeg een nieuwe aflevering toe aan deze podcast",
-        "no_episodes_description": "Begin met het toevoegen van uw eerste aflevering",
-        "create_first": "Eerste aflevering aanmaken",
-        "creating": "Aflevering aanmaken...",
-        "created": "Aflevering aangemaakt",
-        "create_error": "Aflevering aanmaken mislukt",
-        "create": "Aflevering aanmaken",
-        "deleting": "Aflevering verwijderen...",
-        "deleted": "Aflevering verwijderd",
-        "delete_error": "Aflevering verwijderen mislukt",
-        "delete": "Verwijderen",
-        "delete_title": "Aflevering verwijderen?",
-        "delete_confirm": "Weet u zeker dat u deze aflevering wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
-        "updating": "Aflevering bijwerken...",
-        "updated": "Aflevering bijgewerkt",
-        "update_error": "Aflevering bijwerken mislukt",
-        "edit": "Bewerken",
-        "edit_episode": "Aflevering bewerken",
-        "edit_episode_description": "Afleveringsdetails bijwerken",
-        "save": "Wijzigingen opslaan",
-        "publish": "Publiceren",
-        "unpublish": "Depubliceren",
-        "no_audio": "Geen audiobestand",
-        "title_label": "Titel",
-        "title_placeholder": "Voer de titel van de aflevering in",
-        "description_label": "Beschrijving",
-        "description_placeholder": "Voer de beschrijving van de aflevering in",
-        "audio_label": "Audiobestand",
-        "upload_audio": "Audiobestand uploaden",
-        "replace_audio": "Audiobestand vervangen",
-        "audio_hint": "MP3-, WAV- of M4A-bestanden ondersteund",
-        "actions": "Afleveringsacties",
-        "cover_drop_hint": "Vierkante afbeelding, JPG of PNG. De podcastomslag wordt gebruikt als dit leeg is.",
-        "cover_hint": "Optioneel",
-        "cover_label": "Afleveringsomslag",
-        "drag_to_reorder": "Slepen om te herschikken",
-        "drop_hint": "Sleep een bestand hierheen of klik om te bladeren",
-        "move_down": "Omlaag",
-        "move_up": "Omhoog",
-        "pause": "Pauzeren",
-        "play": "Afspelen",
-        "publish_hint": "Gepubliceerde afleveringen verschijnen voor luisteraars en in de RSS-feed.",
-        "publish_now": "Direct publiceren",
-        "remove_file": "Bestand verwijderen",
-        "reorder_error": "De nieuwe volgorde kon niet worden opgeslagen",
-        "reorder_hint": "Sleep de greep om de volgorde te wijzigen, of gebruik Omhoog / Omlaag in het menu.",
-        "replace_cover": "Omslag vervangen",
-        "section_description": "Voeg audio-afleveringen toe. Luisteraars horen ze in deze volgorde.",
-        "summary_one": "{{count}} aflevering · {{published}} gepubliceerd · {{duration}} in totaal",
-        "summary_other": "{{count}} afleveringen · {{published}} gepubliceerd · {{duration}} in totaal",
-        "upload_cover": "Een omslag uploaden",
-        "wrong_file_type": "Dat bestandstype wordt hier niet ondersteund"
-      },
-      "back_to_podcasts": "Terug naar podcasts",
-      "general": {
-        "cover_drop": "Sleep een afbeelding hierheen of klik om te bladeren",
-        "details_description": "De naam, samenvatting en tags die luisteraars zien.",
-        "details_title": "Details",
-        "discard_cover": "Nieuwe omslag verwerpen",
-        "replace_cover": "Omslag vervangen",
-        "visibility_description": "Deze schakelaars worden opgeslagen zodra je ze omzet."
-      },
-      "list": {
-        "clear_filters": "Filters wissen",
-        "columns": {
-          "authors": "Auteurs",
-          "podcast": "Podcast",
-          "updated": "Bijgewerkt",
-          "visibility": "Zichtbaarheid"
-        },
-        "copy_failed": "Link kopiëren mislukt",
-        "copy_link": "Link kopiëren",
-        "draft": "Concept",
-        "edit_episodes": "Afleveringen bewerken",
-        "episodes_count_one": "{{count}} aflevering",
-        "episodes_count_other": "{{count}} afleveringen",
-        "episodes_short": "Afleveringen",
-        "filters": {
-          "all": "Alle",
-          "drafts": "Concepten",
-          "published": "Gepubliceerd"
-        },
-        "make_private": "Privé maken",
-        "make_public": "Openbaar maken",
-        "no_description": "Nog geen beschrijving",
-        "published_toast": "Podcast gepubliceerd",
-        "showing_count": "{{shown}} van {{total}} weergegeven",
-        "sort": {
-          "episodes": "Meeste afleveringen",
-          "name": "Naam",
-          "newest": "Nieuwste",
-          "updated": "Laatst bijgewerkt"
-        },
-        "sort_label": "Podcasts sorteren",
-        "stats": {
-          "drafts": "Concepten",
-          "episodes": "Afleveringen",
-          "published": "Gepubliceerd",
-          "total": "Alle podcasts"
-        },
-        "status_filter": "Filteren op status",
-        "subtitle": "Publiceer audioseries en beheer hun afleveringen.",
-        "unpublished_toast": "Podcast gedepubliceerd"
-      }
-    },
-    "distribution": {
-      "copied": "Naar klembord gekopieerd",
-      "rss_title": "RSS-feed",
-      "rss_description": "De RSS-feed van je podcast wordt automatisch gegenereerd. Gebruik deze URL om je podcast bij podcastgidsen aan te melden.",
-      "copy": "Kopiëren",
-      "preview": "Voorbeeld",
-      "unpublished_warning": "Je podcast is momenteel niet gepubliceerd. Publiceer hem eerst voordat je hem bij podcastgidsen aanmeldt.",
-      "directories_title": "Aanmelden bij podcastgidsen",
-      "directories_description": "Volg deze stappen om je podcast op grote platforms te laten vermelden. Voor elk platform moet je de URL van je RSS-feed indienen.",
-      "apple": {
-        "subtitle": "Wordt ook verspreid via Apple Music",
-        "step1": "Ga naar <link>podcastsconnect.apple.com</link> en log in met je Apple ID",
-        "step2": "Klik op de knop <strong>+</strong> en selecteer \"Nieuwe show\"",
-        "step3": "Selecteer \"Een show toevoegen met een RSS-feed\" en plak de URL van je RSS-feed",
-        "step4": "Apple valideert je feed; de beoordeling duurt meestal 1-5 werkdagen"
-      },
-      "spotify": {
-        "subtitle": "Grootste podcastplatform",
-        "step1": "Ga naar <link>podcasters.spotify.com</link> en log in of maak een account aan",
-        "step2": "Klik op \"Aan de slag\" en selecteer \"Ik heb een podcast bij een hostingprovider\"",
-        "step3": "Plak de URL van je RSS-feed en klik op \"Volgende\"",
-        "step4": "Verifieer het eigenaarschap, vul de gegevens in en dien in (meestal binnen enkele uren live)"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts is gemigreerd naar YouTube Music",
-        "step1": "Ga naar <link>podcasts.google.com/publish</link>",
-        "step2": "Log in met je Google-account en klik op \"Een podcast toevoegen\"",
-        "step3": "Plak de URL van je RSS-feed en verifieer het eigenaarschap via e-mail",
-        "step4": "Je podcast verschijnt op YouTube Music en in de zoekresultaten van Google"
-      },
-      "amazon": {
-        "subtitle": "Ook beschikbaar op Alexa-apparaten",
-        "step1": "Ga naar <link>podcasters.amazon.com</link> en log in met je Amazon-account",
-        "step2": "Klik op \"Je podcast toevoegen\" en plak de URL van je RSS-feed",
-        "step3": "Controleer de gegevens van je podcast en dien in ter beoordeling"
-      },
-      "tips_title": "Tips voor een succesvolle distributie",
-      "tip_thumbnail": "Zorg dat je podcast een <strong>miniatuurafbeelding</strong> heeft (minimaal 1400x1400 voor Apple Podcasts)",
-      "tip_episode": "Zorg voor minimaal <strong>één gepubliceerde aflevering</strong> voordat je indient",
-      "tip_description": "Vul een beschrijvende <strong>podcastbeschrijving</strong> in; dat helpt bij de vindbaarheid",
-      "tip_auto": "Nieuwe afleveringen verschijnen automatisch op alle platforms zodra je feed is ingediend",
-      "tip_propagate": "Het kan een paar uur duren voordat updates op alle platforms zichtbaar zijn",
-      "check_cover": "Podcast heeft een omslagafbeelding",
-      "check_description": "Podcast heeft een beschrijving",
-      "check_episode": "Minstens één gepubliceerde aflevering",
-      "check_published": "Podcast is gepubliceerd",
-      "checklist_description": "Wat de directory's controleren voordat ze een feed accepteren.",
-      "checklist_title": "Klaar om in te dienen?",
-      "tips_description": "Kleine dingen waarmee je show sneller wordt geaccepteerd en gevonden."
-    },
-    "player": {
-      "minimize": "Minimaliseren"
-    },
-    "actions": "Podcastacties",
-    "load_failed": "Laden van podcast mislukt",
-    "failed_to_load": "Laden van podcast mislukt",
-    "listen": {
-      "about": "Over",
-      "all_podcasts": "Alle podcasts",
-      "by": "Door {{names}}",
-      "close_player": "Speler sluiten",
-      "continue_listening": "Verder luisteren",
-      "episode_count_one": "{{count}} aflevering",
-      "episode_count_other": "{{count}} afleveringen",
-      "eyebrow": "Podcast",
-      "feed_hint": "Volg in elke podcast-app met deze RSS-feed",
-      "latest": "Nieuwste",
-      "latest_on": "Nieuwste {{date}}",
-      "length_hr_min": "{{h}} u {{m}} min",
-      "length_min_one": "{{count}} min",
-      "length_min_other": "{{count}} min",
-      "length_sec_one": "{{count}} sec",
-      "length_sec_other": "{{count}} sec",
-      "link_copied": "Link gekopieerd",
-      "mute": "Dempen",
-      "new": "Nieuw",
-      "no_episodes_description": "Nieuwe afleveringen verschijnen hier zodra ze zijn gepubliceerd.",
-      "now_playing": "Nu aan het afspelen",
-      "open_player": "De speler openen",
-      "pause": "Pauzeren",
-      "pause_episode": "{{title}} pauzeren",
-      "play": "Afspelen",
-      "play_episode": "{{title}} afspelen",
-      "play_error": "Deze aflevering kon niet worden afgespeeld. Probeer het later opnieuw.",
-      "play_latest": "Nieuwste afspelen",
-      "play_latest_of": "De nieuwste aflevering van {{name}} afspelen",
-      "played": "Afgespeeld",
-      "player": "Podcastspeler",
-      "resume": "Hervatten",
-      "seek": "Zoeken in aflevering",
-      "share": "Delen",
-      "sort_label": "Volgorde van afleveringen",
-      "sort_newest": "Nieuwste",
-      "sort_order": "Op volgorde",
-      "speed": "Afspeelsnelheid",
-      "time_left": "Nog {{time}}",
-      "total_length": "Totale duur",
-      "unmute": "Dempen opheffen",
-      "up_next": "Hierna",
-      "updated": "Bijgewerkt",
-      "volume": "Volume"
-    }
-  },
   "library": {
     "library": "Bibliotheek",
     "my_library": "Mijn bibliotheek",
     "new_folder": "Nieuwe map",
     "tabs": {
       "courses": "Cursussen",
-      "podcasts": "Podcasts",
       "communities": "Communities",
       "boards": "Borden",
       "playgrounds": "Plays",
@@ -3693,7 +3383,6 @@
       "no_resource": "Geen bron geconfigureerd",
       "open": "Openen",
       "kind_course": "Cursus",
-      "kind_podcast": "Podcast",
       "kind_community": "Community",
       "kind_board": "Bord",
       "kind_playground": "Play"
@@ -4017,7 +3706,6 @@
       "communities": "Communities",
       "discussions": "Discussies",
       "playgrounds": "Plays",
-      "podcasts": "Podcasts",
       "activities": "Lessen",
       "folders": "Mappen"
     },
@@ -4042,7 +3730,6 @@
         "communities": "Communities",
         "discussions": "Discussies",
         "playgrounds": "Plays",
-        "podcasts": "Podcasts",
         "users": "Leden"
       },
       "keys": {
@@ -4063,10 +3750,6 @@
         "library": {
           "description": "Mappen met gegroepeerde content",
           "keywords": "bibliotheek, mappen, collecties, bundels, paden"
-        },
-        "podcasts": {
-          "description": "Luister naar afleveringen",
-          "keywords": "podcasts, audio, afleveringen, shows, luisteren"
         },
         "communities": {
           "description": "Discussies met andere leden",
@@ -4170,7 +3853,6 @@
         "folder": "Map",
         "page": "Pagina",
         "playground": "Play",
-        "podcast": "Podcast",
         "user": "Lid"
       },
       "updated": "Bijgewerkt",
@@ -4942,7 +4624,6 @@
       "settings": "Instellingen",
       "courses": "Cursussen",
       "communities": "Communities",
-      "podcasts": "Podcasts",
       "boards": "Borden",
       "published": "gepubliceerd",
       "draft": "concept",
@@ -7133,10 +6814,6 @@
             "title": "Betalingen",
             "description": "Schakel betalingsverwerking in voor cursussen en abonnementen"
           },
-          "podcasts": {
-            "title": "Podcasts",
-            "description": "Podcast-creatie en audio-inhoud inschakelen"
-          },
           "boards": {
             "title": "Borden",
             "description": "Maak samenwerkborden met lijsten en kaarten voor projectbeheer"
@@ -7955,7 +7632,6 @@
             "assignments": "Opdrachten",
             "folders": "Mappen",
             "paths": "Leerpaden",
-            "podcasts": "Podcasts",
             "boards": "Borden",
             "playgrounds": "Plays",
             "versioning": "Versiegeschiedenis",
@@ -9272,7 +8948,6 @@
             "usergroups": "Groepen",
             "communities": "Community’s",
             "boards": "Borden",
-            "podcasts": "Podcasts",
             "roles": "Rollen",
             "organizations": "Organisatie"
           },
@@ -10427,8 +10102,7 @@
         "users": "Gebruikers",
         "communities": "Communities",
         "discussions": "Discussies",
-        "playgrounds": "Plays",
-        "podcasts": "Podcasts"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10446,10 +10120,6 @@
         "communities": {
           "description": "Beheer communities",
           "keywords": "forums, discussies, leden, berichten"
-        },
-        "podcasts": {
-          "description": "Beheer podcasts",
-          "keywords": "audio, afleveringen, shows"
         },
         "boards": {
           "description": "Beheer borden",
@@ -12932,10 +12602,7 @@
         "topic_required": "Voeg een onderwerp of wat tekst toe om een script van te genereren.",
         "script_ready": "Script klaar. Controleer het en genereer daarna audio",
         "script_failed": "Genereren van script mislukt. Probeer het opnieuw.",
-        "loading_playlist": "Afspeellijst laden...",
         "tab_generate": "Genereren",
-        "tab_episode": "Aflevering",
-        "tab_playlist": "Afspeellijst",
         "uploading_progress": "Uploaden... {{progress}}%",
         "drop_or_browse": "Sleep een audiobestand hierheen of klik om te bladeren",
         "supported_formats": "Ondersteunt MP3, WAV, OGG, M4A",
@@ -12958,10 +12625,7 @@
         "generating": "Genereren…",
         "generate_audio": "Audio genereren",
         "credits_with_script": "Script {{scriptCost}} credit · Audio {{audioCost}} credits · Mogelijk gemaakt door Gemini",
-        "credits_audio_only": "Gebruikt {{cost}} AI-credits · Mogelijk gemaakt door Gemini",
-        "no_podcasts": "Geen podcasts gevonden",
-        "back_to_podcasts": "Terug naar podcasts",
-        "no_episodes": "Geen afleveringen gevonden"
+        "credits_audio_only": "Gebruikt {{cost}} AI-credits · Mogelijk gemaakt door Gemini"
       },
       "callout_block": {
         "change_type": "Type infovak wijzigen",
@@ -15813,8 +15477,6 @@
           "payments_desc": "Verkoop cursussen en bied abonnementen aan voor inkomsten.",
           "communities": "Communitydiscussies",
           "communities_desc": "Laat leerlingen verbinding maken, vragen stellen en ideeën delen.",
-          "podcasts": "Podcasts maken",
-          "podcasts_desc": "Lever audiocontent en bereik leerlingen onderweg.",
           "playgrounds": "Interactieve plays",
           "playgrounds_desc": "Laat cursisten oefenen met interactieve activiteiten stap voor stap en badges verdienen.",
           "ai": "1.000 AI-credits",
@@ -24059,7 +23721,6 @@
       "types": {
         "course": "Cursus",
         "path": "Pad",
-        "podcast": "Podcast",
         "community": "Community",
         "folder": "Map"
       },
@@ -24069,7 +23730,6 @@
         "courses": "Cursussen",
         "activities": "Gratis lessen",
         "paths": "Leerpaden",
-        "podcasts": "Podcasts",
         "communities": "Communities",
         "library": "Bibliotheek",
         "live": "Live sessies",
@@ -26243,7 +25903,6 @@
       "course": "Uitgelichte cursus",
       "paths": "Leerpaden",
       "communities": "Community’s",
-      "podcasts": "Podcasts",
       "live_sessions": "Livesessies",
       "instructors": "Mensen",
       "testimonials": "Getuigenissen",
@@ -26290,7 +25949,6 @@
       "course": "Uitgelichte cursus",
       "paths": "Leerpaden",
       "communities": "Community’s",
-      "podcasts": "Podcasts",
       "live_sessions": "Livesessies",
       "pricing": "Prijzen",
       "form": "Contactformulier",
@@ -26316,7 +25974,6 @@
       "featured_course": "Uitgelichte cursus",
       "paths": "Leerpaden",
       "communities": "Community’s",
-      "podcasts": "Podcasts",
       "live_sessions": "Livesessies",
       "instructors": "Docenten",
       "testimonials": "Getuigenissen",
@@ -28381,7 +28038,6 @@
         "course": "Cursus",
         "path": "Leerpad",
         "community": "Community",
-        "podcast": "Podcast",
         "live_session": "Livesessie",
         "board": "Bord",
         "folder": "Bibliotheekmap",

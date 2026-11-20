@@ -4,14 +4,11 @@ import {
   Article,
   Books,
   Broadcast,
-  ChatCircleText,
   ClipboardText,
   FilePdf,
   FileText,
   FolderSimple,
-  Garage,
   Globe,
-  Headphones,
   Lightning,
   MarkdownLogo,
   Package,
@@ -30,10 +27,7 @@ export const TYPE_ICON: Record<SiteResultType, React.ComponentType<any>> = {
   course: Books,
   activity: FileText,
   folder: FolderSimple,
-  community: Garage,
-  discussion: ChatCircleText,
   playground: Lightning,
-  podcast: Headphones,
   user: User,
 }
 
@@ -42,10 +36,7 @@ export const TYPE_PLURAL: Record<SiteResultType, string> = {
   course: 'courses',
   activity: 'activities',
   folder: 'folders',
-  community: 'communities',
-  discussion: 'discussions',
   playground: 'playgrounds',
-  podcast: 'podcasts',
   user: 'users',
 }
 
@@ -98,12 +89,12 @@ export function Highlight({ text, query, className = '' }: { text?: string | nul
 }
 
 const THUMB_SIZES = {
-  sm: { box: 'h-9 w-9 rounded-lg', icon: 17, emoji: 'text-base', avatar: 36 },
-  md: { box: 'h-11 w-11 rounded-xl', icon: 20, emoji: 'text-lg', avatar: 44 },
+  sm: { box: 'h-9 w-9 rounded-lg', icon: 17, avatar: 36 },
+  md: { box: 'h-11 w-11 rounded-xl', icon: 20, avatar: 44 },
 } as const
 
 /**
- * A result's picture: its thumbnail, a member's avatar, a post's emoji, or
+ * A result's picture: its thumbnail, a member's avatar, or
  * the type icon on a soft tile when there is none. A lesson shows its kind
  * (video, quiz page…) as a small badge over its course's cover.
  */
@@ -136,8 +127,6 @@ export function ResultThumb({ result, size = 'sm' }: { result: SiteResult; size?
       <span className={`flex h-full w-full items-center justify-center overflow-hidden ${s.box}`}>
         {result.imageUrl && !broken ? (
           <img src={result.imageUrl} alt="" className="h-full w-full object-cover" onError={() => setBroken(true)} />
-        ) : result.emoji ? (
-          <span className={`${s.emoji} leading-none`}>{result.emoji}</span>
         ) : (
           <Icon size={s.icon} weight="duotone" />
         )}

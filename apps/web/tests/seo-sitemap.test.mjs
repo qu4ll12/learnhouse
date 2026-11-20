@@ -4,16 +4,13 @@ import { buildSitemapIndex, buildUrlset, latestDate, sitemapDate, sitemapIndexEn
 import { ROBOTS_DISALLOW, buildRobotsTxt, sanitizeRobotsRules } from "../lib/seo/robots.ts";
 
 const data = {
-  org: { slug: "acme", org_uuid: "org_1", name: "Acme", indexing_disabled: false, noindex_communities: false },
+  org: { slug: "acme", org_uuid: "org_1", name: "Acme", indexing_disabled: false },
   courses: [
     { key: "intro-to-python", uuid: "course_1", name: "Intro & more", lastmod: "2026-11-05 01:33:02.174979", image: "t.png" },
     { key: "sql", uuid: "course_2", name: "SQL", lastmod: "2026-11-06 10:00:00", image: "" },
   ],
   activities: [{ course_key: "intro-to-python", key: "a1", lastmod: "2026-11-01 00:00:00" }],
   paths: [],
-  podcasts: [{ key: "show", uuid: "podcast_1", name: "Show", lastmod: "", image: "" }],
-  communities: [],
-  discussions: [{ community_key: "club", key: "d1", name: "Hi", lastmod: "2026-11-07 00:00:00" }],
   folders: [],
 };
 const ctx = { base: "https://learn.acme.com", imageUrl: (type, e) => (e.image ? `https://cdn/${type}/${e.image}` : "") };
@@ -39,26 +36,24 @@ describe("urlset", () => {
     expect(xml.match(/<url>/g)).toHaveLength(2);
   });
   test("no image namespace without images; no lastmod when unknown", () => {
-    const xml = buildUrlset(sitemapUrls("podcasts", data, ctx));
+    const xml = buildUrlset(sitemapUrls("paths", { ...data, paths: [{ key: "path", uuid: "path_1", name: "Path" }] }, ctx));
     expect(xml).not.toContain("xmlns:image");
     expect(xml).not.toContain("<lastmod>");
   });
-  test("activities and discussions nest under their parent slug", () => {
+  test("activities nest under their course slug", () => {
     expect(sitemapUrls("activities", data, ctx)[0].loc).toBe("https://learn.acme.com/course/intro-to-python/activity/a1");
-    expect(sitemapUrls("discussions", data, ctx)[0].loc).toBe("https://learn.acme.com/community/club/d1");
     expect(sitemapUrls("folders", { ...data, folders: [{ key: "f", uuid: "folder_1", name: "F", lastmod: "", image: "" }] }, ctx)[0].loc).toBe(
       "https://learn.acme.com/library/folder/f",
     );
     expect(sitemapUrls("paths", data, ctx)).toEqual([]);
-    expect(sitemapUrls("communities", data, ctx)).toEqual([]);
   });
   test("pages list only sections with content and that are shown", () => {
     const locs = sitemapUrls("pages", data, ctx).map((u) => u.loc);
-    expect(locs).toEqual(["https://learn.acme.com/", "https://learn.acme.com/courses", "https://learn.acme.com/podcasts"]);
-    const hidden = sitemapUrls("pages", data, { ...ctx, sections: { podcasts: false } }).map((u) => u.loc);
-    expect(hidden).not.toContain("https://learn.acme.com/podcasts");
-    const full = sitemapUrls("pages", { ...data, paths: data.podcasts, communities: data.podcasts, folders: data.podcasts }, ctx);
-    expect(full).toHaveLength(6);
+    expect(locs).toEqual(["https://learn.acme.com/", "https://learn.acme.com/courses"]);
+    const hidden = sitemapUrls("pages", data, { ...ctx, sections: { courses: false } }).map((u) => u.loc);
+    expect(hidden).not.toContain("https://learn.acme.com/courses");
+    const full = sitemapUrls("pages", { ...data, paths: data.courses, folders: data.courses }, ctx);
+    expect(full).toHaveLength(4);
   });
   test("priority is clamped", () => {
     expect(buildUrlset([{ loc: "https://a", priority: 3 }])).toContain("<priority>1.0</priority>");
@@ -68,7 +63,7 @@ describe("urlset", () => {
 describe("index", () => {
   test("lists non-empty child sitemaps with lastmod", () => {
     const entries = sitemapIndexEntries(data, "https://learn.acme.com");
-    expect(entries.map((e) => e.loc.split("type=")[1])).toEqual(["pages", "courses", "activities", "podcasts", "discussions"]);
+    expect(entries.map((e) => e.loc.split("type=")[1])).toEqual(["pages", "courses", "activities"]);
     const xml = buildSitemapIndex(entries);
     expect(xml).toContain("<sitemap><loc>https://learn.acme.com/sitemap.xml?type=courses</loc><lastmod>2026-11-06T10:00:00Z</lastmod></sitemap>");
     expect(buildSitemapIndex([{ loc: "https://a/s.xml" }])).toContain("<sitemap><loc>https://a/s.xml</loc></sitemap>");
@@ -96,23 +91,12 @@ describe("robots.txt", () => {
   });
 });
 
-describe("readable threads, builder pages and live sessions", () => {
+describe("builder pages and live sessions", () => {
   const more = {
     ...data,
-    discussions: [
-      { community_key: "club", key: "12-how-do-payouts-work", name: "Q", lastmod: "2026-11-07 00:00:00", replies: 3 },
-      { community_key: "club", key: "13-new", name: "N", lastmod: "2026-11-08 00:00:00", replies: 0 },
-    ],
     pages: [{ key: "about us", name: "About", lastmod: "2026-11-01T00:00:00+00:00" }],
     live: [{ key: "abc", name: "AMA", lastmod: "2026-11-09 00:00:00" }],
   };
-  test("threads use /community/{key}/{id}-{slug}; answered threads rank higher", () => {
-    const urls = sitemapUrls("discussions", more, ctx);
-    expect(urls.map((u) => [u.loc, u.priority])).toEqual([
-      ["https://learn.acme.com/community/club/12-how-do-payouts-work", 0.6],
-      ["https://learn.acme.com/community/club/13-new", 0.4],
-    ]);
-  });
   test("pages list builder pages and the live listing; live sessions get their own sitemap", () => {
     const locs = sitemapUrls("pages", more, ctx).map((u) => u.loc);
     expect(locs).toContain("https://learn.acme.com/live");

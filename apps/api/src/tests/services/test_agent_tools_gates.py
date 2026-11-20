@@ -118,7 +118,7 @@ def test_tool_available():
 def test_built_registry_fields():
     registry = build_registry()
     specs = {s.name: s for s in registry.specs()}
-    assert specs["create_community"].feature == "communities"
+    assert specs["create_path"].feature == "paths"
     assert specs["get_learner_progress"].feature is None
     assert specs["list_courses"].toolset == "courses"
     assert specs["get_context"].toolset == "core" and specs["get_course"].toolset == "core"

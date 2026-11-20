@@ -11,14 +11,13 @@ from fastapi import HTTPException, UploadFile
 from pydantic import ValidationError
 from sqlmodel import select
 
-from src.db.communities.communities import Community
-from src.db.communities.discussions import Discussion
 from src.db.courses.activities import Activity, ActivityLockType, ActivitySubTypeEnum, ActivityTypeEnum
 from src.db.courses.courses import Course
+from src.db.courses.translations import CourseTranslation
 from src.db.folders.folders import Folder
+from src.db.landing_pages import LandingPage
 from src.db.organization_config import OrganizationConfig
 from src.db.paths import Path
-from src.db.podcasts.podcasts import Podcast
 from src.db.seo import ResourceSEO, ResourceSlugRedirect, SeoSettingsUpdate, clean_seo
 from src.db.users import AnonymousUser, APITokenUser
 from src.routers import seo as seo_router
@@ -314,7 +313,7 @@ async def test_can_read_branches(db, org, mock_request, anonymous_user):
 
 def test_openly_public():
     assert seo_service._is_openly_public("course", SimpleNamespace(public=True, published=False)) is False
-    assert seo_service._is_openly_public("community", SimpleNamespace(public=True)) is True
+    assert seo_service._is_openly_public("folder", SimpleNamespace(public=True)) is True
 
 
 async def test_settings_roundtrip(db, org, mock_request, admin_user):
@@ -371,17 +370,13 @@ async def test_require_author(db, org, mock_request, admin_user, anonymous_user)
 
     # Naming a new resource: create rights in the org.
     await seo_service.require_author(mock_request, db, _token(org.id, {"courses": {"action_create": True}}), org.id, "course")
-    await seo_service.require_author(mock_request, db, _token(org.id, {"podcasts": {"action_create": True}}), org.id, "podcast")
-    # A token without the podcasts bucket falls back to its courses right.
-    await seo_service.require_author(mock_request, db, _token(org.id, {"courses": {"action_create": True}}), org.id, "podcast")
     for user, org_id, code in (
         (_token(org.id, {"courses": {"action_read": True}}), org.id, 403),
-        (_token(org.id, {"podcasts": {"action_read": True}, "courses": {"action_create": True}}), org.id, 403),
         (_token(999, {"courses": {"action_create": True}}), org.id, 403),
         (anonymous_user, org.id, 401),
     ):
         with pytest.raises(HTTPException) as exc:
-            await seo_service.require_author(mock_request, db, user, org_id, "podcast")
+            await seo_service.require_author(mock_request, db, user, org_id, "course")
         assert exc.value.status_code == code
     with patch.object(seo_service, "require_org_role_permission", new=AsyncMock()) as role:
         await seo_service.require_author(mock_request, db, admin_user, org.id, "folder")
@@ -409,9 +404,6 @@ async def test_sitemap_lists_only_indexable_public_content(db, org):
                  published=True, lock_type=ActivityLockType.AUTHENTICATED, org_id=org.id, course_id=listed.id, activity_uuid="activity_b1"),
     )
     await _add(db, Path(name="Path", org_id=org.id, path_uuid="path_1", public=True, published=True))
-    await _add(db, Podcast(name="Pod", org_id=org.id, podcast_uuid="podcast_1", public=True, published=True))
-    community = await _add(db, Community(name="Club", org_id=org.id, community_uuid="community_1", public=True))
-    await _add(db, Discussion(title="Hello", community_id=community.id, org_id=org.id, author_id=1, discussion_uuid="discussion_d1"))
     await _add(db, Folder(name="Shelf", org_id=org.id, folder_uuid="folder_1", public=True))
 
     data = await seo_service.sitemap_data(db, org.slug)
@@ -420,18 +412,12 @@ async def test_sitemap_lists_only_indexable_public_content(db, org):
     assert data["activities"] == [{"course_key": "intro-to-python", "key": "a1", "lastmod": NOW,
                                   "default_locale": None, "available_locales": []}]
     assert [p["key"] for p in data["paths"]] == ["path"]
-    assert [p["key"] for p in data["podcasts"]] == ["pod"]
-    assert [c["key"] for c in data["communities"]] == ["club"]
-    assert data["discussions"][0]["community_key"] == "club" and data["discussions"][0]["key"].endswith("-hello")
+    assert data["podcasts"] == []
     assert [f["key"] for f in data["folders"]] == ["shelf"]
 
 
 async def test_sitemap_respects_org_switches(db, org):
-    await _org_seo(db, org, noindex_communities=True)
-    await _add(db, Community(name="Club", org_id=org.id, community_uuid="community_1", public=True))
-    data = await seo_service.sitemap_data(db, org.slug)
-    assert data["communities"] == [] and data["activities"] == []
-
+    await _org_seo(db, org)
     config = (await db.execute(select(OrganizationConfig))).scalars().first()
     config.config = {"seo": {"indexing_disabled": True}}
     await _add(db, config)
@@ -534,7 +520,7 @@ def test_anonymous_user_fixture_type(anonymous_user):
 
 
 async def test_update_course_validates_seo(db, org, course, mock_request, admin_user):
-    from src.db.courses.courses import CourseUpdate
+    from src.db.courses.courses import Course, CourseUpdate
     from src.services.courses.courses import update_course
 
     with patch("src.services.courses.courses.check_resource_access", new_callable=AsyncMock):

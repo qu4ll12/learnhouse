@@ -16,6 +16,7 @@ from httpx import ASGITransport, AsyncClient
 
 from src.core.events.database import get_db_session
 from src.db.organization_config import OrganizationConfig
+from src.db.org_plan_state import OrgTrial
 from src.db.users import PublicUser
 from src.routers.orgs.plan_overview import router as plan_overview_router
 from src.security.auth import get_current_user
@@ -155,7 +156,7 @@ class TestFeatureMatrix:
         assert f["sso"]["upgrade_plan"] == "business"
         assert f["remove_watermark"]["upgrade_plan"] == "standard"
         assert f["custom_domain"]["upgrade_plan"] == "pro"
-        assert f["podcasts"]["toggle_tab"] == "features" and f["ai"]["toggle_tab"] == "ai" and f["sso"]["toggle_tab"] is None
+        assert f["ai"]["toggle_tab"] == "ai" and f["sso"]["toggle_tab"] is None
         assert data["areas"] == list(po.FEATURE_AREAS)
 
     async def test_paid_and_contract_billing(self, db, org, other_org):
@@ -173,13 +174,13 @@ class TestFeatureMatrix:
         await set_config(db, org.id, {
             "config_version": "2.0", "plan": "standard",
             "overrides": {"sso": {"force_enabled": True}},
-            "admin_toggles": {"podcasts": {"org_disabled": True}},
+            "admin_toggles": {"folders": {"org_disabled": True}},
         })
         with mode("saas"):
             f = by_key(await po.get_plan_overview(org.id, db))
         assert f["sso"]["state"] == "addon" and f["sso"]["enabled"] is True
-        assert f["podcasts"]["state"] == "included"
-        assert (f["podcasts"]["enabled"], f["podcasts"]["disabled_by"]) == (False, "org")
+        assert f["folders"]["state"] == "included"
+        assert (f["folders"]["enabled"], f["folders"]["disabled_by"]) == (False, "org")
 
     async def test_platform_kill_switch_on_free(self, db, org):
         await set_config(db, org.id, {"config_version": "2.0", "plan": "free", "admin_toggles": {"messaging": {"disabled": True}}})
@@ -278,7 +279,6 @@ class TestSelfHosted:
         assert data["poc"] is None and data["license"] is None
         assert f["sso"]["state"] == "edition" and f["sso"]["upgrade_plan"] is None
         assert f["boards"]["state"] == "edition"
-        assert f["podcasts"]["state"] == "included" and f["podcasts"]["limit"] == 0
         assert f["custom_domain"]["state"] == "included" and f["remove_watermark"]["state"] == "included"
         assert f["courses"]["limit"] == 0
 

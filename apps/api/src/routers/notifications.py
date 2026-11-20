@@ -20,7 +20,7 @@ CurrentUser = Depends(get_authenticated_non_api_token_user)
 
 Category = Literal[
     "messages", "assignments", "courses", "live",
-    "community", "groups", "billing", "boards",
+    "groups", "billing", "boards",
     "teaching", "people", "integrations", "newsletter", "plan", "automation",
 ]
 # "personal" (the learner bell, the mobile app; the default), "admin" (the

@@ -16,7 +16,7 @@ export type SitemapUrl = {
   alternates?: { hreflang: string; href: string }[]
 }
 
-export const SITEMAP_TYPES = ['pages', 'courses', 'activities', 'paths', 'podcasts', 'communities', 'discussions', 'folders', 'live'] as const
+export const SITEMAP_TYPES = ['pages', 'courses', 'activities', 'paths', 'folders', 'live'] as const
 export type SitemapType = (typeof SITEMAP_TYPES)[number]
 
 export function xmlEscape(value: string): string {
@@ -88,17 +88,12 @@ export type SitemapData = {
     org_uuid: string
     name: string
     indexing_disabled: boolean
-    noindex_communities: boolean
     /** Sections the web app fills itself (EE live sessions...): indexable or not. */
     features?: Partial<Record<'live' | 'newsletters' | 'pages' | 'store', boolean>>
   }
   courses: SitemapEntry[]
   activities: { course_key: string; key: string; lastmod: string }[]
   paths: SitemapEntry[]
-  podcasts: SitemapEntry[]
-  communities: SitemapEntry[]
-  /** `key` is the thread's URL segment (`42-how-do-payouts-work`). */
-  discussions: { community_key: string; key: string; name: string; lastmod: string; replies?: number }[]
   folders: SitemapEntry[]
   /** Published builder pages (`/p/{key}`), not noindexed. */
   pages?: { key: string; name: string; lastmod: string }[]
@@ -120,16 +115,16 @@ export type SitemapContext = {
   /** Absolute origin with no trailing slash, e.g. `https://academy.example.com`. */
   base: string
   /** Absolute URL of a resource thumbnail, or '' when there is none. */
-  imageUrl: (type: 'course' | 'path' | 'podcast' | 'community' | 'folder', entry: SitemapEntry) => string
+  imageUrl: (type: 'course' | 'path' | 'folder', entry: SitemapEntry) => string
   /** Which top-level sections the org shows (menu/features); unknown = shown. */
-  sections?: Partial<Record<'courses' | 'paths' | 'podcasts' | 'communities' | 'library', boolean>>
+  sections?: Partial<Record<'courses' | 'paths' | 'library', boolean>>
   /** Language of courses without a `default_locale` (the org language), `en` when unknown. */
   defaultLocale?: string
 }
 
 function entryUrls(
   data: SitemapEntry[],
-  type: 'course' | 'path' | 'podcast' | 'community' | 'folder',
+  type: 'course' | 'path' | 'folder',
   segment: string,
   ctx: SitemapContext,
   priority: number,
@@ -171,8 +166,6 @@ export function sitemapUrls(type: SitemapType, data: SitemapData, ctx: SitemapCo
       const urls: SitemapUrl[] = [{ loc: `${ctx.base}/`, changefreq: 'daily', priority: 1.0, lastmod: latestDate(data.courses.map((c) => c.lastmod)) }]
       if (shown('courses') && data.courses.length) urls.push({ loc: `${ctx.base}/courses`, changefreq: 'weekly', priority: 0.9, lastmod: latestDate(data.courses.map((c) => c.lastmod)) })
       if (shown('paths') && data.paths.length) urls.push({ loc: `${ctx.base}/paths`, changefreq: 'weekly', priority: 0.8, lastmod: latestDate(data.paths.map((c) => c.lastmod)) })
-      if (shown('podcasts') && data.podcasts.length) urls.push({ loc: `${ctx.base}/podcasts`, changefreq: 'weekly', priority: 0.8, lastmod: latestDate(data.podcasts.map((c) => c.lastmod)) })
-      if (shown('communities') && data.communities.length) urls.push({ loc: `${ctx.base}/communities`, changefreq: 'daily', priority: 0.7, lastmod: latestDate(data.discussions.map((c) => c.lastmod)) })
       if (shown('library') && data.folders.length) urls.push({ loc: `${ctx.base}/library`, changefreq: 'weekly', priority: 0.7, lastmod: latestDate(data.folders.map((c) => c.lastmod)) })
       if (data.live?.length) urls.push({ loc: `${ctx.base}/live`, changefreq: 'daily', priority: 0.6, lastmod: latestDate(data.live.map((c) => c.lastmod)) })
       for (const p of data.pages || []) urls.push({ loc: `${ctx.base}/p/${encodeURIComponent(p.key)}`, changefreq: 'monthly', priority: 0.6, lastmod: p.lastmod })
@@ -188,17 +181,6 @@ export function sitemapUrls(type: SitemapType, data: SitemapData, ctx: SitemapCo
       }))
     case 'paths':
       return entryUrls(data.paths, 'path', 'path', ctx, 0.8)
-    case 'podcasts':
-      return entryUrls(data.podcasts, 'podcast', 'podcast', ctx, 0.7)
-    case 'communities':
-      return entryUrls(data.communities, 'community', 'community', ctx, 0.6)
-    case 'discussions':
-      return data.discussions.map((d) => ({
-        loc: `${ctx.base}/community/${encodeURIComponent(d.community_key)}/${encodeURIComponent(d.key)}`,
-        lastmod: d.lastmod,
-        // Answered threads are the forum's best pages.
-        priority: d.replies ? 0.6 : 0.4,
-      }))
     case 'folders':
       return entryUrls(data.folders, 'folder', 'library/folder', ctx, 0.6)
     case 'live':
@@ -213,9 +195,6 @@ export function sitemapIndexEntries(data: SitemapData, base: string): { loc: str
     courses: data.courses,
     activities: data.activities,
     paths: data.paths,
-    podcasts: data.podcasts,
-    communities: data.communities,
-    discussions: data.discussions,
     folders: data.folders,
     live: data.live || [],
   }

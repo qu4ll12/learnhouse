@@ -18,8 +18,6 @@ from src.db.courses.activities import (
     ActivityTypeEnum,
 )
 from src.db.courses.chapters import ChapterCreate
-from src.db.podcasts.episodes import PodcastEpisodeCreate
-from src.db.podcasts.podcasts import Podcast
 from src.db.resource_authors import (
     ResourceAuthor,
     ResourceAuthorshipEnum,
@@ -38,7 +36,6 @@ from src.db.users import PublicUser, User
 from src.security.rbac import AccessAction, check_resource_access
 from src.services.courses.activities.activities import create_activity
 from src.services.courses.chapters import create_chapter
-from src.services.podcasts.episodes import create_episode
 from src.tests.conftest import ADMIN_RIGHTS
 
 NOW = str(datetime.now())
@@ -155,24 +152,6 @@ async def instructor(db, org, instructor_role):
     return await _make_user(db, uid=10, username="instructor", org_id=org.id, role_id=instructor_role.id)
 
 
-@pytest.fixture
-async def podcast(db, org):
-    p = Podcast(
-        id=1,
-        name="Test Podcast",
-        description="d",
-        public=True,
-        published=True,
-        org_id=org.id,
-        podcast_uuid="podcast_test",
-        creation_date=NOW,
-        update_date=NOW,
-    )
-    db.add(p)
-    await db.commit()
-    return p
-
-
 async def _allowed(db, user, resource_uuid: str) -> bool:
     decision = await check_resource_access(
         _request(), db, user, resource_uuid, AccessAction.CREATE, raise_on_deny=False
@@ -184,10 +163,6 @@ class TestCreateContentNeedsOwnership:
     @pytest.mark.asyncio
     async def test_instructor_cannot_add_to_course_they_do_not_author(self, db, course, instructor):
         assert not await _allowed(db, instructor, course.course_uuid)
-
-    @pytest.mark.asyncio
-    async def test_instructor_cannot_add_to_podcast_they_do_not_author(self, db, podcast, instructor):
-        assert not await _allowed(db, instructor, podcast.podcast_uuid)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -203,22 +178,11 @@ class TestCreateContentNeedsOwnership:
         assert await _allowed(db, instructor, course.course_uuid)
 
     @pytest.mark.asyncio
-    async def test_author_can_add_to_own_podcast(self, db, podcast, instructor):
-        await _add_author(
-            db, resource_uuid=podcast.podcast_uuid, user_id=instructor.id,
-            authorship=ResourceAuthorshipEnum.CREATOR,
-        )
-        assert await _allowed(db, instructor, podcast.podcast_uuid)
-
-    @pytest.mark.asyncio
-    async def test_admin_can_add_to_any_course_and_podcast(self, db, course, podcast, admin_user):
+    async def test_admin_can_add_to_any_course(self, db, course, admin_user):
         assert await _allowed(db, admin_user, course.course_uuid)
-        assert await _allowed(db, admin_user, podcast.podcast_uuid)
 
     @pytest.mark.asyncio
-    async def test_custom_role_with_update_any_can_add(self, db, org, course, podcast):
-        # A custom (non admin/maintainer id) role that may edit every course
-        # and podcast can also add content to them.
+    async def test_custom_role_with_update_any_can_add(self, db, org, course):
         editor_role = Role(
             id=60,
             name="Editor",
@@ -233,7 +197,6 @@ class TestCreateContentNeedsOwnership:
         await db.commit()
         editor = await _make_user(db, uid=11, username="editor", org_id=org.id, role_id=editor_role.id)
         assert await _allowed(db, editor, course.course_uuid)
-        assert await _allowed(db, editor, podcast.podcast_uuid)
 
     @pytest.mark.asyncio
     async def test_instructor_can_still_create_new_courses(self, db, org, instructor):
@@ -265,18 +228,6 @@ class TestCreateEndpointsRefuseNonAuthors:
                     content={"type": "doc", "content": []},
                     published=True,
                 ),
-                instructor,
-                db,
-            )
-        assert exc.value.status_code == 403
-
-    @pytest.mark.asyncio
-    async def test_create_episode(self, db, org, podcast, instructor):
-        with pytest.raises(HTTPException) as exc:
-            await create_episode(
-                _request(),
-                podcast.podcast_uuid,
-                PodcastEpisodeCreate(title="x", description="x"),
                 instructor,
                 db,
             )

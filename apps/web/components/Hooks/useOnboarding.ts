@@ -48,7 +48,6 @@ const STEP_DEFS: Record<string, Omit<OnboardingStep, 'completed' | 'minutes'>> =
   // Done once the homepage is published (the template starter does it).
   share_grow: { id: 'share_grow', title: '', description: '', action: '', href: '/dash/website', video: 'ob5' },
   invite_learners: { id: 'invite_learners', title: '', description: '', action: '', href: '/dash/users/settings/signups', video: 'ob6' },
-  build_community: { id: 'build_community', title: '', description: '', action: '', href: '/dash/communities', video: 'ob7' },
   create_group: { id: 'create_group', title: '', description: '', action: '', href: '/dash/users/settings/usergroups', video: 'ob6' },
   setup_payments: { id: 'setup_payments', title: '', description: '', action: '', href: '/dash/payments/settings', completeOnClick: true, video: 'ob5' },
 }

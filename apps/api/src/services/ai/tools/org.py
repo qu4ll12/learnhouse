@@ -41,7 +41,6 @@ from src.services.orgs.orgs import (
     update_org_auth_branding_config,
     update_org_boards_config,
     update_org_color_config,
-    update_org_communities_config,
     update_org_course_end_config,
     update_org_courses_config,
     update_org_default_language_config,
@@ -52,7 +51,6 @@ from src.services.orgs.orgs import (
     update_org_footer_text_config,
     update_org_menu_config,
     update_org_playgrounds_config,
-    update_org_podcasts_config,
     update_org_seo_config,
     update_org_signup_mechanism,
     update_org_watermark_config,
@@ -80,16 +78,14 @@ OrgLabel = Literal[
     "test_prep", "vocational", "early_education",
 ]
 
-_TOGGLES = ("courses", "communities", "folders", "podcasts", "boards", "playgrounds")
+_TOGGLES = ("courses", "folders", "boards", "playgrounds")
 _TOGGLE_SERVICES = {
     "courses": update_org_courses_config,
-    "communities": update_org_communities_config,
     "folders": update_org_folders_config,
-    "podcasts": update_org_podcasts_config,
     "boards": update_org_boards_config,
     "playgrounds": update_org_playgrounds_config,
 }
-_MENU_TYPES = ("courses", "library", "podcasts", "communities", "playgrounds", "store", "custom")
+_MENU_TYPES = ("courses", "library", "playgrounds", "store", "custom")
 _SETTINGS_PAGE = "/dash/org/settings/general"
 
 
@@ -271,7 +267,6 @@ async def _get_org_settings(ctx: ToolContext, _p: GetOrgSettingsParams):
                 "default_meta_description",
                 "twitter_handle",
                 "google_site_verification",
-                "noindex_communities",
             )
             if k in seo
         },
@@ -394,9 +389,7 @@ class AiSettings(_Strict):
 class FeatureSettings(_Strict):
     section: Literal["features"]
     courses: bool | None = None
-    communities: bool | None = None
     folders: bool | None = Field(None, description="The library.")
-    podcasts: bool | None = None
     boards: bool | None = None
     playgrounds: bool | None = None
 
@@ -437,7 +430,6 @@ class SeoSettings(_Strict):
     default_meta_description: str | None = Field(None, max_length=300)
     twitter_handle: str | None = Field(None, pattern=r"^@?[A-Za-z0-9_]{0,15}$")
     google_site_verification: str | None = Field(None, pattern=r"^[A-Za-z0-9_-]{0,100}$")
-    noindex_communities: bool | None = Field(None, description="Keep community pages out of search engines.")
 
 
 class MenuItem(_Strict):

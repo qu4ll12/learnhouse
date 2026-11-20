@@ -6,9 +6,7 @@ from fastapi import HTTPException, Request
 from src.db.users import PublicUser
 from src.security.rbac.dependencies import (
     _get_current_user_dependency,
-    CommunityAccess,
     CourseAccess,
-    PodcastAccess,
     require_create_access,
     require_dashboard_access,
     require_read_access,
@@ -235,16 +233,6 @@ class TestRbacDependencies:
             (CourseAccess, "update", (), ("require_write_access", (AccessAction.UPDATE, "course_uuid"), {})),
             (CourseAccess, "delete", (), ("require_write_access", (AccessAction.DELETE, "course_uuid"), {})),
             (CourseAccess, "dashboard", (), ("require_dashboard_access", ("course_uuid",), {})),
-            (PodcastAccess, "read", (AccessContext.DASHBOARD,), ("require_read_access", ("podcast_uuid", AccessContext.DASHBOARD), {})),
-            (PodcastAccess, "create", (), ("require_create_access", ("podcasts",), {})),
-            (PodcastAccess, "update", (), ("require_write_access", (AccessAction.UPDATE, "podcast_uuid"), {})),
-            (PodcastAccess, "delete", (), ("require_write_access", (AccessAction.DELETE, "podcast_uuid"), {})),
-            (PodcastAccess, "dashboard", (), ("require_dashboard_access", ("podcast_uuid",), {})),
-            (CommunityAccess, "read", (AccessContext.DASHBOARD,), ("require_read_access", ("community_uuid", AccessContext.DASHBOARD), {})),
-            (CommunityAccess, "create", (), ("require_create_access", ("communities",), {})),
-            (CommunityAccess, "update", (), ("require_write_access", (AccessAction.UPDATE, "community_uuid"), {})),
-            (CommunityAccess, "delete", (), ("require_write_access", (AccessAction.DELETE, "community_uuid"), {})),
-            (CommunityAccess, "dashboard", (), ("require_dashboard_access", ("community_uuid",), {})),
         ],
     )
     def test_access_classes_delegate_to_factory_functions(

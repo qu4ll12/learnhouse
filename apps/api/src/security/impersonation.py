@@ -364,9 +364,7 @@ _AUTH_READS = (
 )
 
 # POSTs that only read (batch lookups); allowed in read-only mode.
-_READ_POSTS = (
-    re.compile(r"^/api/v1/discussions/votes/batch/?$"),
-)
+_READ_POSTS: tuple[re.Pattern, ...] = ()
 
 # Never, in any mode: account security, credentials, secrets, billing,
 # destruction of the org, minting sessions for anyone, and the platform console
@@ -403,8 +401,6 @@ _DENIED: tuple[tuple[Optional[frozenset], re.Pattern], ...] = (
 # was started with messaging allowed (read-only blocks every write anyway).
 _MESSAGING = (
     re.compile(r"^/api/v1/messaging(/|$)"),
-    re.compile(r"^/api/v1/communities/[^/]+/discussions(/|$)"),
-    re.compile(r"^/api/v1/discussions(/|$)"),
     re.compile(r"^/api/v1/activities/[^/]+/comments(/|$)"),
     re.compile(r"^/api/v1/newsletter(/|$)"),
     re.compile(r"^/api/v1/usergroups/[^/]+/(email|emails|message|messages)(/|$)"),

@@ -21,7 +21,6 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.core import deployment_mode
-from src.db.communities.communities import Community
 from src.db.courses.activities import Activity
 from src.db.courses.courses import Course
 from src.db.landing_pages import LandingPage
@@ -141,8 +140,6 @@ async def data_signals(db_session: AsyncSession, org: Organization) -> set[str]:
         or _has_pending_invite(org)
     ):
         done.add("invite_learners")
-    if await _count(db_session, Community, Community.org_id == org.id):
-        done.add("build_community")
     if await _count(db_session, UserGroup, UserGroup.org_id == org.id):
         done.add("create_group")
     # The homepage is published (the template starter does this, or the

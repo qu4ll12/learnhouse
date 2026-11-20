@@ -10,7 +10,6 @@ import pytest
 from fastapi import HTTPException
 from sqlmodel import select
 
-from src.db.communities.communities import Community, CommunityCreate
 from src.db.courses.chapter_activities import ChapterActivity
 from src.db.courses.chapters import Chapter, LockType
 from src.db.courses.course_chapters import CourseChapter
@@ -28,13 +27,11 @@ from src.services.ai.tools import (
 from src.services.ai.tools import (
     assignments,
     chapters,
-    communities,
     content_edit,
     courses,
     library,
 )
 from src.services.ai.tools import doc_ops as d
-from src.services.communities import communities as community_service
 
 NOW = str(datetime.now())
 SVC = "src.services.courses.activities.assignments"
@@ -43,7 +40,7 @@ SVC = "src.services.courses.activities.assignments"
 @pytest.fixture
 def registry():
     r = ToolRegistry()
-    for module in (assignments, chapters, communities, content_edit, courses, library):
+    for module in (assignments, chapters, content_edit, courses, library):
         r.register_all(module.SPECS)
     return r
 
@@ -295,73 +292,6 @@ async def test_same_or_tighter_placements_stay_approval_free(registry, db, org, 
     ok(await call(registry, db, org, admin_user, "place_in_library", {
         "resource_uuid": "course_test", "from_folder_uuid": "folder_open", "folder_uuid": "folder_test",
     }))
-
-
-# ─── 4 and 5. community course links ─────────────────────────────────────────
-
-
-async def test_create_community_with_course_needs_approval(registry, db, org, admin_user, course):
-    needs_approval(await call(registry, db, org, admin_user, "create_community", {"name": "C", "course_uuid": "course_test"}))
-    assert (await db.execute(select(Community))).scalars().first() is None
-    out = ok(await call(registry, db, org, admin_user, "create_community", {"name": "C", "course_uuid": "course_test"}, approved=True))
-    assert out["course"]["uuid"] == "course_test"
-    ok(await call(registry, db, org, admin_user, "create_community", {"name": "Free"}))
-
-
-def _deny_courses(real):
-    async def check(request, db_session, user, uuid, action, *args, **kwargs):
-        if uuid.startswith("course_"):
-            raise HTTPException(status_code=403, detail="no course rights")
-        return await real(request, db_session, user, uuid, action, *args, **kwargs)
-
-    return check
-
-
-async def test_service_create_checks_course_update(db, org, admin_user, course):
-    real = community_service.check_resource_access
-    with patch.object(community_service, "check_resource_access", side_effect=_deny_courses(real)) as check:
-        with pytest.raises(HTTPException) as e:
-            await community_service.create_community(
-                make_synthetic_request(), org.id,
-                CommunityCreate(name="C", org_id=org.id, course_id=course.id), admin_user, db,
-            )
-    assert e.value.status_code == 403
-    assert any(c.args[3] == "course_test" for c in check.call_args_list)
-    assert (await db.execute(select(Community))).scalars().first() is None
-
-
-async def test_service_create_refuses_other_org_course(db, org, other_org, admin_user):
-    from src.db.courses.courses import Course
-
-    await add(db, Course(
-        id=9, name="Theirs", description="", public=True, published=True, open_to_contributors=False,
-        org_id=other_org.id, course_uuid="course_theirs", creation_date=NOW, update_date=NOW,
-    ))
-    with pytest.raises(HTTPException) as e:
-        await community_service.create_community(
-            make_synthetic_request(), org.id, CommunityCreate(name="C", org_id=org.id, course_id=9), admin_user, db,
-        )
-    assert e.value.status_code == 404
-
-
-async def test_service_link_checks_course_update(db, org, admin_user, course):
-    row = await add(db, Community(
-        id=1, name="Main", public=True, org_id=org.id, community_uuid="community_main",
-        creation_date=NOW, update_date=NOW,
-    ))
-    real = community_service.check_resource_access
-    with patch.object(community_service, "check_resource_access", side_effect=_deny_courses(real)):
-        with pytest.raises(HTTPException) as e:
-            await community_service.link_community_to_course(
-                make_synthetic_request(), "community_main", "course_test", admin_user, db,
-            )
-    assert e.value.status_code == 403
-    await db.refresh(row)
-    assert row.course_id is None
-    linked = await community_service.link_community_to_course(
-        make_synthetic_request(), "community_main", "course_test", admin_user, db,
-    )
-    assert linked.course_id == course.id
 
 
 # ─── 6. risky page blocks ────────────────────────────────────────────────────

@@ -91,8 +91,6 @@ def _install_stub_modules(monkeypatch: pytest.MonkeyPatch) -> None:
     install_package("src.routers.paths")
     install_package("src.routers.messaging")
     install_package("src.routers.courses.activities")
-    install_package("src.routers.communities")
-    install_package("src.routers.podcasts")
     install_package("src.routers.integrations")
     install_package("src.services")
     install_package("src.services.dev")
@@ -247,28 +245,6 @@ def _install_stub_modules(monkeypatch: pytest.MonkeyPatch) -> None:
     ]
     sys.modules["src.routers.courses.activities"].blocks = sys.modules[
         "src.routers.courses.activities.blocks"
-    ]
-
-    install_router_module(
-        "src.routers.communities.communities", "src.routers.communities.communities"
-    )
-    install_router_module(
-        "src.routers.communities.discussions", "src.routers.communities.discussions"
-    )
-    sys.modules["src.routers.communities"].communities = sys.modules[
-        "src.routers.communities.communities"
-    ]
-    sys.modules["src.routers.communities"].discussions = sys.modules[
-        "src.routers.communities.discussions"
-    ]
-
-    install_router_module("src.routers.podcasts.podcasts", "src.routers.podcasts.podcasts")
-    install_router_module("src.routers.podcasts.episodes", "src.routers.podcasts.episodes")
-    sys.modules["src.routers.podcasts"].podcasts = sys.modules[
-        "src.routers.podcasts.podcasts"
-    ]
-    sys.modules["src.routers.podcasts"].episodes = sys.modules[
-        "src.routers.podcasts.episodes"
     ]
 
     install(

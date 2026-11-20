@@ -9,8 +9,6 @@ import {
   ChalkboardTeacher,
   Circuitry,
   Folder,
-  Garage,
-  Headphones,
   ImageSquare,
   Key,
   Plus,
@@ -25,14 +23,12 @@ import { dateInput, formatDate, ugKeys, useInvalidateGroups, useUG, type GroupDe
 export const KIND_META: Record<string, { icon: React.ReactNode; tile: string }> = {
   course: { icon: <Books size={16} weight="duotone" />, tile: 'bg-sky-50 text-sky-600' },
   path: { icon: <Circuitry size={16} weight="duotone" />, tile: 'bg-indigo-50 text-indigo-600' },
-  community: { icon: <Garage size={16} weight="duotone" />, tile: 'bg-emerald-50 text-emerald-600' },
-  podcast: { icon: <Headphones size={16} weight="duotone" />, tile: 'bg-rose-50 text-rose-600' },
   live_session: { icon: <VideoCamera size={16} weight="duotone" />, tile: 'bg-orange-50 text-orange-600' },
   board: { icon: <ChalkboardTeacher size={16} weight="duotone" />, tile: 'bg-amber-50 text-amber-600' },
   folder: { icon: <Folder size={16} weight="duotone" />, tile: 'bg-teal-50 text-teal-600' },
   media: { icon: <ImageSquare size={16} weight="duotone" />, tile: 'bg-violet-50 text-violet-600' },
 }
-const KINDS = ['all', 'course', 'path', 'community', 'podcast', 'live_session', 'board', 'folder', 'media'] as const
+const KINDS = ['all', 'course', 'path', 'live_session', 'board', 'folder', 'media'] as const
 
 export function KindTile({ kind }: { kind: string }) {
   const meta = KIND_META[kind] ?? KIND_META.course

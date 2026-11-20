@@ -9,11 +9,9 @@ export const dynamic = 'force-dynamic'
 // so this route can't be used to flush arbitrary caches.
 const REVALIDATABLE_TAGS = new Set([
   'activities',
-  'communities',
   'courses',
   'folders',
   'organizations',
-  'podcasts',
   'seo-sitemap',
 ])
 

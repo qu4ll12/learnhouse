@@ -10,7 +10,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.core.deployment_mode import get_deployment_mode, EE_ONLY_FEATURES
 from src.core.events.database import get_db_session
-from src.db.communities.communities import Community
 from src.security.features_utils.plans import PlanLevel, plan_meets_requirement
 
 
@@ -236,7 +235,7 @@ def require_plan_for_usergroups(required_plan: PlanLevel, feature_name: str):
             # Fall through: these specialised wrappers are used on routers
             # whose routes sometimes carry the discriminator in the request
             # body (e.g. playground /start, /iterate) or via uuids that
-            # reference org-scoped children (discussions, comments). The
+            # reference org-scoped children. The
             # handler's own RBAC still enforces tenant isolation; the plan
             # cap is a soft ceiling here, not the last line of defence.
             return True
@@ -323,65 +322,7 @@ def require_plan_for_certifications(required_plan: PlanLevel, feature_name: str)
             # Fall through: these specialised wrappers are used on routers
             # whose routes sometimes carry the discriminator in the request
             # body (e.g. playground /start, /iterate) or via uuids that
-            # reference org-scoped children (discussions, comments). The
-            # handler's own RBAC still enforces tenant isolation; the plan
-            # cap is a soft ceiling here, not the last line of defence.
-            return True
-
-        current_plan = await get_org_plan(org_id, db_session)
-
-        if not plan_meets_requirement(current_plan, required_plan):
-            raise HTTPException(
-                status_code=403,
-                detail=f"{feature_name} requires a {required_plan.capitalize()} plan or higher. "
-                f"Your organization is currently on the {current_plan.capitalize()} plan.",
-            )
-
-        return True
-
-    return plan_dependency
-
-
-def require_plan_for_community(required_plan: PlanLevel, feature_name: str):
-    """
-    Factory function that returns a FastAPI dependency to enforce plan requirements
-    for community routes. Can handle org_id from path params, query params, or look it up
-    from community_uuid.
-
-    Usage in router:
-        dependencies=[Depends(require_plan_for_community("standard", "Communities"))]
-
-    Args:
-        required_plan: The minimum plan level required
-        feature_name: Human-readable feature name for error messages
-
-    Returns:
-        A FastAPI dependency function
-    """
-
-    async def plan_dependency(
-        request: Request,
-        db_session: AsyncSession = Depends(get_db_session),
-    ):
-        bypass = _check_mode_bypass(feature_name)
-        if bypass is not None:
-            return bypass
-
-        # Resource-derived org (community_uuid) wins over client org_id
-        resource_org_id = None
-        community_uuid = request.path_params.get("community_uuid")
-        if community_uuid:
-            statement = select(Community).where(Community.community_uuid == community_uuid)
-            community = (await db_session.execute(statement)).scalars().first()
-            if community:
-                resource_org_id = community.org_id
-        org_id = _reconcile_org_id(_client_org_id(request), resource_org_id)
-
-        if org_id is None:
-            # Fall through: these specialised wrappers are used on routers
-            # whose routes sometimes carry the discriminator in the request
-            # body (e.g. playground /start, /iterate) or via uuids that
-            # reference org-scoped children (discussions, comments). The
+            # reference org-scoped children. The
             # handler's own RBAC still enforces tenant isolation; the plan
             # cap is a soft ceiling here, not the last line of defence.
             return True

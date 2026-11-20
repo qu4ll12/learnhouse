@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { getServerAPIUrl } from '@services/config/config'
 import { getOrganizationContextInfo } from '@services/organizations/orgs'
-import { FEED_CONTENT_TYPES, buildFeed, buildPodcastRss, podcastGuid, type FeedDoc, type FeedFormat } from '@/lib/seo/feeds'
-import { feedDocFromApi, feedUrls, podcastFeedFromApi } from '@/lib/seo/feedMapping'
+import { FEED_CONTENT_TYPES, buildFeed, type FeedDoc, type FeedFormat } from '@/lib/seo/feeds'
+import { feedDocFromApi, feedUrls } from '@/lib/seo/feedMapping'
 import { fetchFeedData } from '@/lib/seo/publicData.server'
 import { clipDescription, feedsEnabled, featureIndexable, orgLanguage } from '@/lib/seo/meta'
 import { getOrgSeoConfig } from '@/lib/seo/utils'
@@ -10,25 +10,19 @@ import { badRequest, feedMedia, notFoundText, orgslugFrom, publicResponse, route
 
 /**
  * Public syndication feeds of an org, reached through the proxy:
- *   /feed.xml|.atom|.json                  what's new (courses, paths, podcasts)
+ *   /feed.xml|.atom|.json                  what's new (courses, paths)
  *   /courses/feed.*                         new courses
- *   /communities/feed.*                     latest threads of every open community
- *   /community/{key}/feed.*                 one community (?sort=top for top threads)
- *   /podcast/{key}/feed[.xml]               the podcast (Apple Podcasts / Spotify RSS)
  *   /live/feed.*                            upcoming public live sessions (EE)
  *   /newsletter/{key}/feed.*                a newsletter's public archive (EE)
  * Everything is anonymous: the API (and EE endpoints) only return what a
  * signed-out visitor may see.
  */
-const KINDS = ['org', 'courses', 'communities', 'community', 'podcast', 'live', 'newsletter'] as const
+const KINDS = ['org', 'courses', 'live', 'newsletter'] as const
 type Kind = (typeof KINDS)[number]
 
 const PREFIX: Record<Kind, (_key: string) => string> = {
   org: () => '/',
   courses: () => '/courses/',
-  communities: () => '/communities/',
-  community: (k) => `/community/${encodeURIComponent(k)}/`,
-  podcast: (k) => `/podcast/${encodeURIComponent(k)}/`,
   live: () => '/live/',
   newsletter: (k) => `/newsletter/${encodeURIComponent(k)}/`,
 }
@@ -100,27 +94,15 @@ export async function GET(request: NextRequest) {
   const kind = (params.get('kind') || 'org') as Kind
   const key = params.get('key') || ''
   const format = (['rss', 'atom', 'json'].includes(params.get('format') || '') ? params.get('format') : 'rss') as FeedFormat
-  const sort = params.get('sort') === 'top' ? 'top' : 'new'
   if (!KINDS.includes(kind)) return notFoundText()
-  if ((kind === 'community' || kind === 'podcast' || kind === 'newsletter') && !key) return notFoundText()
+  if (kind === 'newsletter' && !key) return notFoundText()
 
   const base = requestBase(request)
   const org = await getOrganizationContextInfo(orgslug, { revalidate: 300, tags: ['organizations'] }).catch(() => null)
   if (!org) return notFoundText()
   const seo = getOrgSeoConfig(org)
-  // Podcast feeds are distribution (Apple Podcasts, Spotify): always on.
-  if (kind !== 'podcast' && !feedsEnabled(seo)) return notFoundText('Feeds are turned off')
+  if (!feedsEnabled(seo)) return notFoundText('Feeds are turned off')
   const lang = orgLanguage(org)
-
-  if (kind === 'podcast') {
-    const data = await fetchFeedData(orgslug, 'podcast', { key })
-    if (!data) return notFoundText()
-    const feedUrl = `${base}${PREFIX.podcast(data.resource?.key || key)}feed`
-    const input = podcastFeedFromApi(data, { base, media: feedMedia, lang, feedUrl })
-    input.guid = await podcastGuid(feedUrl)
-    if (format !== 'rss') return publicResponse(buildFeed(format, input), FEED_CONTENT_TYPES[format])
-    return publicResponse(buildPodcastRss(input), FEED_CONTENT_TYPES.rss)
-  }
 
   let doc: FeedDoc | null
   if (kind === 'live') {
@@ -128,10 +110,9 @@ export async function GET(request: NextRequest) {
   } else if (kind === 'newsletter') {
     doc = featureIndexable(seo, 'newsletters') ? await newsletterDoc(orgslug, key, org, base, lang) : null
   } else {
-    const data = await fetchFeedData(orgslug, kind, { key, sort })
+    const data = await fetchFeedData(orgslug, kind, { key })
     doc = data ? feedDocFromApi(data, { base, prefix: PREFIX[kind](data.resource?.key || key), media: feedMedia, lang }) : null
   }
   if (!doc) return notFoundText()
-  if (sort === 'top') doc.feedUrls = Object.fromEntries(Object.entries(doc.feedUrls).map(([f, u]) => [f, `${u}?sort=top`]))
   return publicResponse(buildFeed(format, doc), FEED_CONTENT_TYPES[format])
 }

@@ -11,8 +11,6 @@ import {
   ChalkboardSimple,
   CircleNotch,
   DownloadSimple,
-  Garage,
-  Headphones,
   Lightning,
   Trash,
   UploadSimple,
@@ -35,8 +33,6 @@ const UPLOAD_ACCEPT =
 
 const RESOURCE_ICONS: Partial<Record<ResourceKind, any>> = {
   course: BookOpen,
-  podcast: Headphones,
-  community: Garage,
   board: ChalkboardSimple,
   playground: Lightning,
 }
@@ -151,7 +147,7 @@ function LibraryBlockComponent(props: NodeViewProps) {
         <ResourcePicker
           orgslug={org?.slug}
           mode="select"
-          tabs={['media', 'courses', 'podcasts', 'communities', 'boards', 'playgrounds']}
+          tabs={['media', 'courses', 'boards', 'playgrounds']}
           onSelect={applySelection}
           selectedUuid={resourceUuid || undefined}
         />
@@ -293,7 +289,7 @@ function LibraryBlockComponent(props: NodeViewProps) {
     )
   }
 
-  // Other library resources (course, podcast, community, board, playground).
+  // Other library resources (course, board, playground).
   const kind = (resourceType || 'course') as ResourceKind
   const Icon = RESOURCE_ICONS[kind] || Books
   const baseUrl = org?.slug ? buildResourceUrl(kind, resourceUuid, org.slug) : null

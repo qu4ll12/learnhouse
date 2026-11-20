@@ -235,10 +235,10 @@ class TestChecklist:
         app = make_app(admin_user)
         res = await call(app, "GET", f"/orgs/{org.id}")
         assert res.status_code == 200 and res.json()["goal"] is None and res.json()["total"] == 6
-        res = await call(app, "PATCH", f"/orgs/{org.id}", json={"goal": "community", "skip": "create_course", "welcome_seen": True})
+        res = await call(app, "PATCH", f"/orgs/{org.id}", json={"goal": "sell", "skip": "create_course", "welcome_seen": True})
         assert res.status_code == 200
         body = res.json()
-        assert body["goal"] == "community" and body["welcome_seen"]
+        assert body["goal"] == "sell" and body["welcome_seen"]
         assert {s["id"]: s for s in body["steps"]}["create_course"]["skipped"]
         res = await call(app, "POST", f"/orgs/{org.id}/events", json={"event": "share_grow"})
         assert res.json() == {"event": "share_grow", "first": True}
@@ -291,7 +291,7 @@ class TestPlanPicker:
 class TestGoalsAndHub:
     async def test_goals(self, make_app, admin_user):
         res = await call(make_app(admin_user), "GET", "/goals")
-        assert [g["id"] for g in res.json()["goals"]] == ["sell", "team", "school", "customers", "community"]
+        assert [g["id"] for g in res.json()["goals"]] == ["sell", "team", "school", "customers"]
 
     async def test_hub(self, make_app, admin_user, org):
         res = await call(make_app(admin_user), "GET", "/hub")

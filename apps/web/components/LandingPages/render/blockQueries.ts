@@ -17,7 +17,7 @@ export const landingCoursesQuery = (orgslug: string, accessToken?: string) => ({
 })
 
 // Block types whose component lives in a lazily loaded chunk of the renderer.
-const DATA_BLOCKS = ['courses', 'course', 'paths', 'communities', 'podcasts', 'live_sessions', 'pricing']
+const DATA_BLOCKS = ['courses', 'course', 'paths', 'live_sessions', 'pricing']
 const FORM_BLOCKS = ['newsletter', 'form']
 const RICH_BLOCKS = ['richtext', 'embed', 'html']
 

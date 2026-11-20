@@ -174,13 +174,12 @@ def test_new_prompts_render():
     for name, args in (
         ("grade_submissions", {"assignment": "Essay 1", "rubric": "clarity"}),
         ("build_learning_path", {"goal": "become a data analyst"}),
-        ("community_digest", {"community": "Makers"}),
     ):
         text = prompts.render_prompt(name, args).messages[0].content.text
         assert all(value in text for value in args.values())
     assert prompts.PROMPTS["build_learning_path"].feature == "paths"
-    assert not prompts.prompt_allowed(prompts.PROMPTS["community_digest"], True, None, {"communities": False})
-    assert prompts.prompt_allowed(prompts.PROMPTS["community_digest"], True, None, {"communities": True})
+    assert not prompts.prompt_allowed(prompts.PROMPTS["build_learning_path"], True, None, {"paths": False})
+    assert prompts.prompt_allowed(prompts.PROMPTS["build_learning_path"], True, None, {"paths": True})
 
 
 # ─── completion ──────────────────────────────────────────────────────────────

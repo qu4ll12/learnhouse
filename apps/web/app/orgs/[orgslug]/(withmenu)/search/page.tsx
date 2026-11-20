@@ -22,7 +22,7 @@ import { useOrg } from '@components/Contexts/OrgContext'
 import ListShortcuts from '@components/Objects/Shortcuts/ListShortcuts'
 import GeneralWrapperStyled from '@components/Objects/StyledElements/Wrappers/GeneralWrapper'
 import CourseCard, { type CourseCardCourse } from '@components/Objects/Thumbnails/CourseCard'
-import { Button, Chip, EmptyState, SegmentedControl, formatRelative } from '@components/Dashboard/Shared/DashKit/DashKit'
+import { Button, Chip, EmptyState, SegmentedControl } from '@components/Dashboard/Shared/DashKit/DashKit'
 import { getUriWithOrg } from '@services/config/config'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
 import { useSitePages } from '@/lib/site-search/useSitePages'
@@ -97,7 +97,7 @@ function useSearchFetcher() {
 }
 
 function SearchPage() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
   const { track } = useLHAnalytics('learner')
@@ -380,7 +380,6 @@ function SearchPage() {
                   <ResultList
                     items={items}
                     query={urlQuery}
-                    locale={i18n.language}
                     onClick={(r, i) => onResultClick(TYPE_PLURAL[r.type], i + 1)}
                   />
                 </Section>
@@ -435,7 +434,6 @@ function SearchPage() {
           <ResultList
             items={scopedResults}
             query={urlQuery}
-            locale={i18n.language}
             detailed
             onClick={(r, i) => onResultClick(TYPE_PLURAL[r.type], i + 1)}
           />
@@ -589,13 +587,11 @@ function Section({
 function ResultList({
   items,
   query,
-  locale,
   detailed = false,
   onClick,
 }: {
   items: SiteResult[]
   query: string
-  locale: string
   detailed?: boolean
   onClick: (_r: SiteResult, _index: number) => void
 }) {
@@ -604,7 +600,6 @@ function ResultList({
     <ul className="divide-y divide-neutral-100 overflow-hidden rounded-2xl bg-white nice-shadow">
       {items.map((r, i) => {
         const kind = r.type === 'activity' ? activityKind(r.activityType, r.activitySubType) : null
-        const updated = r.type === 'discussion' || r.type === 'community' ? formatRelative(r.updatedAt, locale) : null
         return (
           <li key={`${r.type}-${r.id}`}>
             <Link
@@ -630,7 +625,6 @@ function ResultList({
                   <Chip icon={<kind.icon size={12} weight="fill" />}>{t(kind.key)}</Chip>
                 </span>
               )}
-              {updated && <span className="hidden shrink-0 text-xs text-neutral-400 sm:inline">{updated}</span>}
               <CaretRight
                 size={14}
                 className="shrink-0 text-neutral-300 transition-colors group-hover:text-neutral-500 rtl:rotate-180"

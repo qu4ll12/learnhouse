@@ -28,7 +28,7 @@ preset.
 
 Rules:
 - 5 to 9 sections. Start with a hero. End with a call to action, newsletter or contact section.
-- Use "courses", "featured_course", "paths", "communities", "podcasts" or "live_sessions" to show the
+- Use "courses", "featured_course", "paths", "podcasts" or "live_sessions" to show the
   organization's real content: never invent course names or prices for those.
 - Write specific, concrete copy for this organization: no lorem ipsum, no placeholders like [Name].
 - Headings under 70 characters; subheadings one or two sentences.

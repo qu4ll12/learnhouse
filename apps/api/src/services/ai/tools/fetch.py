@@ -30,7 +30,7 @@ class FetchParams(BaseModel):
         ...,
         min_length=3,
         max_length=120,
-        description="Any id from search or another result: course_..., chapter_..., activity_..., assignment_..., discussion_..., user_...",
+        description="Any id from search or another result: course_..., chapter_..., activity_..., assignment_..., user_...",
     )
 
 
@@ -62,9 +62,7 @@ async def _parent_uuid(ctx: ToolContext, kind: str, uuid: str) -> str:
         from src.db.courses.assignments import Assignment
 
         return (await ctx.db_session.get(Assignment, row.assignment_id)).assignment_uuid
-    from src.db.communities.discussions import Discussion
-
-    return (await ctx.db_session.get(Discussion, row.discussion_id)).discussion_uuid
+    raise ValueError(f"No parent for {kind}")
 
 
 # kind -> (tool, argument name, extra arguments)
@@ -72,8 +70,6 @@ _READERS: dict[str, tuple[str, str, dict]] = {
     "course": ("get_course", "course_uuid", {}),
     "activity": ("get_activity_content", "activity_uuid", {"format": "markdown"}),
     "assignment": ("get_assignment", "assignment_uuid", {"include_task_contents": True}),
-    "community": ("get_community", "community_uuid", {}),
-    "discussion": ("get_discussion", "discussion_uuid", {}),
     "playground": ("get_playground", "playground_uuid", {}),
     "board": ("get_board", "board_uuid", {}),
     "folder": ("browse_library", "folder_uuid", {}),
@@ -82,7 +78,7 @@ _READERS: dict[str, tuple[str, str, dict]] = {
     "user": ("get_member", "member", {}),
     "path": ("get_path", "path_uuid", {}),
 }
-_VIA_PARENT = {"chapter": "course", "assignment_task": "assignment", "comment": "discussion"}
+_VIA_PARENT = {"chapter": "course", "assignment_task": "assignment"}
 
 
 async def _fetch(ctx: ToolContext, p: FetchParams):
@@ -101,7 +97,7 @@ async def _fetch(ctx: ToolContext, p: FetchParams):
             status_code=400,
             detail=(
                 f"fetch cannot open '{p.id}'. It opens course_, chapter_, activity_, assignment_, "
-                "community_, discussion_, comment_, folder_, board_, playground, usergroup_, role_, "
+                "folder_, board_, playground, usergroup_, role_, "
                 "path_ and user_ ids; find one with search."
             ),
         )
@@ -152,7 +148,7 @@ SPECS: list[ToolSpec] = [
         description=(
             "Open anything by its id (from search or any result) and get its readable text: a "
             "course or chapter outline, a page as Markdown, an assignment with its tasks, a "
-            "discussion with replies, a learning path with its courses, a member's profile. Returns {id, title, url, text, metadata}."
+            "learning path with its courses, a member's profile. Returns {id, title, url, text, metadata}."
         ),
         params_model=FetchParams,
         tier=ActionTier.READ,

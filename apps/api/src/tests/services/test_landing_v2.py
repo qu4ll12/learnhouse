@@ -58,7 +58,7 @@ def test_every_template_is_valid_distinct_and_named():
         palettes.add(clean["theme"]["colors"]["primary"])
         # Data sections bind to the org's live content.
         used = {n["type"] for n in _walk(clean)}
-        assert used & {"courses", "paths", "live_sessions", "communities", "course"}, tpl["id"]
+        assert used & {"courses", "paths", "live_sessions", "course"}, tpl["id"]
         # Pictures are bundled art, never hotlinked.
         for n in _walk(clean):
             src = (n.get("props") or {}).get("src") or ""

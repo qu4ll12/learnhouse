@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional, Union
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy import JSON, Column, ForeignKey, Index, Integer
 from sqlmodel import Field, SQLModel
 
@@ -37,6 +37,8 @@ class DashboardPermission(BaseModel):
 
 
 class Rights(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     courses: PermissionsWithOwn
     users: Permission
     usergroups : Permission
@@ -65,9 +67,15 @@ class Rights(BaseModel):
     # headless assignments while existing roles/tokens stay unaffected.
     roles: Permission
     dashboard: DashboardPermission
-    communities: Permission
-    discussions: PermissionsWithOwn  # Own = author can edit/delete their own
-    podcasts: PermissionsWithOwn  # Own = author can edit/delete their own podcasts
+    podcasts: PermissionsWithOwn = PermissionsWithOwn(
+        action_create=False,
+        action_read=False,
+        action_read_own=False,
+        action_update=False,
+        action_update_own=False,
+        action_delete=False,
+        action_delete_own=False,
+    )  # Compatibility for stored roles with podcasts rights
     boards: PermissionsWithOwn = PermissionsWithOwn(
         action_create=False,
         action_read=True,

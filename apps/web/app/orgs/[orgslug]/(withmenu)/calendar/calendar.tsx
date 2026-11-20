@@ -10,7 +10,6 @@ import {
   ChevronRight,
   ClipboardList,
   Flag,
-  Headphones,
   Hourglass,
   LayoutGrid,
   List,
@@ -91,7 +90,6 @@ const TYPE_STYLE: Record<string, { dot: string; icon: string; Icon: typeof Video
   course_start: { dot: 'bg-neutral-900', icon: 'text-neutral-800', Icon: Flag },
   course_update: { dot: 'bg-orange-400', icon: 'text-orange-500', Icon: Megaphone },
   certificate: { dot: 'bg-yellow-400', icon: 'text-yellow-600', Icon: Award },
-  podcast_episode: { dot: 'bg-pink-500', icon: 'text-pink-600', Icon: Headphones },
 }
 // Legend order; only types present in the loaded range are listed.
 const TYPE_ORDER = Object.keys(TYPE_STYLE)
@@ -345,7 +343,7 @@ function EventRow({ ev, orgslug, fmt }: { ev: CalendarEvent; orgslug: string; fm
   const eventTitle = useEventTitle()
   const style = typeStyle(ev.type)
   const Icon = style.Icon
-  const context = ev.course?.name || (ev.meta?.podcast as string | undefined)
+  const context = ev.course?.name
   return (
     <EventLink
       ev={ev}

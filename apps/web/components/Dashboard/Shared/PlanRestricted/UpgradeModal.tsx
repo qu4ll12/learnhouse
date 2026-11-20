@@ -8,7 +8,6 @@ import {
   Notebook,
   UsersThree,
   CreditCard,
-  Microphone,
   ChartBar,
   Certificate,
   ShieldCheck,
@@ -16,7 +15,6 @@ import {
   Lightning,
   Code,
   CheckCircle,
-  Garage,
 } from '@phosphor-icons/react'
 import { AIMarkIcon } from '@components/Objects/AI/AIBrand'
 import { useOrg } from '@components/Contexts/OrgContext'
@@ -40,8 +38,6 @@ const STANDARD_HIGHLIGHTS = [
   { icon: Notebook, labelKey: 'upgrade_modal.plans.standard.highlights.courses', descKey: 'upgrade_modal.plans.standard.highlights.courses_desc', iconColor: 'text-blue-500' },
   { icon: UsersThree, labelKey: 'upgrade_modal.plans.standard.highlights.members', descKey: 'upgrade_modal.plans.standard.highlights.members_desc', iconColor: 'text-indigo-500' },
   { icon: CreditCard, labelKey: 'upgrade_modal.plans.standard.highlights.payments', descKey: 'upgrade_modal.plans.standard.highlights.payments_desc', iconColor: 'text-emerald-500' },
-  { icon: Garage, labelKey: 'upgrade_modal.plans.standard.highlights.communities', descKey: 'upgrade_modal.plans.standard.highlights.communities_desc', iconColor: 'text-teal-500' },
-  { icon: Microphone, labelKey: 'upgrade_modal.plans.standard.highlights.podcasts', descKey: 'upgrade_modal.plans.standard.highlights.podcasts_desc', iconColor: 'text-purple-500' },
   { icon: AIMarkIcon, labelKey: 'upgrade_modal.plans.standard.highlights.ai', descKey: 'upgrade_modal.plans.standard.highlights.ai_desc', iconColor: 'text-violet-500' },
   { icon: ChartBar, labelKey: 'upgrade_modal.plans.standard.highlights.analytics', descKey: 'upgrade_modal.plans.standard.highlights.analytics_desc', iconColor: 'text-amber-500' },
 ]

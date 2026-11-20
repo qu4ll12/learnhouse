@@ -16,9 +16,9 @@ import { usePlan } from '@components/Hooks/usePlan'
 import { Switch } from '@components/ui/switch'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import {
-  Books, FolderSimple, Headphones, Lightning, ShoppingBag, Circuitry, VideoCamera,
+  Books, FolderSimple, Lightning, ShoppingBag, Circuitry, VideoCamera,
   DotsSixVertical, Lock, Trash, Plus, CaretDown, LinkSimple, List as ListIcon, ShieldWarning,
-  Garage, ChalkboardSimple,
+  ChalkboardSimple,
 } from '@phosphor-icons/react'
 import { Button, INPUT, SectionCard, StickySaveBar } from '@components/Dashboard/Shared/DashKit/DashKit'
 import { Notice } from '@components/Dashboard/Pages/Org/OrgSettingsShared/orgSettingsUi'
@@ -30,14 +30,12 @@ const BUILTIN_META: Record<string, BuiltinMeta> = {
   courses: { feature: 'courses', link: '/courses', labelKey: 'courses.courses', Icon: Books },
   paths: { feature: 'paths', link: '/paths', labelKey: 'paths.title', Icon: Circuitry },
   library: { feature: 'folders', link: '/library', labelKey: 'library.library', Icon: FolderSimple },
-  podcasts: { feature: 'podcasts', link: '/podcasts', labelKey: 'podcasts.podcasts', Icon: Headphones },
   live: { feature: 'live_sessions', link: '/live', labelKey: 'live_sessions.nav', Icon: VideoCamera },
-  communities: { feature: 'communities', link: '/communities', labelKey: 'communities.title', Icon: Garage },
   playgrounds: { feature: 'playgrounds', link: '/playgrounds', labelKey: 'common.playgrounds', Icon: Lightning },
   boards: { feature: 'boards', link: '/boards', labelKey: 'common.boards', Icon: ChalkboardSimple },
   store: { feature: 'payments', link: '/store', labelKey: 'common.store', Icon: ShoppingBag },
 }
-const BUILTIN_ORDER = ['courses', 'paths', 'library', 'podcasts', 'live', 'communities', 'playgrounds', 'boards', 'store']
+const BUILTIN_ORDER = ['courses', 'paths', 'library', 'live', 'playgrounds', 'boards', 'store']
 
 function defaultLabel(type: string, t: any): string {
   return BUILTIN_META[type] ? t(BUILTIN_META[type].labelKey) : ''
@@ -162,8 +160,9 @@ function buildInitialItems(stored: MenuLinkItem[] | undefined): MenuLinkItem[] {
   const items: MenuLinkItem[] = []
   const seen = new Set<string>()
   if (stored && stored.length) {
-    stored.forEach((it, i) => {
-      items.push({ ...it, order: i })
+    // Skip links to removed features (e.g. communities) so a re-save drops them.
+    stored.filter((it) => it.type === 'custom' || BUILTIN_META[it.type]).forEach((it) => {
+      items.push(it)
       if (it.type !== 'custom') seen.add(it.type)
     })
   }

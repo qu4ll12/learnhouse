@@ -1,7 +1,7 @@
 'use client'
 /**
  * Blocks that show the organization's live content: courses, a featured
- * course, paths, communities, podcasts, live sessions and pricing (store
+ * course, paths, live sessions and pricing (store
  * offers). Loaded on demand, so a page without them never downloads this.
  */
 import React from 'react'
@@ -9,11 +9,9 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, CalendarBlank, Check } from '@phosphor-icons/react'
 import { landingCoursesQuery } from './blockQueries'
 import { getOrgPaths } from '@services/paths/paths'
-import { getCommunities } from '@services/communities/communities'
-import { getOrgPodcasts } from '@services/podcasts/podcasts'
 import { getPublicOffers } from '@ee/services/payments/offers'
 import { getLiveSessions } from '@ee/services/live_sessions/live_sessions'
-import { getCommunityThumbnailMediaDirectory, getCourseThumbnailMediaDirectory, getPathThumbnailMediaDirectory, getPodcastThumbnailMediaDirectory } from '@services/media/media'
+import { getCourseThumbnailMediaDirectory, getPathThumbnailMediaDirectory } from '@services/media/media'
 import { getUriWithOrg } from '@services/config/config'
 import { resourcePath } from '@/lib/seo/paths'
 import { formatCurrency } from '@/lib/format'
@@ -186,67 +184,6 @@ export function PathsBlock({ node }: { node: LandingNode }) {
     meta: x.course_count ? `${x.course_count} · ${labels.lessons}` : undefined,
     image: x.thumbnail_image && org?.org_uuid ? getPathThumbnailMediaDirectory(org.org_uuid, x.path_uuid, x.thumbnail_image) : null,
     href: getUriWithOrg(orgslug, resourcePath('path', x, x.path_uuid)),
-  }))
-  return <Cards node={node} items={items} columns={columns} layout="grid" more={labels.view_course} />
-}
-
-export function CommunitiesBlock({ node }: { node: LandingNode }) {
-  const { org, orgslug, accessToken, labels } = useRender()
-  const p = node.props || {}
-  const limit = Number(p.limit) || 6
-  const { data, isLoading } = useQuery({
-    queryKey: ['landing-block', 'communities', org?.id, limit, !!accessToken],
-    queryFn: async () => {
-      try {
-        const res = await getCommunities(org.id, 1, limit, null, accessToken)
-        return Array.isArray(res) ? res : []
-      } catch {
-        return []
-      }
-    },
-    enabled: !!org?.id,
-    staleTime: STALE,
-  })
-  const columns = Number(p.columns) || 3
-  if (isLoading) return <div className={`lhp-${node.id}`}><Skeleton count={columns} columns={columns} /></div>
-  const list: any[] = (data || []).slice(0, limit)
-  if (!list.length) return <Empty node={node} text={labels.placeholder_data} />
-  const items = list.map((x: any) => ({
-    key: x.community_uuid,
-    title: x.name,
-    text: x.description || '',
-    image: x.thumbnail_image && org?.org_uuid ? getCommunityThumbnailMediaDirectory(org.org_uuid, x.community_uuid, x.thumbnail_image) : null,
-    href: getUriWithOrg(orgslug, resourcePath('community', x, x.community_uuid)),
-  }))
-  return <Cards node={node} items={items} columns={columns} layout="grid" more={labels.view_course} />
-}
-
-export function PodcastsBlock({ node }: { node: LandingNode }) {
-  const { org, orgslug, accessToken, labels } = useRender()
-  const p = node.props || {}
-  const { data, isLoading } = useQuery({
-    queryKey: ['landing-block', 'podcasts', orgslug, !!accessToken],
-    queryFn: async () => {
-      try {
-        const res = await getOrgPodcasts(orgslug, null, accessToken)
-        return Array.isArray(res) ? res : []
-      } catch {
-        return []
-      }
-    },
-    enabled: !!orgslug,
-    staleTime: STALE,
-  })
-  const columns = Number(p.columns) || 3
-  if (isLoading) return <div className={`lhp-${node.id}`}><Skeleton count={columns} columns={columns} /></div>
-  const list: any[] = (data || []).filter((x: any) => x.published !== false).slice(0, Number(p.limit) || 6)
-  if (!list.length) return <Empty node={node} text={labels.placeholder_data} />
-  const items = list.map((x: any) => ({
-    key: x.podcast_uuid,
-    title: x.name,
-    text: x.description || '',
-    image: x.thumbnail_image && org?.org_uuid ? getPodcastThumbnailMediaDirectory(org.org_uuid, x.podcast_uuid, x.thumbnail_image) : null,
-    href: getUriWithOrg(orgslug, resourcePath('podcast', x, x.podcast_uuid)),
   }))
   return <Cards node={node} items={items} columns={columns} layout="grid" more={labels.view_course} />
 }

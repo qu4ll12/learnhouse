@@ -1,4 +1,4 @@
-// Course (and podcast) tags are stored as one string. The dashboard, the AI
+// Course tags are stored as one string. The dashboard, the AI
 // course planner and Atlas have always written "a|b|c", while demo bundles,
 // LMS imports and older data hold "a,b,c". Reading only one of the two showed
 // a comma list as a single tag.

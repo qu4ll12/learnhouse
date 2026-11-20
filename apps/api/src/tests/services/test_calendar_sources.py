@@ -1,5 +1,5 @@
 """Calendar sources beyond assignments: drip schedules, course updates,
-certificates and podcast episodes."""
+certificates."""
 
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
@@ -12,8 +12,6 @@ from src.db.courses.chapters import Chapter
 from src.db.courses.course_chapters import CourseChapter
 from src.db.courses.course_updates import CourseUpdate
 from src.db.courses.courses import Course
-from src.db.podcasts.episodes import PodcastEpisode
-from src.db.podcasts.podcasts import Podcast
 from src.db.trail_runs import TrailRun
 from src.db.usergroup_user import UserGroupUser
 from src.db.usergroups import UserGroup
@@ -165,38 +163,6 @@ async def test_certificates_are_the_users_own(db, org, course, regular_user, adm
     assert events[0].url == "/certificates/usercert_mine/verify" and events[0].title == "Test Course"
 
 
-async def test_podcast_episodes_published_and_readable(db, org, regular_user, mock_request, only):
-    only("podcasts")
-    podcast = Podcast(name="DNS Weekly", public=True, published=True, org_id=org.id, podcast_uuid="podcast_dns", creation_date="", update_date="")
-    draft = Podcast(name="Draft show", public=True, published=False, org_id=org.id, podcast_uuid="podcast_draft", creation_date="", update_date="")
-    db.add(podcast)
-    db.add(draft)
-    await db.flush()
-    for pod, uuid, published in ((podcast, "ep1", True), (podcast, "ep2", False), (draft, "ep3", True)):
-        db.add(PodcastEpisode(
-            title=uuid, podcast_id=pod.id, org_id=org.id, episode_uuid=f"episode_{uuid}", published=published,
-            creation_date=_stamp(NOW - timedelta(days=2)), update_date="",
-        ))
-    db.add(PodcastEpisode(
-        title="old", podcast_id=podcast.id, org_id=org.id, episode_uuid="episode_old", published=True,
-        creation_date=_stamp(NOW - timedelta(days=400)), update_date="",
-    ))
-    await db.commit()
-    events = await _events(mock_request, org, regular_user, db)
-    assert [e.id for e in events] == ["podcast_episode:episode_ep1"]
-
-    # A podcast the user may not read stays off their calendar.
-    with patch(
-        "src.services.calendar.sources.podcasts.check_resource_access",
-        new=AsyncMock(return_value=SimpleNamespace(allowed=False)),
-    ):
-        assert await _events(mock_request, org, regular_user, db) == []
-    assert events[0].url == "/podcast/dns" and events[0].meta == {"podcast": "DNS Weekly"}
-
-    with patch("src.services.calendar.types.resolve_feature", return_value={"enabled": False}):
-        assert await _events(mock_request, org, regular_user, db) == []
-
-
 async def test_sources_respect_the_feature_toggle(db, org, course, chapter, regular_user, mock_request, only):
     from src.db.courses.activities import Activity, ActivitySubTypeEnum, ActivityTypeEnum
     from src.db.courses.assignments import Assignment, GradingTypeEnum
@@ -221,7 +187,7 @@ async def test_sources_respect_the_feature_toggle(db, org, course, chapter, regu
 
 
 def test_all_built_in_sources_are_registered():
-    assert {"assignments", "drip", "course_updates", "certificates", "podcasts"} <= set(calendar_sources.registered_sources())
+    assert {"assignments", "drip", "course_updates", "certificates"} <= set(calendar_sources.registered_sources())
 
 
 async def test_user_course_ids_is_read_once_per_request(db, org, course, regular_user, mock_request):

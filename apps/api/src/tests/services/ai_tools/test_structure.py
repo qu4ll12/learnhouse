@@ -21,8 +21,6 @@ import pytest
 from fastapi import HTTPException
 from sqlmodel import select
 
-from src.db.communities.communities import Community
-from src.db.communities.discussions import Discussion
 from src.db.courses.chapter_activities import ChapterActivity
 from src.db.courses.chapters import Chapter, LockType
 from src.db.courses.course_chapters import CourseChapter
@@ -31,7 +29,6 @@ from src.db.folders.folder_content import FolderContent
 from src.db.folders.folders import Folder
 from src.db.media.media import Media
 from src.db.organization_config import OrganizationConfig
-from src.db.podcasts.podcasts import Podcast
 from src.db.roles import Role, RoleTypeEnum
 from src.db.user_organizations import UserOrganization
 from src.db.usergroup_resources import UserGroupResource
@@ -46,7 +43,6 @@ from src.services.ai.tools import (
 )
 from src.services.ai.tools import activities as activity_tools
 from src.services.ai.tools import chapters as chapter_tools
-from src.services.ai.tools import communities as community_tools
 from src.services.ai.tools import content_assets
 from src.services.ai.tools import courses as course_tools
 from src.services.ai.tools import library as library_tools
@@ -96,9 +92,6 @@ def environment(fake_redis):
         "src.routers.users._invalidate_session_cache": Mock(),
         "src.services.orgs.cache.get_redis_client": Mock(return_value=None),
         "src.services.ai.tools.refs.web_base": AsyncMock(return_value=BASE),
-        "src.services.communities.discussions.dispatch_webhooks": AsyncMock(),
-        "src.services.communities.discussions.track": AsyncMock(),
-        "src.services.communities.comments.dispatch_webhooks": AsyncMock(),
         "src.services.folders.folders.dispatch_webhooks": AsyncMock(),
     }
     patches = [patch(target, new) for target, new in targets.items()]
@@ -114,7 +107,7 @@ def registry():
     r = ToolRegistry()
     for module in (
         course_tools, chapter_tools, activity_tools, group_tools, role_tools, org_tools, user_tools,
-        library_tools, community_tools, content_assets,
+        library_tools, content_assets,
     ):
         r.register_all(module.SPECS)
     return r
@@ -428,10 +421,10 @@ async def people(db, org, other_org, admin_user, regular_user, user_role, course
         UserGroup(id=2, name="Theirs", description="", org_id=other_org.id, usergroup_uuid="usergroup_other",
                   creation_date=NOW, update_date=NOW),
         _course(2, "course_other", other_org.id),
-        Podcast(id=1, name="Our show", public=True, org_id=org.id, podcast_uuid="podcast_ours",
-                creation_date=NOW, update_date=NOW),
-        Podcast(id=2, name="Their show", public=True, org_id=other_org.id, podcast_uuid="podcast_theirs",
-                creation_date=NOW, update_date=NOW),
+        Media(id=10, name="Our media", org_id=org.id, media_uuid="media_ours", media_type="UPLOAD",
+              creation_date=NOW, update_date=NOW),
+        Media(id=11, name="Their media", org_id=other_org.id, media_uuid="media_theirs", media_type="UPLOAD",
+              creation_date=NOW, update_date=NOW),
     ])
     await db.commit()
     db.add(UserGroupUser(usergroup_id=1, user_id=regular_user.id, org_id=org.id, creation_date=NOW, update_date=NOW))
@@ -456,17 +449,17 @@ async def test_usergroup_never_takes_people_or_resources_from_another_org(
     args = {
         "usergroup_uuid": "usergroup_a",
         "add_members": ["outsider", "out@other.com", "user_outsider"],
-        "link_resources": ["course_other", "podcast_theirs", "podcast_ours"],
+        "link_resources": ["course_other", "media_theirs", "media_ours"],
     }
     out = ok(await call(registry, "update_usergroup", args, _ctx(db, org, admin_user, approved=True)))
     assert {r["member"]: r["result"] for r in out["member_results"]} == {
         "outsider": "not_a_member", "out@other.com": "not_a_member", "user_outsider": "not_a_member",
     }
     assert {r["resource_uuid"]: r["result"] for r in out["resource_results"]} == {
-        "course_other": "not_found", "podcast_theirs": "not_found", "podcast_ours": "linked",
+        "course_other": "not_found", "media_theirs": "not_found", "media_ours": "linked",
     }
     assert await _members_of(db, 1) == [2]
-    assert await _linked(db, 1) == ["podcast_ours"]
+    assert await _linked(db, 1) == ["media_ours"]
     # Nor can this org's tools touch the other org's group.
     denied(await call(registry, "update_usergroup", {"usergroup_uuid": "usergroup_other", "add_members": ["regular"]},
                       _ctx(db, org, admin_user, approved=True)), "http_404")
@@ -486,15 +479,15 @@ async def test_usergroup_remove_and_relink_results(registry, db, org, admin_user
     assert await _members_of(db, 1) == [2]
 
 
-async def test_get_usergroup_names_podcasts_and_unknown_links(registry, db, org, admin_user, people):
+async def test_get_usergroup_names_media_and_unknown_links(registry, db, org, admin_user, people):
     db.add_all([
-        UserGroupResource(usergroup_id=1, resource_uuid="podcast_ours", org_id=org.id, creation_date=NOW, update_date=NOW),
+        UserGroupResource(usergroup_id=1, resource_uuid="media_ours", org_id=org.id, creation_date=NOW, update_date=NOW),
         UserGroupResource(usergroup_id=1, resource_uuid="legacy_thing", org_id=org.id, creation_date=NOW, update_date=NOW),
     ])
     await db.commit()
     out = ok(await call(registry, "get_usergroup", {"usergroup_uuid": "usergroup_a"}, _ctx(db, org, admin_user)))
     items = {i["uuid"]: i for i in out["resources"]["items"]}
-    assert items["podcast_ours"] == {"kind": "podcast", "uuid": "podcast_ours", "name": "Our show"}
+    assert items["media_ours"] == {"kind": "media", "uuid": "media_ours", "name": "Our media"}
     assert items["legacy_thing"] == {"kind": "resource", "uuid": "legacy_thing"}
 
 
@@ -751,12 +744,6 @@ async def shelf(db, org, other_org, folder):
               creation_date=NOW, update_date=NOW),
         Media(id=2, name="Their clip", org_id=other_org.id, media_uuid="media_theirs",
               creation_date=NOW, update_date=NOW),
-        Podcast(id=1, name="Our show", public=True, org_id=org.id, podcast_uuid="podcast_ours",
-                creation_date=NOW, update_date=NOW),
-        Podcast(id=2, name="Their show", public=True, org_id=other_org.id, podcast_uuid="podcast_theirs",
-                creation_date=NOW, update_date=NOW),
-        Community(id=9, name="Their community", public=True, org_id=other_org.id,
-                  community_uuid="community_theirs", creation_date=NOW, update_date=NOW),
     ])
     await db.commit()
     return two
@@ -772,9 +759,7 @@ async def test_place_in_library_refuses_foreign_resources_and_folders(registry, 
     before = await _placements(db)
     for args in (
         {"resource_uuid": "course_foreign"},
-        {"resource_uuid": "podcast_theirs"},
         {"resource_uuid": "media_theirs"},
-        {"resource_uuid": "community_theirs"},
         {"resource_uuid": "course_second", "folder_uuid": "folder_theirs"},
         {"resource_uuid": "course_test", "folder_uuid": "folder_two", "from_folder_uuid": "folder_theirs"},
         {"resource_uuid": "course_test", "folder_uuid": "folder_theirs", "remove": True},
@@ -791,17 +776,17 @@ async def test_place_in_library_paths(registry, db, org, admin_user, shelf, fold
 
     assert "not both" in denied(await place(resource_uuid="course_test", remove=True, from_folder_uuid="root"), "http_400")
     ok(await place(resource_uuid="course_second", folder_uuid="folder_test"))
-    out = ok(await place(resource_uuid="podcast_ours"))
-    assert out["resource"] == {"kind": "podcast", "uuid": "podcast_ours", "name": "Our show"}
+    out = ok(await place(resource_uuid="media_clip"))
+    assert out["resource"] == {"kind": "media", "uuid": "media_clip", "name": "Clip"}
     assert "same place" in denied(await place(resource_uuid="course_test", folder_uuid="folder_test", from_folder_uuid="folder_test"), "http_400")
-    assert "same place" in denied(await place(resource_uuid="podcast_ours", from_folder_uuid="root"), "http_400")
+    assert "same place" in denied(await place(resource_uuid="media_clip", from_folder_uuid="root"), "http_400")
     assert "is not in folder \"Two\"" in denied(await place(resource_uuid="course_second", folder_uuid="folder_test", from_folder_uuid="folder_two"), "http_404")
     assert "is not in the library root" in denied(await place(resource_uuid="course_test", folder_uuid="folder_two", from_folder_uuid="root"), "http_404")
     moved = ok(await place(resource_uuid="course_test", folder_uuid="folder_two", from_folder_uuid="folder_test"))
     assert moved["from_folder"]["uuid"] == "folder_test" and moved["folder"]["uuid"] == "folder_two"
     out = ok(await place(resource_uuid="course_second", folder_uuid="folder_test", remove=True))
     assert "unchanged" in out["summary"]
-    assert await _placements(db) == [("course_test", "2", org.id), ("podcast_ours", "None", org.id)]
+    assert await _placements(db) == [("course_test", "2", org.id), ("media_clip", "None", org.id)]
 
 
 async def test_browse_library_media_and_visibility(
@@ -838,74 +823,6 @@ async def test_list_media_pages_through_the_service(registry, db, org, admin_use
     monkeypatch.setattr(library_tools, "_MEDIA_PAGE", 2)
     out = ok(await call(registry, "list_media", {"limit": 3, "cursor": None}, _ctx(db, org, admin_user)))
     assert len(out["items"]) == 3 and out["has_more"]
-
-
-# ─── communities ─────────────────────────────────────────────────────────────
-
-
-@pytest.fixture
-async def community(db, org):
-    return await add(db, Community(
-        id=1, name="Main", description="", public=True, org_id=org.id, community_uuid="community_main",
-        moderation_words=["spam"], creation_date=NOW, update_date=NOW,
-    ))
-
-
-@pytest.fixture
-async def threads(db, org, community, admin_user, regular_user):
-    db.add_all([
-        Discussion(id=1, title="Pinned", content="Rules", label="announcement", community_id=community.id,
-                   org_id=org.id, author_id=admin_user.id, discussion_uuid="discussion_pinned", is_pinned=True,
-                   creation_date=NOW, update_date=NOW),
-        Discussion(id=2, title="Question", content="How?", label="question", community_id=community.id,
-                   org_id=org.id, author_id=regular_user.id, discussion_uuid="discussion_question", is_locked=True,
-                   creation_date=NOW, update_date=NOW),
-    ])
-    await db.commit()
-
-
-async def test_moderator_rewriting_a_learners_post_needs_approval(registry, db, org, admin_user, threads):
-    args = {"discussion_uuid": "discussion_question", "title": "Edited"}
-    assert "someone else" in denied(await call(registry, "update_discussion", args, _ctx(db, org, admin_user)), "approval_required")
-    row = await db.get(Discussion, 2)
-    await db.refresh(row)
-    assert row.title == "Question"
-    denied(await call(registry, "update_discussion", {"discussion_uuid": "discussion_question"}, _ctx(db, org, admin_user)), "http_400")
-
-
-async def test_list_discussions_filters_and_tokens(registry, db, org, admin_user, threads):
-    ctx = _ctx(db, org, admin_user)
-    pinned = ok(await call(registry, "list_discussions", {"pinned": True}, ctx))
-    assert [i["uuid"] for i in pinned["items"]] == ["discussion_pinned"]
-    locked = ok(await call(registry, "list_discussions", {"locked": True}, ctx))
-    assert [i["uuid"] for i in locked["items"]] == ["discussion_question"]
-    read = {"action_create": False, "action_read": True, "action_update": False, "action_delete": False}
-    token = _token(org.id, {"communities": read, "discussions": read})
-    out = ok(await call(registry, "list_discussions", {}, _ctx(db, org, token)))
-    assert {i["uuid"] for i in out["items"]} == {"discussion_pinned", "discussion_question"}
-
-
-async def test_community_moderation_words(registry, db, org, admin_user, community):
-    ctx = _ctx(db, org, admin_user)
-    out = ok(await call(registry, "get_community", {"community_uuid": "community_main"}, ctx))
-    assert out["moderation_words"] == ["spam"]
-    ok(await call(registry, "update_community", {"community_uuid": "community_main", "moderation_words": [" scam ", "", "x" * 150]}, ctx))
-    await db.refresh(community)
-    assert community.moderation_words == ["scam", "x" * 100]
-
-
-async def test_community_helpers(db, org, admin_user, community):
-    ctx = _ctx(db, org, admin_user)
-    assert community_tools._iso(None) is None and community_tools._iso("soon") == "soon"
-    assert await community_tools._author_refs(ctx, set()) == {}
-    assert await community_tools._comment_counts(ctx, []) == {}
-    assert await community_tools._discussion_items(ctx, []) == []
-    orphan = Discussion(id=50, title="Orphan", content="", community_id=999, org_id=org.id, author_id=admin_user.id,
-                        discussion_uuid="discussion_orphan", creation_date=NOW, update_date=NOW)
-    assert await community_tools._discussion_items(ctx, [orphan]) == []
-    with pytest.raises(HTTPException) as e:
-        await community_tools._community_of(ctx, orphan)
-    assert e.value.status_code == 404
 
 
 # ─── media from a URL ────────────────────────────────────────────────────────

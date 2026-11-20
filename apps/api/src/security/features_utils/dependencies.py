@@ -19,8 +19,6 @@ from typing import Literal
 FeatureName = Literal[
     "courses",
     "folders",
-    "communities",
-    "podcasts",
     "boards",
     "playgrounds",
     "ai",

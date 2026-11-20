@@ -46,7 +46,7 @@ const CLIPBOARD_KEY = 'lh-landing-clipboard'
 // Elements added straight onto the page use the library section of this kind.
 const RECIPE_FOR: Record<string, string> = {
   navbar: 'navbar', footer: 'footer', newsletter: 'newsletter', form: 'contact', courses: 'courses', course: 'featured_course',
-  paths: 'paths', communities: 'communities', podcasts: 'podcasts', live_sessions: 'live_sessions', instructors: 'instructors',
+  paths: 'paths', live_sessions: 'live_sessions', instructors: 'instructors',
   testimonials: 'testimonials', pricing: 'pricing', faq: 'faq', stats: 'stats', logos: 'logos', steps: 'steps', features: 'features',
   countdown: 'countdown', video: 'video', gallery: 'gallery',
 }

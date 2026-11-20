@@ -7,14 +7,12 @@ import { OrgMenu } from '@components/Objects/Menus/OrgMenu'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { OrgJoinBanner, OrgJoinBannerProvider } from '@components/Objects/Banners/OrgJoinBanner'
 import { OrgMFAPolicyGate } from '@components/Objects/Banners/OrgMFAPolicyGate'
-import { PodcastPlayerProvider } from '@components/Contexts/PodcastPlayerContext'
 import { SiteCommandPaletteProvider } from '@components/Objects/Search/SiteCommandPaletteContext'
 import { ShortcutsProvider } from '@/lib/shortcuts/ShortcutsContext'
 import { MessagingProvider } from '@components/Messaging/MessagingProvider'
 import GlobalShortcuts from '@components/Objects/Shortcuts/GlobalShortcuts'
 import dynamic from 'next/dynamic'
 import AfterLoad from '@components/Utils/AfterLoad'
-const PodcastPlayer = dynamic(() => import('@components/Objects/Podcasts/PodcastPlayer'), { ssr: false })
 const SiteCommandPalette = dynamic(() => import('@components/Objects/Search/SiteCommandPalette'), { ssr: false })
 const ShortcutHelp = dynamic(() => import('@components/Objects/Shortcuts/ShortcutHelp'), { ssr: false })
 const LiveNowBanner = dynamic(() => import('@ee/components/LiveSessions/LiveNowBanner'), { ssr: false })
@@ -171,18 +169,15 @@ export default function RootLayout(
     <>
       <SessionGate>
       <OrgJoinBannerProvider>
-        <PodcastPlayerProvider>
-          <SiteCommandPaletteProvider>
-            <ShortcutsProvider>
-              <MessagingProvider orgslug={params?.orgslug}>
-                <LayoutContent orgslug={params?.orgslug}>
-                  {children}
-                </LayoutContent>
-              </MessagingProvider>
-            </ShortcutsProvider>
-          </SiteCommandPaletteProvider>
-          <PodcastPlayer />
-        </PodcastPlayerProvider>
+        <SiteCommandPaletteProvider>
+          <ShortcutsProvider>
+            <MessagingProvider orgslug={params?.orgslug}>
+              <LayoutContent orgslug={params?.orgslug}>
+                {children}
+              </LayoutContent>
+            </MessagingProvider>
+          </ShortcutsProvider>
+        </SiteCommandPaletteProvider>
       </OrgJoinBannerProvider>
       </SessionGate>
     </>

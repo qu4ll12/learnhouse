@@ -87,11 +87,6 @@ COURSES: dict[str, dict] = {
         "name": "Getting started with our product",
         "description": "Help customers get value from day one.",
     },
-    "community": {
-        **_WELCOME,
-        "name": "Welcome to the community",
-        "description": "How the community works and where to begin.",
-    },
 }
 
 

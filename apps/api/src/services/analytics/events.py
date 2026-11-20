@@ -53,14 +53,11 @@ ACTIVITY_VIEW = "activity_view"
 SEARCH_QUERY = "search_query"
 TIME_ON_ACTIVITY = "time_on_activity"
 VIDEO_PROGRESS = "video_progress"
-PODCAST_EPISODE_PLAYED = "podcast_episode_played"
 COURSE_SHARED = "course_shared"
 STORE_OFFER_VIEWED = "store_offer_viewed"
-COMMUNITY_VIEWED = "community_viewed"
 BOARD_VIEWED = "board_viewed"
 PLAYGROUND_VIEWED = "playground_viewed"
 PATH_VIEWED = "path_viewed"
-PODCAST_EPISODE_PROGRESS = "podcast_episode_progress"
 CERTIFICATE_VIEWED = "certificate_viewed"
 LIBRARY_RESOURCE_OPENED = "library_resource_opened"
 AI_ASSISTANT_OPENED = "ai_assistant_opened"
@@ -81,9 +78,6 @@ USER_REMOVED_FROM_ORG = "user_removed_from_org"
 USER_LOGGED_IN = "user_logged_in"
 CERTIFICATE_CLAIMED = "certificate_claimed"
 CERTIFICATE_REVOKED = "certificate_revoked"
-DISCUSSION_POSTED = "discussion_posted"
-COMMENT_POSTED = "comment_posted"
-REACTION_ADDED = "reaction_added"
 PAYMENT_SUCCEEDED = "payment_succeeded"
 PAYMENT_REFUNDED = "payment_refunded"
 LIVE_SESSION_JOINED = "live_session_joined"
@@ -104,9 +98,6 @@ NUDGE_SENT = "nudge_sent"
 # Messaging: one per message a member posts (direct, group, course channel).
 MESSAGE_SENT = "message_sent"
 COURSE_CREATED = "course_created"
-DISCUSSION_UPVOTED = "discussion_upvoted"
-COMMENT_UPVOTED = "comment_upvoted"
-PODCAST_EPISODE_PUBLISHED = "podcast_episode_published"
 USER_INVITED = "user_invited"
 
 
@@ -118,14 +109,11 @@ CATALOG: dict[str, EventSpec] = {
         _spec(COURSE_VIEW, public=True),
         _spec(ACTIVITY_VIEW, "activity_type", public=True),
         _spec(SEARCH_QUERY, "query", "results_count", "surface", public=True),
-        _spec(PODCAST_EPISODE_PLAYED, "podcast_uuid", "episode_uuid", public=True),
         _spec(COURSE_SHARED, "channel", public=True),
         _spec(STORE_OFFER_VIEWED, "offer_id", public=True),
-        _spec(COMMUNITY_VIEWED, "community_uuid", public=True),
         _spec(BOARD_VIEWED, "board_uuid", public=True),
         _spec(PLAYGROUND_VIEWED, "playground_uuid", public=True),
         _spec(PATH_VIEWED, "path_uuid", public=True),
-        _spec(PODCAST_EPISODE_PROGRESS, "podcast_uuid", "episode_uuid", "percent", public=True),
         _spec(CERTIFICATE_VIEWED, "certificate_uuid", public=True),
         _spec(LIBRARY_RESOURCE_OPENED, "resource_uuid", "resource_type", public=True),
         # Web: members only
@@ -146,9 +134,6 @@ CATALOG: dict[str, EventSpec] = {
         _spec(USER_LOGGED_IN, "login_method"),
         _spec(CERTIFICATE_CLAIMED),
         _spec(CERTIFICATE_REVOKED),
-        _spec(DISCUSSION_POSTED, "community_uuid", "discussion_uuid", "label"),
-        _spec(COMMENT_POSTED, "community_uuid", "discussion_uuid"),
-        _spec(REACTION_ADDED, "community_uuid", "discussion_uuid", "reaction"),
         _spec(PAYMENT_SUCCEEDED, "offer_id", "amount", "currency", "kind"),
         _spec(PAYMENT_REFUNDED, "offer_id", "amount", "currency"),
         _spec(LIVE_SESSION_JOINED, "session_uuid"),
@@ -164,9 +149,6 @@ CATALOG: dict[str, EventSpec] = {
         _spec(NUDGE_SENT, "nudge_type", "nudge_id"),
         _spec(MESSAGE_SENT, "conversation_uuid", "conversation_kind"),
         _spec(COURSE_CREATED, "source"),
-        _spec(DISCUSSION_UPVOTED, "community_uuid", "discussion_uuid"),
-        _spec(COMMENT_UPVOTED, "community_uuid", "discussion_uuid"),
-        _spec(PODCAST_EPISODE_PUBLISHED, "podcast_uuid", "episode_uuid"),
         _spec(USER_INVITED, "invite_method", "count"),
     )
 }

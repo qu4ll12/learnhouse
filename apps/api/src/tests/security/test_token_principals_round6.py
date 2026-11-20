@@ -16,9 +16,6 @@ from fastapi import HTTPException
 from sqlmodel import select
 
 from src.db.api_tokens import APIToken
-from src.db.communities.communities import Community
-from src.db.communities.discussion_comments import DiscussionComment
-from src.db.communities.discussions import Discussion
 from src.db.courses.courses import Course
 from src.db.roles import Role, RoleTypeEnum
 from src.db.usergroup_resources import UserGroupResource
@@ -40,29 +37,6 @@ def _token(org_id=1, creator=1, **rights) -> APITokenUser:
     )
 
 
-async def _community(db, org, uuid="community_r6", public=True):
-    c = Community(
-        org_id=org.id, name="C", description="", public=public,
-        community_uuid=uuid, creation_date=NOW, update_date=NOW,
-    )
-    db.add(c)
-    await db.commit()
-    await db.refresh(c)
-    return c
-
-
-async def _discussion(db, community, author_id, uuid="discussion_r6"):
-    d = Discussion(
-        title="T", content="C", label="general", community_id=community.id,
-        org_id=community.org_id, author_id=author_id, discussion_uuid=uuid,
-        upvote_count=0, creation_date=NOW, update_date=NOW,
-    )
-    db.add(d)
-    await db.commit()
-    await db.refresh(d)
-    return d
-
-
 async def _outsider(db, other_org):
     u = User(
         id=9, username="out", first_name="O", last_name="U", email="out@test.com",
@@ -73,113 +47,6 @@ async def _outsider(db, other_org):
     await db.commit()
     return PublicUser(id=9, username="out", first_name="O", last_name="U",
                       email="out@test.com", user_uuid="user_out")
-
-
-# -- Community writes ---------------------------------------------------------
-
-
-class TestCommunityWrites:
-    async def test_non_member_cannot_comment_on_public_community(
-        self, db, org, other_org, admin_user, user_role, mock_request
-    ):
-        from src.services.communities.comments import create_comment
-
-        community = await _community(db, org)
-        discussion = await _discussion(db, community, admin_user.id)
-        outsider = await _outsider(db, other_org)
-        with pytest.raises(HTTPException) as exc:
-            await create_comment(mock_request, discussion.discussion_uuid, "hi", outsider, db)
-        assert exc.value.status_code == 403
-
-    async def test_member_without_discussions_create_cannot_vote(
-        self, db, org, admin_user, regular_user, mock_request
-    ):
-        # The fixture User role carries discussions.action_create = False.
-        from src.services.communities.votes import upvote_discussion
-
-        community = await _community(db, org)
-        discussion = await _discussion(db, community, admin_user.id)
-        with pytest.raises(HTTPException) as exc:
-            await upvote_discussion(mock_request, discussion.discussion_uuid, regular_user, db)
-        assert exc.value.status_code == 403
-
-    async def test_token_writes_as_its_creator(self, db, org, admin_user, mock_request):
-        from src.services.communities.comments import create_comment
-
-        community = await _community(db, org)
-        discussion = await _discussion(db, community, admin_user.id)
-        token = _token(
-            creator=admin_user.id,
-            communities={"action_read": True},
-            discussions={"action_create": True},
-        )
-        with patch("src.services.communities.comments.dispatch_webhooks", new_callable=AsyncMock):
-            created = await create_comment(mock_request, discussion.discussion_uuid, "hi", token, db)
-        assert created.author_id == admin_user.id
-        row = (await db.execute(select(DiscussionComment))).scalars().first()
-        assert row.author_id == admin_user.id
-
-    async def test_token_needs_discussions_create(self, db, org, admin_user, mock_request):
-        from src.services.communities.reactions import toggle_reaction
-
-        community = await _community(db, org)
-        discussion = await _discussion(db, community, admin_user.id)
-        token = _token(creator=admin_user.id, communities={"action_read": True})
-        with pytest.raises(HTTPException) as exc:
-            await toggle_reaction(mock_request, discussion.discussion_uuid, "x", token, db)
-        assert exc.value.status_code == 403
-
-    async def test_token_of_other_org_cannot_write(self, db, org, admin_user):
-        from src.services.communities.access import require_community_participant
-
-        community = await _community(db, org)
-        token = _token(org_id=2, creator=admin_user.id, discussions={"action_create": True})
-        with pytest.raises(HTTPException) as exc:
-            await require_community_participant(token, community, db)
-        assert exc.value.status_code == 403
-
-    async def test_token_moderation_uses_token_rights_not_creator_role(
-        self, db, org, admin_user, mock_request
-    ):
-        from src.services.communities.discussions import pin_discussion
-
-        community = await _community(db, org)
-        discussion = await _discussion(db, community, admin_user.id)
-        # Creator is an org admin, but the token itself holds no communities update.
-        token = _token(creator=admin_user.id, communities={"action_read": True})
-        with pytest.raises(HTTPException) as exc:
-            await pin_discussion(mock_request, discussion.discussion_uuid, True, token, db)
-        assert exc.value.status_code == 403
-
-        allowed = _token(creator=admin_user.id, communities={"action_read": True, "action_update": True})
-        with patch("src.services.communities.discussions.dispatch_webhooks", new_callable=AsyncMock):
-            result = await pin_discussion(mock_request, discussion.discussion_uuid, True, allowed, db)
-        assert result.is_pinned is True
-
-    async def test_create_community_checks_token_rights(self, db, org, admin_user, mock_request):
-        from src.db.communities.communities import CommunityCreate
-        from src.services.communities.communities import create_community
-
-        token = _token(creator=admin_user.id, communities={"action_read": True})
-        with pytest.raises(HTTPException) as exc:
-            await create_community(
-                mock_request, org.id, CommunityCreate(name="n", description="d", public=True), token, db
-            )
-        assert exc.value.status_code == 403
-
-    async def test_community_listing_token_scope(self, db, org, other_org, admin_user, mock_request):
-        from src.services.communities.communities import get_communities_by_org
-
-        await _community(db, org, public=False)
-        reader = _token(creator=admin_user.id, communities={"action_read": True})
-        assert len(await get_communities_by_org(mock_request, org.id, reader, db)) == 1
-        with pytest.raises(HTTPException):
-            await get_communities_by_org(mock_request, other_org.id, reader, db)
-        with pytest.raises(HTTPException):
-            await get_communities_by_org(mock_request, org.id, _token(creator=admin_user.id), db)
-        # No communities bucket: courses read covers it, as for every existing token.
-        legacy = _token(creator=admin_user.id, courses={"action_read": True})
-        assert len(await get_communities_by_org(mock_request, org.id, legacy, db)) == 1
 
 
 # -- Backoffice token at the non-token gates -----------------------------------
@@ -356,26 +223,6 @@ class TestListings:
         results = await search_courses(mock_request, regular_user, org.slug, "draft", db)
         assert results == []
 
-    async def test_podcast_listing_uses_podcasts_bucket_or_courses_read(
-        self, db, org, admin_user, mock_request
-    ):
-        from src.services.podcasts.podcasts import get_podcasts_count_orgslug
-
-        # A token holding the podcasts bucket is judged on it.
-        with pytest.raises(HTTPException):
-            await get_podcasts_count_orgslug(
-                mock_request,
-                _token(creator=admin_user.id, podcasts={"action_read": False}, courses={"action_read": True}),
-                org.slug,
-                db,
-            )
-        # Tokens minted before that bucket existed fall back to courses read.
-        assert await get_podcasts_count_orgslug(
-            mock_request, _token(creator=admin_user.id, courses={"action_read": True}), org.slug, db
-        ) == 0
-        with pytest.raises(HTTPException):
-            await get_podcasts_count_orgslug(mock_request, _token(creator=admin_user.id), org.slug, db)
-
     async def test_search_denies_token_without_rights(self, db, org, admin_user, mock_request):
         from src.services.search.search import search_across_org
 
@@ -493,64 +340,6 @@ class TestBackofficeTokenOrgAndCommunityGates:
         token = BackofficeAPITokenUser(id=5, created_by_user_id=999)
         assert await rbac_check(mock_request, org.org_uuid, token, "update", db) is True
 
-    async def test_backoffice_token_cannot_post_to_a_community(self, db, org):
-        from src.db.users import BackofficeAPITokenUser
-        from src.services.communities.access import require_community_participant
-
-        community = await _community(db, org)
-        with pytest.raises(HTTPException) as exc:
-            await require_community_participant(
-                BackofficeAPITokenUser(id=5, created_by_user_id=999), community, db
-            )
-        assert exc.value.status_code == 403
-
-
-class TestTokenAuthorship:
-    async def _comment(self, db, discussion, author_id):
-        c = DiscussionComment(
-            discussion_id=discussion.id, author_id=author_id, content="c",
-            comment_uuid="comment_r6", creation_date=NOW, update_date=NOW,
-        )
-        db.add(c)
-        await db.commit()
-        await db.refresh(c)
-        return c
-
-    async def test_token_owns_its_creators_comments_only_while_it_may_post(
-        self, db, org, admin_user, regular_user
-    ):
-        from src.services.communities.comments import _is_comment_author
-
-        community = await _community(db, org)
-        discussion = await _discussion(db, community, admin_user.id)
-        comment = await self._comment(db, discussion, admin_user.id)
-        poster = {"discussions": {"action_create": True}}
-
-        assert await _is_comment_author(_token(creator=admin_user.id, **poster), comment, db)
-        # Someone else's comment
-        assert not await _is_comment_author(_token(creator=regular_user.id, **poster), comment, db)
-        # Creator matches, but the token may no longer post
-        assert not await _is_comment_author(
-            _token(creator=admin_user.id, discussions={"action_read": True}), comment, db
-        )
-        # Creator matches, but the token belongs to another org
-        assert not await _is_comment_author(
-            _token(org_id=org.id + 1, creator=admin_user.id, **poster), comment, db
-        )
-
-    async def test_token_edits_its_creators_discussion_only_while_it_may_post(
-        self, db, org, admin_user
-    ):
-        from src.services.communities.discussions import _is_author
-
-        community = await _community(db, org)
-        discussion = await _discussion(db, community, admin_user.id)
-        poster = _token(creator=admin_user.id, discussions={"action_create": True})
-        reader = _token(creator=admin_user.id, discussions={"action_read": True})
-
-        assert _is_author(poster, admin_user.id, discussion) is True
-        assert _is_author(reader, admin_user.id, discussion) is False
-
 
 class TestTokenListingEdges:
     async def test_course_listing_for_unknown_org_is_empty(self, db, org, admin_user, mock_request):
@@ -569,44 +358,6 @@ class TestTokenListingEdges:
         reader = _token(creator=admin_user.id, courses={"action_read": True})
         assert [c.name for c in await search_courses(mock_request, reader, org.slug, "pub", db)] == ["pub"]
         assert await search_courses(mock_request, reader, org.slug, "draft", db) == []
-
-    async def _podcasts(self, db, org):
-        from src.db.podcasts.podcasts import Podcast
-
-        db.add(Podcast(name="live", public=False, published=True, org_id=org.id,
-                       podcast_uuid="podcast_live", creation_date=NOW, update_date=NOW))
-        db.add(Podcast(name="draft", public=False, published=False, org_id=org.id,
-                       podcast_uuid="podcast_draft", creation_date=NOW, update_date=NOW))
-        await db.commit()
-
-    async def test_podcast_listing_uses_token_rights(self, db, org, admin_user, mock_request):
-        from src.services.podcasts import podcasts as svc
-
-        await self._podcasts(db, org)
-        reader = _token(creator=admin_user.id, podcasts={"action_read": True})
-        with patch.object(svc, "_is_podcasts_feature_enabled", new_callable=AsyncMock, return_value=True):
-            listed = await svc.get_podcasts_orgslug(mock_request, reader, org.slug, db)
-            assert [p.name for p in listed] == ["live"]
-            listed = await svc.get_podcasts_orgslug(
-                mock_request, reader, org.slug, db, include_unpublished=True
-            )
-            assert {p.name for p in listed} == {"live", "draft"}
-
-            with pytest.raises(HTTPException) as exc:
-                await svc.get_podcasts_orgslug(
-                    mock_request, _token(creator=admin_user.id), org.slug, db
-                )
-            assert exc.value.status_code == 403
-            other = _token(org_id=org.id + 1, creator=admin_user.id, podcasts={"action_read": True})
-            with pytest.raises(HTTPException) as exc:
-                await svc.get_podcasts_orgslug(mock_request, other, org.slug, db)
-            assert exc.value.status_code == 403
-
-    async def test_podcast_count_for_unknown_org_is_zero(self, db, org, admin_user, mock_request):
-        from src.services.podcasts.podcasts import get_podcasts_count_orgslug
-
-        reader = _token(creator=admin_user.id, podcasts={"action_read": True})
-        assert await get_podcasts_count_orgslug(mock_request, reader, "no-such-org", db) == 0
 
 
 class TestRightsShapeEdges:

@@ -78,9 +78,7 @@ NOTIFICATION_TYPE_META: dict[str, TypeMeta] = {
     # live sessions
     "live_session": TypeMeta("live", priority="important"),
     "live_recording": TypeMeta("live"),
-    # communities, comments, mentions, notes
-    "discussion_reply": TypeMeta("community"),
-    "discussion_mention": TypeMeta("community"),
+    # comments, mentions, notes
     "editor_comment": TypeMeta("community"),
     "editor_mention": TypeMeta("community"),
     "note_shared": TypeMeta("community"),
@@ -145,8 +143,6 @@ NOTIFICATION_LINKS: dict[str, str] = {
     "play_shared": "/play/{play}",
     "live_session": "/live/{session}",
     "live_recording": "/live/{session}",
-    "discussion_reply": "/community/{community}/discussion/{discussion}",
-    "discussion_mention": "/community/{community}/discussion/{discussion}",
     "editor_comment": "/course/{course}/activity/{activity}/edit?thread={thread}",
     "editor_mention": "/course/{course}/activity/{activity}/edit?thread={thread}",
     "note_shared": "/course/{course}/activity/{activity}",

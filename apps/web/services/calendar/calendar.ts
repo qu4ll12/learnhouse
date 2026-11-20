@@ -9,7 +9,6 @@ export type CalendarEventType =
   | 'course_start'
   | 'course_update'
   | 'certificate'
-  | 'podcast_episode'
   | (string & {})
 
 export interface CalendarEvent {

@@ -1,5 +1,5 @@
 """Tests for src/core/events/content_dates.py: editing a course's content moves
-the course's update_date (and an episode moves its podcast's)."""
+the course's update_date."""
 
 from datetime import datetime
 from unittest.mock import AsyncMock, patch
@@ -14,8 +14,6 @@ from src.db.courses.chapter_activities import ChapterActivity
 from src.db.courses.chapters import Chapter
 from src.db.courses.course_chapters import CourseChapter
 from src.db.courses.courses import Course
-from src.db.podcasts.episodes import PodcastEpisode
-from src.db.podcasts.podcasts import Podcast
 from src.services.courses.activities.activities import update_activity
 
 OLD = "2020-01-01 00:00:00"
@@ -148,23 +146,6 @@ async def test_reordering_moves_course_date_only_on_real_change(db, course, chap
     activity_link.order = 5
     await db.commit()
     assert await _stored(db, Course, course.id) > OLD
-
-
-@pytest.mark.asyncio
-async def test_editing_episode_moves_podcast_date(db, org):
-    podcast = Podcast(name="Pod", public=True, org_id=org.id, podcast_uuid="podcast_1", update_date=OLD)
-    db.add(podcast)
-    await db.commit()
-    episode = PodcastEpisode(title="Ep", podcast_id=podcast.id, org_id=org.id, episode_uuid="episode_1")
-    db.add(episode)
-    await db.commit()
-    assert await _stored(db, Podcast, podcast.id) > OLD
-
-    await _age(db, Podcast, podcast.id)
-    episode.title = "Ep renamed"
-    episode.update_date = str(datetime.now())
-    await db.commit()
-    assert await _stored(db, Podcast, podcast.id) > OLD
 
 
 def test_touch_parent_skips_rows_without_session_or_parent():

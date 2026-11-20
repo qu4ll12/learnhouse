@@ -398,7 +398,7 @@ async def test_resources(db, org, admin_user, sessions):
     assert {"learnhouse://blocks", "learnhouse://branding", "learnhouse://guide/pedagogy", "learnhouse://block/quiz"} <= set(uris)
     templates = await handlers.list_resource_templates(ctx_for(None), None)
     assert {t.name for t in templates.resource_templates} == {
-        "course", "activity", "assignment", "path", "community", "activity_markdown", "block", "guide",
+        "course", "activity", "assignment", "path", "activity_markdown", "block", "guide",
     }
 
     for uri in ("learnhouse://org", "learnhouse://course/course_1", "learnhouse://activity/activity_1"):

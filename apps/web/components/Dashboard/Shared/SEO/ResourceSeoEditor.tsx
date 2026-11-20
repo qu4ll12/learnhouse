@@ -13,7 +13,7 @@ import type { SeoResourceType } from '@/lib/seo/paths'
 import { ResourceSeoPanel, cleanSeoForSave } from './ResourceSeoPanel'
 
 /**
- * SEO tab for a path, podcast, community or folder: loads the resource's SEO
+ * SEO tab for a path or folder: loads the resource's SEO
  * settings, edits them in the shared panel and saves with the sticky bar.
  */
 export function ResourceSeoEditor({

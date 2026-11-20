@@ -93,10 +93,6 @@
           "title": "Fitur Standar",
           "description": "Komunitas adalah fitur premium yang hanya tersedia untuk organisasi pada paket Standar kami atau lebih tinggi. Tingkatkan untuk membuka komunitas diskusi untuk anggota Anda."
         },
-        "podcasts": {
-          "title": "Fitur Standard",
-          "description": "Podcast adalah fitur premium yang hanya tersedia untuk organisasi dengan paket Standard atau lebih tinggi. Upgrade untuk membuat dan membagikan podcast dengan anggota Anda."
-        },
         "audit_logs": {
           "title": "Fitur Enterprise",
           "description": "Log audit adalah fitur premium yang hanya tersedia untuk organisasi dengan paket Enterprise. Upgrade untuk mendapatkan visibilitas penuh atas aktivitas organisasi Anda."
@@ -246,12 +242,6 @@
           "b2": "Pengingat terkirim otomatis",
           "b3": "Rekaman tersimpan di samping kursus"
         },
-        "podcasts": {
-          "title": "Jangkau pelajar di mana saja",
-          "b1": "Terbitkan episode audio di samping kursus Anda",
-          "b2": "Pemutar yang mengingat posisi terakhir setiap pendengar",
-          "b3": "Ubah pelajaran menjadi episode dengan AI"
-        },
         "usergroups": {
           "title": "Atur pelajar dalam grup",
           "b1": "Beri grup akses ke kursus yang ditujukan untuknya",
@@ -392,7 +382,6 @@
           "library": "Perpustakaan",
           "folders": "Perpustakaan",
           "communities": "Komunitas",
-          "podcasts": "Podcast",
           "payments": "Pembayaran",
           "trail": "Pelacakan Kemajuan",
           "boards": "Papan",
@@ -3021,311 +3010,12 @@
       "hand_place": "Tangan Anda terangkat · #{{place}} dalam antrean"
     }
   },
-  "podcasts": {
-    "podcasts": "Podcast",
-    "browse_description": "Dengarkan podcast dari organisasi ini",
-    "new_podcast": "Podcast Baru",
-    "search_placeholder": "Cari podcast...",
-    "no_podcasts": "Belum ada podcast",
-    "no_podcasts_description": "Saat ini tidak ada podcast yang tersedia",
-    "create_podcasts_placeholder": "Buat podcast untuk berbagi konten audio dengan audiens Anda",
-    "no_search_results": "Podcast tidak ditemukan",
-    "try_different_search": "Coba kata kunci pencarian lain",
-    "search_results_other": "Ditemukan {{count}} podcast untuk \"{{query}}\"",
-    "podcast_name": "Nama Podcast",
-    "podcast_name_required": "Nama podcast wajib diisi",
-    "podcast_thumbnail": "Thumbnail Podcast",
-    "podcast_tags": "Tag",
-    "podcast_visibility": "Visibilitas",
-    "create_podcast": "Buat Podcast",
-    "create_new_podcast": "Buat podcast baru untuk organisasi Anda",
-    "create_podcast_btn": "Buat Podcast",
-    "creating_podcast": "Membuat podcast...",
-    "podcast_created_success": "Podcast berhasil dibuat",
-    "failed_to_create_podcast": "Gagal membuat podcast",
-    "episodes": "Episode",
-    "no_episodes": "Belum ada episode",
-    "hosted_by": "Dipandu oleh",
-    "tags": "Tag",
-    "manage_podcast": "Kelola Podcast",
-    "published": "Diterbitkan",
-    "unpublished": "Belum diterbitkan",
-    "public": "Publik",
-    "private": "Pribadi",
-    "listen_now": "Dengar Sekarang",
-    "delete_podcast": "Hapus Podcast",
-    "delete_podcast_title": "Hapus Podcast?",
-    "delete_podcast_confirm": "Apakah Anda yakin ingin menghapus podcast ini? Tindakan ini tidak dapat dibatalkan dan semua episode akan dihapus.",
-    "deleting_podcast": "Menghapus podcast...",
-    "podcast_deleted_success": "Podcast berhasil dihapus",
-    "podcast_deleted_error": "Gagal menghapus podcast",
-    "edit_content": "Edit Konten",
-    "form": {
-      "name_required": "Nama podcast wajib diisi",
-      "name_min_length": "Nama harus minimal 3 karakter",
-      "name_max_length": "Nama harus maksimal 100 karakter",
-      "description_max_length": "Deskripsi harus maksimal 500 karakter"
-    },
-    "modals": {
-      "create": {
-        "title": "Buat Podcast Baru",
-        "description": "Isi detail untuk membuat podcast baru",
-        "form": {
-          "name_label": "Nama Podcast",
-          "name_placeholder": "Masukkan nama podcast",
-          "description_label": "Deskripsi",
-          "description_placeholder": "Masukkan deskripsi podcast",
-          "public_label": "Jadikan podcast ini publik"
-        },
-        "cancel": "Batal",
-        "submit": "Buat Podcast",
-        "generated_image_failed": "Gagal memuat gambar yang dihasilkan",
-        "draft_hint": "Podcast baru dimulai sebagai draf. Publikasikan saat episode pertama Anda siap."
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "Umum",
-        "episodes": "Episode",
-        "distribution": "Distribusi"
-      },
-      "view_podcast": "Lihat Podcast",
-      "saving": "Menyimpan...",
-      "saved": "Perubahan disimpan",
-      "save_error": "Gagal menyimpan perubahan",
-      "save_changes": "Simpan Perubahan",
-      "form": {
-        "thumbnail": "Thumbnail",
-        "upload_thumbnail": "Unggah Thumbnail",
-        "thumbnail_hint": "Ukuran yang disarankan: 1400x1400px. JPG atau PNG.",
-        "about": "Tentang",
-        "about_placeholder": "Beritahu pendengar lebih banyak tentang podcast ini...",
-        "about_max_length": "Tentang harus maksimal 2000 karakter",
-        "tags_placeholder": "musik, edukasi, teknologi",
-        "tags_hint": "Pisahkan tag dengan koma",
-        "visibility": "Pengaturan Visibilitas",
-        "public_hint": "Siapa pun dapat menemukan dan mendengarkan podcast ini",
-        "published_hint": "Tampilkan podcast ini di halaman organisasi Anda",
-        "private_hint": "Hanya anggota organisasi Anda yang sudah login yang dapat mendengarkan"
-      },
-      "episodes": {
-        "new_episode": "Episode Baru",
-        "new_episode_description": "Tambahkan episode baru ke podcast ini",
-        "no_episodes_description": "Mulailah dengan menambahkan episode pertama Anda",
-        "create_first": "Buat Episode Pertama",
-        "creating": "Membuat episode...",
-        "created": "Episode dibuat",
-        "create_error": "Gagal membuat episode",
-        "create": "Buat Episode",
-        "deleting": "Menghapus episode...",
-        "deleted": "Episode dihapus",
-        "delete_error": "Gagal menghapus episode",
-        "delete": "Hapus",
-        "delete_title": "Hapus Episode?",
-        "delete_confirm": "Apakah Anda yakin ingin menghapus episode ini? Tindakan ini tidak dapat dibatalkan.",
-        "updating": "Memperbarui episode...",
-        "updated": "Episode diperbarui",
-        "update_error": "Gagal memperbarui episode",
-        "edit": "Edit",
-        "edit_episode": "Edit Episode",
-        "edit_episode_description": "Perbarui detail episode",
-        "save": "Simpan Perubahan",
-        "publish": "Terbitkan",
-        "unpublish": "Batalkan Terbit",
-        "no_audio": "Tidak ada file audio",
-        "title_label": "Judul",
-        "title_placeholder": "Masukkan judul episode",
-        "description_label": "Deskripsi",
-        "description_placeholder": "Masukkan deskripsi episode",
-        "audio_label": "File Audio",
-        "upload_audio": "Unggah File Audio",
-        "replace_audio": "Ganti File Audio",
-        "audio_hint": "File MP3, WAV, atau M4A didukung",
-        "actions": "Tindakan episode",
-        "cover_drop_hint": "Gambar persegi, JPG atau PNG. Jika kosong, sampul podcast digunakan.",
-        "cover_hint": "Opsional",
-        "cover_label": "Sampul episode",
-        "drag_to_reorder": "Seret untuk mengurutkan ulang",
-        "drop_hint": "Jatuhkan file di sini atau klik untuk menelusuri",
-        "move_down": "Pindah ke bawah",
-        "move_up": "Pindah ke atas",
-        "pause": "Jeda",
-        "play": "Putar",
-        "publish_hint": "Episode yang dipublikasikan tampil untuk pendengar dan di feed RSS.",
-        "publish_now": "Publikasikan sekarang",
-        "remove_file": "Hapus file",
-        "reorder_error": "Tidak dapat menyimpan urutan baru",
-        "reorder_hint": "Seret gagang untuk mengubah urutan, atau gunakan Pindah ke atas / Pindah ke bawah di menu.",
-        "replace_cover": "Ganti sampul",
-        "section_description": "Tambahkan episode audio. Pendengar mendengarnya dalam urutan ini.",
-        "summary_one": "{{count}} episode · {{published}} dipublikasikan · total {{duration}}",
-        "summary_other": "{{count}} episode · {{published}} dipublikasikan · total {{duration}}",
-        "upload_cover": "Unggah sampul",
-        "wrong_file_type": "Tipe file itu tidak didukung di sini"
-      },
-      "back_to_podcasts": "Kembali ke podcast",
-      "general": {
-        "cover_drop": "Jatuhkan gambar di sini atau klik untuk menelusuri",
-        "details_description": "Nama, ringkasan, dan tag yang dilihat pendengar.",
-        "details_title": "Detail",
-        "discard_cover": "Buang sampul baru",
-        "replace_cover": "Ganti sampul",
-        "visibility_description": "Sakelar ini tersimpan begitu Anda mengubahnya."
-      },
-      "list": {
-        "clear_filters": "Hapus filter",
-        "columns": {
-          "authors": "Penulis",
-          "podcast": "Podcast",
-          "updated": "Diperbarui",
-          "visibility": "Visibilitas"
-        },
-        "copy_failed": "Tidak dapat menyalin tautan",
-        "copy_link": "Salin tautan",
-        "draft": "Draf",
-        "edit_episodes": "Edit episode",
-        "episodes_count_one": "{{count}} episode",
-        "episodes_count_other": "{{count}} episode",
-        "episodes_short": "Episode",
-        "filters": {
-          "all": "Semua",
-          "drafts": "Draf",
-          "published": "Dipublikasikan"
-        },
-        "make_private": "Jadikan privat",
-        "make_public": "Jadikan publik",
-        "no_description": "Belum ada deskripsi",
-        "published_toast": "Podcast dipublikasikan",
-        "showing_count": "Menampilkan {{shown}} dari {{total}}",
-        "sort": {
-          "episodes": "Episode terbanyak",
-          "name": "Nama",
-          "newest": "Terbaru",
-          "updated": "Terakhir diperbarui"
-        },
-        "sort_label": "Urutkan podcast",
-        "stats": {
-          "drafts": "Draf",
-          "episodes": "Episode",
-          "published": "Dipublikasikan",
-          "total": "Semua podcast"
-        },
-        "status_filter": "Filter berdasarkan status",
-        "subtitle": "Publikasikan serial audio dan kelola episodenya.",
-        "unpublished_toast": "Publikasi podcast dibatalkan"
-      }
-    },
-    "distribution": {
-      "copied": "Disalin ke papan klip",
-      "rss_title": "Umpan RSS",
-      "rss_description": "Umpan RSS podcast Anda dibuat secara otomatis. Gunakan URL ini untuk mengirimkan podcast Anda ke direktori.",
-      "copy": "Salin",
-      "preview": "Pratinjau",
-      "unpublished_warning": "Podcast Anda saat ini belum diterbitkan. Terbitkan terlebih dahulu sebelum mengirimkan ke direktori.",
-      "directories_title": "Kirim ke Direktori Podcast",
-      "directories_description": "Ikuti langkah-langkah ini agar podcast Anda terdaftar di platform besar. Setiap platform mengharuskan Anda mengirimkan URL umpan RSS Anda.",
-      "apple": {
-        "subtitle": "Juga didistribusikan ke Apple Music",
-        "step1": "Buka <link>podcastsconnect.apple.com</link> dan masuk dengan Apple ID Anda",
-        "step2": "Klik tombol <strong>+</strong> dan pilih \"New Show\"",
-        "step3": "Pilih \"Add a show with an RSS feed\" dan tempel URL umpan RSS Anda",
-        "step4": "Apple akan memvalidasi umpan Anda; peninjauan biasanya memakan waktu 1-5 hari kerja"
-      },
-      "spotify": {
-        "subtitle": "Platform mendengarkan podcast terbesar",
-        "step1": "Buka <link>podcasters.spotify.com</link> dan masuk atau buat akun",
-        "step2": "Klik \"Get started\" lalu pilih \"I have a podcast with a hosting provider\"",
-        "step3": "Tempel URL umpan RSS Anda dan klik \"Next\"",
-        "step4": "Verifikasi kepemilikan, isi detail, lalu kirim (biasanya tayang dalam hitungan jam)"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts telah dimigrasikan ke YouTube Music",
-        "step1": "Buka <link>podcasts.google.com/publish</link>",
-        "step2": "Masuk dengan akun Google Anda dan klik \"Add a podcast\"",
-        "step3": "Tempel URL umpan RSS Anda dan verifikasi kepemilikan melalui email",
-        "step4": "Podcast Anda akan muncul di YouTube Music dan hasil pencarian Google"
-      },
-      "amazon": {
-        "subtitle": "Juga tersedia di perangkat Alexa",
-        "step1": "Buka <link>podcasters.amazon.com</link> dan masuk dengan akun Amazon Anda",
-        "step2": "Klik \"Add your podcast\" dan tempel URL umpan RSS Anda",
-        "step3": "Tinjau detail podcast Anda dan kirim untuk ditinjau"
-      },
-      "tips_title": "Tips Distribusi yang Sukses",
-      "tip_thumbnail": "Pastikan podcast Anda memiliki <strong>gambar thumbnail</strong> (minimal 1400x1400 untuk Apple Podcasts)",
-      "tip_episode": "Miliki setidaknya <strong>satu episode yang diterbitkan</strong> sebelum mengirim",
-      "tip_description": "Isi <strong>deskripsi podcast</strong> yang deskriptif; ini membantu agar mudah ditemukan",
-      "tip_auto": "Episode baru akan muncul secara otomatis di semua platform setelah umpan Anda dikirim",
-      "tip_propagate": "Pembaruan mungkin memerlukan beberapa jam untuk menyebar ke semua platform",
-      "check_cover": "Podcast memiliki gambar sampul",
-      "check_description": "Podcast memiliki deskripsi",
-      "check_episode": "Minimal satu episode yang dipublikasikan",
-      "check_published": "Podcast dipublikasikan",
-      "checklist_description": "Apa yang diperiksa direktori sebelum menerima feed.",
-      "checklist_title": "Siap dikirim?",
-      "tips_description": "Hal-hal kecil yang membantu acara Anda diterima dan ditemukan."
-    },
-    "player": {
-      "minimize": "Perkecil"
-    },
-    "actions": "Aksi podcast",
-    "load_failed": "Gagal memuat podcast",
-    "failed_to_load": "Gagal memuat podcast",
-    "listen": {
-      "about": "Tentang",
-      "all_podcasts": "Semua podcast",
-      "by": "Oleh {{names}}",
-      "close_player": "Tutup pemutar",
-      "continue_listening": "Lanjutkan mendengarkan",
-      "episode_count_one": "{{count}} episode",
-      "episode_count_other": "{{count}} episode",
-      "eyebrow": "Podcast",
-      "feed_hint": "Ikuti di aplikasi podcast mana pun dengan feed RSS ini",
-      "latest": "Terbaru",
-      "latest_on": "Terbaru {{date}}",
-      "length_hr_min": "{{h}} j {{m}} mnt",
-      "length_min_one": "{{count}} mnt",
-      "length_min_other": "{{count}} mnt",
-      "length_sec_one": "{{count}} dtk",
-      "length_sec_other": "{{count}} dtk",
-      "link_copied": "Tautan disalin",
-      "mute": "Bisukan",
-      "new": "Baru",
-      "no_episodes_description": "Episode baru akan muncul di sini begitu dipublikasikan.",
-      "now_playing": "Sedang diputar",
-      "open_player": "Buka pemutar",
-      "pause": "Jeda",
-      "pause_episode": "Jeda {{title}}",
-      "play": "Putar",
-      "play_episode": "Putar {{title}}",
-      "play_error": "Episode ini tidak dapat diputar. Coba lagi nanti.",
-      "play_latest": "Putar yang terbaru",
-      "play_latest_of": "Putar episode terbaru {{name}}",
-      "played": "Sudah diputar",
-      "player": "Pemutar podcast",
-      "resume": "Lanjutkan",
-      "seek": "Cari posisi",
-      "share": "Bagikan",
-      "sort_label": "Urutan episode",
-      "sort_newest": "Terbaru",
-      "sort_order": "Berurutan",
-      "speed": "Kecepatan pemutaran",
-      "time_left": "Sisa {{time}}",
-      "total_length": "Total durasi",
-      "unmute": "Suarakan",
-      "up_next": "Berikutnya",
-      "updated": "Diperbarui",
-      "volume": "Volume"
-    },
-    "search_results_one": "Ditemukan {{count}} podcast untuk \"{{query}}\""
-  },
   "library": {
     "library": "Pustaka",
     "my_library": "Pustaka Saya",
     "new_folder": "Folder Baru",
     "tabs": {
       "courses": "Kursus",
-      "podcasts": "Podcast",
       "communities": "Komunitas",
       "boards": "Papan",
       "playgrounds": "Plays",
@@ -3673,7 +3363,6 @@
       "no_resource": "Sumber daya belum dikonfigurasi",
       "open": "Buka",
       "kind_course": "Kursus",
-      "kind_podcast": "Podcast",
       "kind_community": "Komunitas",
       "kind_board": "Papan",
       "kind_playground": "Play"
@@ -3997,7 +3686,6 @@
       "communities": "Komunitas",
       "discussions": "Diskusi",
       "playgrounds": "Plays",
-      "podcasts": "Podcast",
       "activities": "Pelajaran",
       "folders": "Folder"
     },
@@ -4021,7 +3709,6 @@
         "communities": "Komunitas",
         "discussions": "Diskusi",
         "playgrounds": "Plays",
-        "podcasts": "Podcast",
         "users": "Anggota"
       },
       "keys": {
@@ -4042,10 +3729,6 @@
         "library": {
           "description": "Folder berisi konten yang dikelompokkan",
           "keywords": "pustaka, folder, koleksi, paket, jalur"
-        },
-        "podcasts": {
-          "description": "Dengarkan episode",
-          "keywords": "podcast, audio, episode, acara, dengarkan"
         },
         "communities": {
           "description": "Diskusi dengan anggota lain",
@@ -4149,7 +3832,6 @@
         "folder": "Folder",
         "page": "Halaman",
         "playground": "Play",
-        "podcast": "Podcast",
         "user": "Anggota"
       },
       "updated": "Diperbarui",
@@ -4920,7 +4602,6 @@
       "settings": "Pengaturan",
       "courses": "Kursus",
       "communities": "Komunitas",
-      "podcasts": "Podcast",
       "boards": "Papan",
       "published": "diterbitkan",
       "draft": "draf",
@@ -7111,10 +6792,6 @@
             "title": "Pembayaran",
             "description": "Aktifkan pemrosesan pembayaran untuk kursus dan langganan"
           },
-          "podcasts": {
-            "title": "Podcast",
-            "description": "Aktifkan pembuatan podcast dan konten audio untuk organisasi Anda"
-          },
           "boards": {
             "title": "Papan",
             "description": "Buat papan kolaboratif dengan daftar dan kartu untuk manajemen proyek"
@@ -7929,7 +7606,6 @@
             "assignments": "Tugas",
             "folders": "Folder",
             "paths": "Jalur belajar",
-            "podcasts": "Podcast",
             "boards": "Papan",
             "playgrounds": "Plays",
             "versioning": "Riwayat versi",
@@ -9242,7 +8918,6 @@
             "usergroups": "Grup",
             "communities": "Komunitas",
             "boards": "Papan",
-            "podcasts": "Podcast",
             "roles": "Peran",
             "organizations": "Organisasi"
           },
@@ -10397,8 +10072,7 @@
         "users": "Pengguna",
         "communities": "Komunitas",
         "discussions": "Diskusi",
-        "playgrounds": "Plays",
-        "podcasts": "Podcast"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10416,10 +10090,6 @@
         "communities": {
           "description": "Kelola komunitas",
           "keywords": "forum, diskusi, anggota, postingan"
-        },
-        "podcasts": {
-          "description": "Kelola podcast",
-          "keywords": "audio, episode, acara"
         },
         "boards": {
           "description": "Kelola papan",
@@ -12898,10 +12568,7 @@
         "topic_required": "Tambahkan topik atau teks untuk membuat naskah.",
         "script_ready": "Naskah siap. Tinjau, lalu buat audio",
         "script_failed": "Gagal membuat naskah. Silakan coba lagi.",
-        "loading_playlist": "Memuat playlist...",
         "tab_generate": "Buat",
-        "tab_episode": "Episode",
-        "tab_playlist": "Playlist",
         "uploading_progress": "Mengunggah... {{progress}}%",
         "drop_or_browse": "Letakkan file audio atau klik untuk menelusuri",
         "supported_formats": "Mendukung MP3, WAV, OGG, M4A",
@@ -12924,10 +12591,7 @@
         "generating": "Membuat…",
         "generate_audio": "Buat audio",
         "credits_with_script": "Naskah {{scriptCost}} kredit · Audio {{audioCost}} kredit · Didukung oleh Gemini",
-        "credits_audio_only": "Menggunakan {{cost}} kredit AI · Didukung oleh Gemini",
-        "no_podcasts": "Podcast tidak ditemukan",
-        "back_to_podcasts": "Kembali ke podcast",
-        "no_episodes": "Episode tidak ditemukan"
+        "credits_audio_only": "Menggunakan {{cost}} kredit AI · Didukung oleh Gemini"
       },
       "callout_block": {
         "change_type": "Ubah jenis callout",
@@ -15778,8 +15442,6 @@
           "payments_desc": "Jual kursus dan tawarkan langganan untuk menghasilkan pendapatan.",
           "communities": "Diskusi komunitas",
           "communities_desc": "Biarkan pelajar terhubung, bertanya, dan berbagi ide.",
-          "podcasts": "Buat podcast",
-          "podcasts_desc": "Sajikan konten audio dan jangkau pelajar di mana saja.",
           "playgrounds": "Plays interaktif",
           "playgrounds_desc": "Biarkan peserta didik berlatih dengan aktivitas interaktif langkah demi langkah dan meraih lencana.",
           "ai": "1.000 kredit AI",
@@ -24018,7 +23680,6 @@
       "types": {
         "course": "Kursus",
         "path": "Jalur",
-        "podcast": "Podcast",
         "community": "Komunitas",
         "folder": "Folder"
       },
@@ -24028,7 +23689,6 @@
         "courses": "Kursus",
         "activities": "Pelajaran gratis",
         "paths": "Jalur belajar",
-        "podcasts": "Podcast",
         "communities": "Komunitas",
         "library": "Perpustakaan",
         "live": "Sesi langsung",
@@ -26202,7 +25862,6 @@
       "course": "Kursus unggulan",
       "paths": "Jalur belajar",
       "communities": "Komunitas",
-      "podcasts": "Podcast",
       "live_sessions": "Sesi langsung",
       "instructors": "Orang",
       "testimonials": "Testimoni",
@@ -26249,7 +25908,6 @@
       "course": "Kursus unggulan",
       "paths": "Jalur",
       "communities": "Komunitas",
-      "podcasts": "Podcast",
       "live_sessions": "Sesi langsung",
       "pricing": "Harga",
       "form": "Formulir kontak",
@@ -26275,7 +25933,6 @@
       "featured_course": "Kursus unggulan",
       "paths": "Jalur belajar",
       "communities": "Komunitas",
-      "podcasts": "Podcast",
       "live_sessions": "Sesi langsung",
       "instructors": "Instruktur",
       "testimonials": "Testimoni",
@@ -28340,7 +27997,6 @@
         "course": "Kursus",
         "path": "Jalur",
         "community": "Komunitas",
-        "podcast": "Podcast",
         "live_session": "Sesi live",
         "board": "Papan",
         "folder": "Folder perpustakaan",

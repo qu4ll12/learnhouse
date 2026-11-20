@@ -102,16 +102,6 @@ export const STARTER_TEMPLATES: EditorTemplate[] = [
     )),
   ),
   starter(
-    'community',
-    'Join the conversation',
-    'Invites learners who have not posted in the community yet',
-    doc(block(
-      'No community posts yet',
-      { match: 'all', conditions: [{ field: 'user.signed_in', op: 'is_true' }, { field: 'community.posts', op: 'eq', value: 0 }] },
-      [para(text('Questions are welcome: start a discussion in the community, '), variable('user.first_name', 'friend'), text('.'))],
-    )),
-  ),
-  starter(
     'visitors',
     'Sign-in prompt',
     'Only shown to people browsing without an account',

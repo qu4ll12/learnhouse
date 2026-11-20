@@ -3,7 +3,7 @@ import { NextResponse, userAgent } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { isLocalhost as isLocalhostCheck } from './services/utils/ts/hostUtils'
 import { isThirdPartyRelayPath, withoutCredentialHeaders } from './lib/thirdPartyRelay'
-import { landingDecision, threadRedirect } from './lib/seo/legacyRedirect'
+import { landingDecision } from './lib/seo/legacyRedirect'
 import { healSessionMarker } from './lib/auth/sessionMarker'
 import { seoRouteFor } from './lib/seo/publicRoutes'
 
@@ -311,7 +311,6 @@ export const config = {
     '/(feed\\.xml|feed\\.atom|feed\\.json|rss\\.xml|llms\\.txt|llms-full\\.txt|manifest\\.webmanifest|index\\.md)',
     '/:indexnow([A-Za-z0-9-]{8,64})\\.txt',
     '/payments/stripe/connect/oauth',
-    '/podcast/:path*/feed',
     '/course/:path*/updates/feed',
   ],
 }
@@ -622,7 +621,7 @@ async function route(req: NextRequest) {
   }
 
   // -------------------------------------------------------------------------
-  // 9. Per-org metadata endpoints (sitemap, robots, podcast + course feeds)
+  // 9. Per-org metadata endpoints (sitemap, robots, course feeds)
   // -------------------------------------------------------------------------
   // The route handlers read the org from a REQUEST header. It used to be set on
   // the response, where the handler never saw it, so these endpoints 400'd.
@@ -633,7 +632,6 @@ async function route(req: NextRequest) {
     headers.set(name, slug)
     return { request: { headers } }
   }
-  // Podcast feeds moved to the shared feed handler (seoRouteFor, below).
   if (pathname.match(/^\/course\/([^/]+)\/updates\/feed$/)) {
     const resolved = await resolveTenant(req, instance)
     const feedUrl = new URL(`/api${pathname}`, req.url)
@@ -645,7 +643,7 @@ async function route(req: NextRequest) {
     return NextResponse.rewrite(sitemapUrl, orgslugRequestHeaders('X-Sitemap-Orgslug', resolved.slug))
   }
   // Feeds (RSS/Atom/JSON), llms.txt, Markdown alternates, manifest, IndexNow key.
-  const seoRoute = seoRouteFor(pathname, search)
+  const seoRoute = seoRouteFor(pathname)
   if (seoRoute) {
     const resolved = await resolveTenant(req, instance)
     const target = new URL(seoRoute, req.url)
@@ -699,11 +697,6 @@ async function route(req: NextRequest) {
   const resolved = await resolveTenant(req, instance)
   // SEO: uuid URLs of resources with a slug (and, for crawlers, old slugs)
   // 308 to the slug URL; crawlers get a real 404 for missing resources.
-  // Old uuid thread URLs: 301 to the readable /community/{key}/{id}-{slug}.
-  const thread = await threadRedirect(getAPIUrl(), resolved.slug, pathname, fetch, Date.now(), { isBot: userAgent(req).isBot })
-  if (thread) {
-    return NextResponse.redirect(new URL(`${thread}${search}`, req.url), 301)
-  }
   const landing = await landingDecision(getAPIUrl(), resolved.slug, pathname, { isBot: userAgent(req).isBot })
   if (landing && 'redirect' in landing) {
     return NextResponse.redirect(new URL(`${landing.redirect}${search}`, req.url), 308)

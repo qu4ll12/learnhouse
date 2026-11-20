@@ -1,5 +1,5 @@
 """Inbox notifications raised by OSS features (assignments, paths,
-communities, editor comments, user groups, org members, plan usage, AI
+editor comments, user groups, org members, plan usage, AI
 credits).
 
 Each function is called by the feature that owns the event, after it has
@@ -135,110 +135,6 @@ async def mentioned_org_members(db: AsyncSession, org_id: int, text: str) -> lis
         .where(UserOrganization.org_id == org_id, func.lower(User.username).in_(handles))
     )).scalars().all()
     return sorted(set(rows))
-
-
-# ---------------------------------------------------------------------------
-# Communities
-# ---------------------------------------------------------------------------
-
-
-def discussion_path(community, discussion) -> str:
-    return (
-        f"/community/{community.community_uuid.removeprefix('community_')}"
-        f"/discussion/{discussion.discussion_uuid.removeprefix('discussion_')}"
-    )
-
-
-async def community_readers(db: AsyncSession, community, user_ids: list[int]) -> list[int]:
-    """The subset of ``user_ids`` who can see ``community`` (its listing's own
-    visibility rule, plus org admins and maintainers): a mention never shows a
-    restricted discussion's title to someone outside it."""
-    if not user_ids:
-        return []
-    from src.db.user_organizations import UserOrganization
-    from src.security.rbac.constants import ADMIN_OR_MAINTAINER_ROLE_IDS
-    from src.services.communities.communities import accessible_community_ids_select
-
-    staff = set((await db.execute(
-        select(UserOrganization.user_id).where(
-            UserOrganization.org_id == community.org_id,
-            UserOrganization.user_id.in_(user_ids),  # type: ignore[attr-defined]
-            UserOrganization.role_id.in_(ADMIN_OR_MAINTAINER_ROLE_IDS),  # type: ignore[attr-defined]
-        )
-    )).scalars().all())
-    out = []
-    for uid in user_ids:
-        if uid in staff:
-            out.append(uid)
-            continue
-        stmt = accessible_community_ids_select(community.org_id, uid)
-        visible = (await db.execute(stmt.where(stmt.selected_columns[0] == community.id))).scalars().first()
-        if visible is not None:
-            out.append(uid)
-    return out
-
-
-def _discussion_data(community, discussion) -> dict:
-    return {"community_uuid": community.community_uuid, "discussion_uuid": discussion.discussion_uuid}
-
-
-@_never_raise
-async def notify_discussion_posted(db: AsyncSession, *, community, discussion, author_id: int):
-    """@mentions in a new discussion."""
-    from src.services.notifications.emit import emit
-
-    mentioned = await community_readers(
-        db, community, await mentioned_org_members(db, discussion.org_id, f"{discussion.title}\n{discussion.content or ''}")
-    )
-    if not mentioned:
-        return []
-    actor = _name(await _user(db, author_id))
-    return await emit(
-        db, "discussion_mention", mentioned,
-        org_id=discussion.org_id,
-        title=f"{actor} mentioned you in {discussion.title}",
-        body=(discussion.content or "")[:SNIPPET],
-        params={"actor": actor, "discussion": discussion.title},
-        path=discussion_path(community, discussion),
-        data=_discussion_data(community, discussion),
-        actor_id=author_id,
-        dedupe_key=f"discussion_mention:{discussion.id}",
-    )
-
-
-@_never_raise
-async def notify_discussion_comment(db: AsyncSession, *, community, discussion, comment, author_id: int):
-    """A comment on a discussion: the discussion's author hears about the
-    reply, anyone @mentioned hears about the mention (one row each, the
-    mention wins). Comments are flat, so there is no parent comment author."""
-    from src.services.notifications.emit import emit
-
-    actor = _name(await _user(db, author_id))
-    body = (comment.content or "")[:SNIPPET]
-    params = {"actor": actor, "discussion": discussion.title}
-    common = {
-        "org_id": discussion.org_id,
-        "body": body,
-        "params": params,
-        "path": discussion_path(community, discussion),
-        "data": {**_discussion_data(community, discussion), "comment_uuid": comment.comment_uuid},
-        "actor_id": author_id,
-    }
-    mentioned = await community_readers(db, community, await mentioned_org_members(db, discussion.org_id, comment.content or ""))
-    rows = await emit(
-        db, "discussion_mention", mentioned,
-        title=f"{actor} mentioned you in {discussion.title}",
-        dedupe_key=f"discussion_mention:c{comment.id}",
-        **common,
-    )
-    rows += await emit(
-        db, "discussion_reply", [discussion.author_id],
-        title=f"{actor} replied to {discussion.title}",
-        group_key=f"discussion:{discussion.id}",
-        exclude=mentioned,
-        **common,
-    )
-    return rows
 
 
 # ---------------------------------------------------------------------------

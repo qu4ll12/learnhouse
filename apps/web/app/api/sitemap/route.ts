@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import {
-  getCommunityThumbnailMediaDirectory,
   getCourseThumbnailMediaDirectory,
   getFolderThumbnailMediaDirectory,
   getPathThumbnailMediaDirectory,
-  getPodcastThumbnailMediaDirectory,
 } from '@services/media/media'
 import { getServerAPIUrl } from '@services/config/config'
 import { getOrganizationContextInfo } from '@services/organizations/orgs'
@@ -37,7 +35,7 @@ function getBaseUrlFromRequest(request: NextRequest): string {
 async function fetchSitemapData(orgSlug: string): Promise<SitemapData | null> {
   try {
     const res = await fetch(`${getServerAPIUrl()}seo/sitemap/${encodeURIComponent(orgSlug)}`, {
-      next: { revalidate: 300, tags: ['seo-sitemap', 'courses', 'podcasts', 'communities', 'folders'] },
+      next: { revalidate: 300, tags: ['seo-sitemap', 'courses', 'folders'] },
       signal: AbortSignal.timeout(15000),
     })
     return res.ok ? ((await res.json()) as SitemapData) : null
@@ -65,17 +63,13 @@ async function fetchPublicLiveSessions(orgSlug: string): Promise<NonNullable<Sit
 }
 
 function imageUrl(orgUuid: string) {
-  return (type: 'course' | 'path' | 'podcast' | 'community' | 'folder', e: SitemapEntry): string => {
+  return (type: 'course' | 'path' | 'folder', e: SitemapEntry): string => {
     if (!e.image || e.image.includes('/')) return ''
     switch (type) {
       case 'course':
         return getCourseThumbnailMediaDirectory(orgUuid, e.uuid, e.image)
       case 'path':
         return getPathThumbnailMediaDirectory(orgUuid, e.uuid, e.image)
-      case 'podcast':
-        return getPodcastThumbnailMediaDirectory(orgUuid, e.uuid, e.image)
-      case 'community':
-        return getCommunityThumbnailMediaDirectory(orgUuid, e.uuid, e.image)
       case 'folder':
         return getFolderThumbnailMediaDirectory(orgUuid, e.uuid, e.image)
     }

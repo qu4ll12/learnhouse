@@ -24,7 +24,6 @@ STEPS: dict[str, dict] = {
     # from before the website builder).
     "share_grow": {"kind": "click", "feature": None, "minutes": 2},
     "invite_learners": {"kind": "data", "feature": None, "minutes": 2},
-    "build_community": {"kind": "data", "feature": "communities", "minutes": 2},
     "create_group": {"kind": "data", "feature": "usergroups", "minutes": 2},
     "setup_payments": {"kind": "click", "feature": "payments", "minutes": 5},
 }
@@ -45,18 +44,13 @@ GOALS: dict[str, dict] = {
     },
     "school": {
         "template": "university",
-        "features": ["usergroups", "communities", "certifications"],
-        "steps": ["create_course", "add_content", "publish_course", "create_group", "invite_learners", "build_community"],
+        "features": ["usergroups", "certifications"],
+        "steps": ["create_course", "add_content", "publish_course", "create_group", "invite_learners", "brand_school"],
     },
     "customers": {
         "template": "partner",
         "features": ["analytics", "seo"],
         "steps": ["create_course", "add_content", "brand_school", "publish_course", "share_grow", "invite_learners"],
-    },
-    "community": {
-        "template": "membership",
-        "features": ["communities", "podcasts"],
-        "steps": ["create_course", "add_content", "build_community", "publish_course", "invite_learners", "brand_school"],
     },
 }
 

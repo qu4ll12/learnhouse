@@ -1,9 +1,7 @@
 """
 Unified Resource Access Checker
 
-This module provides a single, unified access checker for courses, podcasts, and communities.
-It replaces the duplicated logic in courses_security.py, podcasts_security.py, and
-communities_security.py (~1,200 lines) with a single configurable implementation (~300 lines).
+This module provides a single, unified access checker for resources.
 
 Access Rules:
 - Dashboard View: Admins/Authors always see all resources
@@ -13,7 +11,7 @@ Access Rules:
     - UserGroup-linked + Published + User in Group: UserGroup members only
     - Not Public + Not in UserGroup: Authenticated users only
     - Author of resource: Always accessible to author
-- Communities: Don't have a published field, only use public flag
+- Resources without published field: Only use public flag
 """
 
 import logging
@@ -50,7 +48,7 @@ def _window_open(starts_at, expires_at, now: datetime) -> bool:
 
 class ResourceAccessChecker:
     """
-    Unified access checker for courses, podcasts, and communities.
+    Unified access checker for resources.
 
     Usage:
         checker = ResourceAccessChecker(request, db_session, current_user)
@@ -224,7 +222,7 @@ class ResourceAccessChecker:
             )
 
         # For child resources, delegate access check to the parent resource
-        # This handles chapters -> courses, episodes -> podcasts, etc.
+        # This handles chapters -> courses, etc.
         if config.parent_resource_type:
             parent_uuid = await self._resolve_parent_resource_uuid(resource_uuid, config)
             if not parent_uuid:
@@ -307,7 +305,7 @@ class ResourceAccessChecker:
                 action="read",
             )
 
-        # For resources without published field (communities), only check public
+        # For resources without published field, only check public
         if is_public:
             return AccessDecision(
                 allowed=True,
@@ -388,7 +386,7 @@ class ResourceAccessChecker:
                     action="read",
                 )
         else:
-            # No published field (communities) - just check public
+            # No published field - just check public
             if is_public:
                 return AccessDecision(
                     allowed=True,
@@ -504,7 +502,7 @@ class ResourceAccessChecker:
                 action=action.value,
             )
 
-        # Special handling for NEW resource creation (e.g., "course_x", "podcast_x")
+        # Special handling for NEW resource creation (e.g., "course_x")
         # These are top-level resource creations that only need role permissions
         if action == AccessAction.CREATE and resource_uuid.endswith("_x"):
             return await self._check_create_permission(resource_uuid, config)
@@ -757,7 +755,6 @@ class ResourceAccessChecker:
         For example:
         - chapter_xxx -> course_yyy
         - activity_xxx -> chapter_yyy -> course_zzz
-        - episode_xxx -> podcast_yyy
 
         Args:
             resource_uuid: UUID of the child resource
@@ -806,18 +803,6 @@ class ResourceAccessChecker:
             statement = select(Course).where(Course.id == parent_id)
             parent = (await self.db_session.execute(statement)).scalars().first()
             return parent.course_uuid if parent else None
-
-        elif parent_config.resource_type == "podcasts":
-            from src.db.podcasts.podcasts import Podcast
-            statement = select(Podcast).where(Podcast.id == parent_id)
-            parent = (await self.db_session.execute(statement)).scalars().first()
-            return parent.podcast_uuid if parent else None
-
-        elif parent_config.resource_type == "communities":
-            from src.db.communities.communities import Community
-            statement = select(Community).where(Community.id == parent_id)
-            parent = (await self.db_session.execute(statement)).scalars().first()
-            return parent.community_uuid if parent else None
 
         elif parent_config.resource_type == "coursechapters":
             from src.db.courses.chapters import Chapter
@@ -992,8 +977,8 @@ class ResourceAccessChecker:
         # UsersOnly semantics: public=false + no linked group = signed-in users
         # only; the anonymous branch short-circuits above via user_id == 0.
         # "Signed-in" alone is not enough: this returned True for any account on
-        # the deployment, so an admin who set a course, folder, media item, board
-        # or community to "Users Only" was in fact publishing it to every user of
+        # the deployment, so an admin who set a course, folder, media item or board
+        # to "Users Only" was in fact publishing it to every user of
         # every other tenant. Membership in the owning org is what the setting is
         # understood to mean.
         if not usergroup_resources:
@@ -1089,12 +1074,6 @@ def _resource_model(resource_type: str):
     if resource_type == "courses":
         from src.db.courses.courses import Course
         return Course, "course_uuid"
-    if resource_type == "podcasts":
-        from src.db.podcasts.podcasts import Podcast
-        return Podcast, "podcast_uuid"
-    if resource_type == "communities":
-        from src.db.communities.communities import Community
-        return Community, "community_uuid"
     if resource_type == "folders":
         from src.db.folders.folders import Folder
         return Folder, "folder_uuid"
@@ -1116,12 +1095,6 @@ def _resource_model(resource_type: str):
     if resource_type == "activities":
         from src.db.courses.activities import Activity
         return Activity, "activity_uuid"
-    if resource_type == "episodes":
-        from src.db.podcasts.episodes import PodcastEpisode
-        return PodcastEpisode, "episode_uuid"
-    if resource_type == "discussions":
-        from src.db.communities.discussions import Discussion
-        return Discussion, "discussion_uuid"
     return None
 
 

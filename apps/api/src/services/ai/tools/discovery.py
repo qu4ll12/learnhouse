@@ -64,7 +64,6 @@ class GetContextParams(BaseModel):
 
 
 async def _counts(ctx: ToolContext, staff: bool) -> dict:
-    from src.db.communities.communities import Community
     from src.db.courses.courses import Course
     from src.db.user_organizations import UserOrganization
 
@@ -74,9 +73,6 @@ async def _counts(ctx: ToolContext, staff: bool) -> dict:
     courses = select(func.count()).select_from(Course).where(Course.org_id == ctx.org.id)
     out = {
         "courses": await count(courses if staff else courses.where(Course.published.is_(True))),
-        "communities": await count(
-            select(func.count()).select_from(Community).where(Community.org_id == ctx.org.id)
-        ),
     }
     if staff:
         out["unpublished_courses"] = await count(courses.where(Course.published.is_(False)))
@@ -163,7 +159,7 @@ async def _get_context(ctx: ToolContext, _p: GetContextParams):
             "access": access,
             "meaning": {
                 "read": "Can read only; every change is refused.",
-                "write": "Can read and change content (courses, pages, assignments, community posts). Members, roles and settings are out of reach.",
+                "write": "Can read and change content (courses, pages, assignments). Members, roles and settings are out of reach.",
                 "admin": "Can also manage members, groups, roles and organization settings, within the caller's role.",
             }[access],
         },
@@ -178,7 +174,7 @@ async def _get_context(ctx: ToolContext, _p: GetContextParams):
             "An organization holds courses. A course has ordered chapters; a chapter has "
             "ordered activities: pages (made of blocks: text, quizzes, callouts, media), "
             "videos, documents, assignments, SCORM packages. The library files resources "
-            "in folders. Communities hold discussions. Usergroups gate who can see linked "
+            "in folders. Usergroups gate who can see linked "
             "resources; roles grant rights. Every id is a prefixed uuid (course_..., "
             "chapter_..., activity_..., user_...): pass it back exactly as you received it."
         ),
@@ -192,8 +188,6 @@ SearchKind = Literal[
     "chapter",
     "activity",
     "assignment",
-    "community",
-    "discussion",
     "folder",
     "playground",
     "member",
@@ -301,7 +295,7 @@ async def _org_search(ctx: ToolContext, p: SearchParams) -> dict:
 
 
 async def _from_org_search(ctx: ToolContext, p: SearchParams, wanted: set[str]) -> list[dict]:
-    data = await _org_search(ctx, p) if wanted & {"course", "community", "discussion", "folder", "playground", "member"} else {}
+    data = await _org_search(ctx, p) if wanted & {"course", "folder", "playground", "member"} else {}
     out: list[dict] = []
     if "course" in wanted:
         for c in data.get("courses") or []:
@@ -310,20 +304,6 @@ async def _from_org_search(ctx: ToolContext, p: SearchParams, wanted: set[str]) 
                 await refs.web_url(ctx, "course", course=c.get("course_uuid")),
                 published=c.get("published"),
                 description=clip(c.get("description"), 160),
-            ))
-    if "community" in wanted:
-        for c in data.get("communities") or []:
-            out.append(refs.ref(
-                "community", c.get("community_uuid"), c.get("name"),
-                await refs.web_url(ctx, "community", community=c.get("community_uuid")),
-            ))
-    if "discussion" in wanted:
-        for d in data.get("discussions") or []:
-            out.append(refs.ref(
-                "discussion", d.get("discussion_uuid"), clip(d.get("title"), 160),
-                await refs.web_url(
-                    ctx, "discussion", community=d.get("community_uuid"), discussion=d.get("discussion_uuid")
-                ),
             ))
     if "folder" in wanted:
         for f in data.get("folders") or []:
@@ -555,8 +535,8 @@ async def _search(ctx: ToolContext, p: SearchParams):
         result["passages"] = passages or []
         if why:
             result["note"] = f"Content search is not available: {why}"
-    if any(m.get("kind") in ("discussion", "member") for m in result["matches"]):
-        # Discussion titles and member names were written by members.
+    if any(m.get("kind") in ("member",) for m in result["matches"]):
+        # Member names were written by members.
         untrusted(result, "matches", "results")
     return result
 
@@ -571,8 +551,6 @@ NAMEABLE: tuple[tuple[str, str], ...] = (
     ("to_chapter_uuid", "chapter"),
     ("activity_uuid", "activity"),
     ("assignment_uuid", "assignment"),
-    ("community_uuid", "community"),
-    ("discussion_uuid", "discussion"),
     ("folder_uuid", "folder"),
     ("parent_folder_uuid", "folder"),
     ("from_folder_uuid", "folder"),
@@ -678,8 +656,8 @@ SPECS: list[ToolSpec] = [
         name="search",
         title="Search",
         description=(
-            "Find anything by name: courses, chapters, activities, assignments, communities, "
-            "discussions, folders, playgrounds, learning paths, members, groups and roles. Returns ranked "
+            "Find anything by name: courses, chapters, activities, assignments, "
+            "folders, playgrounds, learning paths, members, groups and roles. Returns ranked "
             "matches with ids and links, and a verdict: resolved (use match), ambiguous (ask "
             "the user to pick) or not_found. Set in_content to also find passages inside "
             "lessons, documents and transcripts. Open any result with fetch."

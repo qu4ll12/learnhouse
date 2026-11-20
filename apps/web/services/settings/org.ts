@@ -97,19 +97,6 @@ export async function updateOrgFeatureToggle(
   return res
 }
 
-export async function updateOrgCommunitiesConfig(
-  org_id: string,
-  communities_enabled: boolean,
-  access_token: string
-) {
-  const result: any = await fetch(
-    `${getAPIUrl()}orgs/${org_id}/config/communities?communities_enabled=${communities_enabled}`,
-    RequestBodyWithAuthHeader('PUT', null, null, access_token)
-  )
-  const res = await errorHandling(result)
-  return res
-}
-
 /** Brand color, body font and theme options in one write (see lib/theme/orgTheme.ts). */
 export async function updateOrgThemeConfig(
   org_id: string,
@@ -347,14 +334,12 @@ export interface SeoOrgConfig {
   yandex_verification?: string
   pinterest_verification?: string
   twitter_handle: string
-  noindex_communities: boolean
   indexing_disabled?: boolean
   robots_extra_rules?: string
   organization_type?: string
   ai_crawler_policy?: 'allow' | 'block_training' | 'block_all'
   ai_crawlers_blocked?: string[]
   indexable_features?: Record<string, boolean>
-  thin_thread_noindex_days?: number
   feeds_enabled?: boolean
   llms_txt_enabled?: boolean
   indexnow_enabled?: boolean

@@ -93,10 +93,6 @@
           "title": "スタンダード機能",
           "description": "コミュニティは、スタンダードプラン以上の組織のみが利用できるプレミアム機能です。メンバー向けのディスカッションコミュニティをアンロックするにはアップグレードしてください。"
         },
-        "podcasts": {
-          "title": "Standardプラン機能",
-          "description": "ポッドキャストはStandardプラン以上の組織のみ利用可能なプレミアム機能です。メンバーとポッドキャストを作成・共有するにはアップグレードしてください。"
-        },
         "audit_logs": {
           "title": "エンタープライズ機能",
           "description": "監査ログはエンタープライズプランの組織でのみ利用可能なプレミアム機能です。アップグレードして組織のアクティビティを完全に把握しましょう。"
@@ -246,12 +242,6 @@
           "b2": "リマインダーは自動で送信",
           "b3": "録画はコースの隣に保存"
         },
-        "podcasts": {
-          "title": "移動中の学習者にも届ける",
-          "b1": "コースと並べて音声エピソードを公開",
-          "b2": "リスナーごとに再生位置を覚えているプレーヤー",
-          "b3": "AIでレッスンをエピソードに"
-        },
         "usergroups": {
           "title": "学習者をグループに分ける",
           "b1": "グループ向けのコースへのアクセスを付与",
@@ -392,7 +382,6 @@
           "library": "ライブラリ",
           "folders": "ライブラリ",
           "communities": "コミュニティ",
-          "podcasts": "ポッドキャスト",
           "payments": "支払い",
           "trail": "進捗追跡",
           "boards": "ボード",
@@ -3023,311 +3012,12 @@
       "hand_place": "挙手中 · #{{place}}番目"
     }
   },
-  "podcasts": {
-    "podcasts": "ポッドキャスト",
-    "browse_description": "この組織のポッドキャストを聴く",
-    "new_podcast": "新しいポッドキャスト",
-    "search_placeholder": "ポッドキャストを検索...",
-    "no_podcasts": "ポッドキャストがありません",
-    "no_podcasts_description": "現在利用可能なポッドキャストはありません",
-    "create_podcasts_placeholder": "オーディエンスとオーディオコンテンツを共有するためのポッドキャストを作成",
-    "no_search_results": "ポッドキャストが見つかりません",
-    "try_different_search": "別の検索語をお試しください",
-    "search_results_other": "「{{query}}」のポッドキャストが{{count}}件見つかりました",
-    "podcast_name": "ポッドキャスト名",
-    "podcast_name_required": "ポッドキャスト名は必須です",
-    "podcast_thumbnail": "ポッドキャストサムネイル",
-    "podcast_tags": "タグ",
-    "podcast_visibility": "表示設定",
-    "create_podcast": "ポッドキャストを作成",
-    "create_new_podcast": "組織の新しいポッドキャストを作成",
-    "create_podcast_btn": "ポッドキャストを作成",
-    "creating_podcast": "ポッドキャストを作成中...",
-    "podcast_created_success": "ポッドキャストを正常に作成しました",
-    "failed_to_create_podcast": "ポッドキャストの作成に失敗しました",
-    "episodes": "エピソード",
-    "no_episodes": "エピソードがありません",
-    "hosted_by": "ホスト",
-    "tags": "タグ",
-    "manage_podcast": "ポッドキャストを管理",
-    "published": "公開中",
-    "unpublished": "未公開",
-    "public": "公開",
-    "private": "非公開",
-    "listen_now": "今すぐ聴く",
-    "delete_podcast": "ポッドキャストを削除",
-    "delete_podcast_title": "ポッドキャストを削除しますか？",
-    "delete_podcast_confirm": "このポッドキャストを削除してもよろしいですか？この操作は取り消せず、すべてのエピソードが削除されます。",
-    "deleting_podcast": "ポッドキャストを削除中...",
-    "podcast_deleted_success": "ポッドキャストが正常に削除されました",
-    "podcast_deleted_error": "ポッドキャストの削除に失敗しました",
-    "edit_content": "コンテンツを編集",
-    "form": {
-      "name_required": "ポッドキャスト名は必須です",
-      "name_min_length": "名前は最低3文字です",
-      "name_max_length": "名前は最大100文字です",
-      "description_max_length": "説明は最大500文字です"
-    },
-    "modals": {
-      "create": {
-        "title": "新しいポッドキャストを作成",
-        "description": "新しいポッドキャストの詳細を入力してください",
-        "form": {
-          "name_label": "ポッドキャスト名",
-          "name_placeholder": "ポッドキャスト名を入力",
-          "description_label": "説明",
-          "description_placeholder": "ポッドキャストの説明を入力",
-          "public_label": "このポッドキャストを公開する"
-        },
-        "cancel": "キャンセル",
-        "submit": "ポッドキャストを作成",
-        "generated_image_failed": "生成された画像を読み込めませんでした",
-        "draft_hint": "新しいポッドキャストは下書きとして作成されます。最初のエピソードの準備ができたら公開しましょう。"
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "一般",
-        "episodes": "エピソード",
-        "distribution": "配信"
-      },
-      "view_podcast": "ポッドキャストを表示",
-      "saving": "保存中...",
-      "saved": "変更を保存しました",
-      "save_error": "変更の保存に失敗しました",
-      "save_changes": "変更を保存",
-      "form": {
-        "thumbnail": "サムネイル",
-        "upload_thumbnail": "サムネイルをアップロード",
-        "thumbnail_hint": "推奨サイズ：1400x1400px。JPGまたはPNG。",
-        "about": "概要",
-        "about_placeholder": "このポッドキャストについてリスナーに詳しく伝えてください...",
-        "about_max_length": "概要は最大2000文字です",
-        "tags_placeholder": "音楽, 教育, テック",
-        "tags_hint": "タグをカンマで区切ってください",
-        "visibility": "表示設定",
-        "public_hint": "誰でもこのポッドキャストを見つけて聴くことができます",
-        "published_hint": "このポッドキャストを組織ページに表示する",
-        "private_hint": "組織のサインイン済みメンバーのみが再生できます"
-      },
-      "episodes": {
-        "new_episode": "新しいエピソード",
-        "new_episode_description": "このポッドキャストに新しいエピソードを追加",
-        "no_episodes_description": "最初のエピソードを追加して始めましょう",
-        "create_first": "最初のエピソードを作成",
-        "creating": "エピソードを作成中...",
-        "created": "エピソードを作成しました",
-        "create_error": "エピソードの作成に失敗しました",
-        "create": "エピソードを作成",
-        "deleting": "エピソードを削除中...",
-        "deleted": "エピソードを削除しました",
-        "delete_error": "エピソードの削除に失敗しました",
-        "delete": "削除",
-        "delete_title": "エピソードを削除しますか？",
-        "delete_confirm": "このエピソードを削除してもよろしいですか？この操作は元に戻せません。",
-        "updating": "エピソードを更新中...",
-        "updated": "エピソードを更新しました",
-        "update_error": "エピソードの更新に失敗しました",
-        "edit": "編集",
-        "edit_episode": "エピソードを編集",
-        "edit_episode_description": "エピソードの詳細を更新",
-        "save": "変更を保存",
-        "publish": "公開",
-        "unpublish": "非公開にする",
-        "no_audio": "オーディオファイルなし",
-        "title_label": "タイトル",
-        "title_placeholder": "エピソードタイトルを入力",
-        "description_label": "説明",
-        "description_placeholder": "エピソードの説明を入力",
-        "audio_label": "オーディオファイル",
-        "upload_audio": "オーディオファイルをアップロード",
-        "replace_audio": "オーディオファイルを差し替え",
-        "audio_hint": "MP3、WAV、またはM4Aファイルに対応",
-        "actions": "エピソード操作",
-        "cover_drop_hint": "正方形の画像（JPG または PNG）。空の場合はポッドキャストのカバーが使われます。",
-        "cover_hint": "任意",
-        "cover_label": "エピソードのカバー",
-        "drag_to_reorder": "ドラッグして並べ替え",
-        "drop_hint": "ここにファイルをドロップするか、クリックして参照",
-        "move_down": "下に移動",
-        "move_up": "上に移動",
-        "pause": "一時停止",
-        "play": "再生",
-        "publish_hint": "公開したエピソードはリスナーに表示され、RSS フィードにも含まれます。",
-        "publish_now": "すぐに公開",
-        "remove_file": "ファイルを削除",
-        "reorder_error": "新しい順序を保存できませんでした",
-        "reorder_hint": "ハンドルをドラッグして順序を変更するか、メニューの「上に移動」「下に移動」を使ってください。",
-        "replace_cover": "カバーを差し替え",
-        "section_description": "音声エピソードを追加します。リスナーにはこの順番で再生されます。",
-        "summary_one": "{{count}} エピソード · {{published}} 件公開 · 合計 {{duration}}",
-        "summary_other": "{{count}} エピソード · {{published}} 件公開 · 合計 {{duration}}",
-        "upload_cover": "カバーをアップロード",
-        "wrong_file_type": "このファイル形式はここでは使用できません"
-      },
-      "back_to_podcasts": "ポッドキャストに戻る",
-      "general": {
-        "cover_drop": "画像をここにドロップするか、クリックして参照",
-        "details_description": "リスナーに表示される名前、概要、タグです。",
-        "details_title": "詳細",
-        "discard_cover": "新しいカバーを破棄",
-        "replace_cover": "カバーを差し替え",
-        "visibility_description": "これらのスイッチは切り替えるとすぐに保存されます。"
-      },
-      "list": {
-        "clear_filters": "フィルターをクリア",
-        "columns": {
-          "authors": "作成者",
-          "podcast": "ポッドキャスト",
-          "updated": "更新日",
-          "visibility": "公開範囲"
-        },
-        "copy_failed": "リンクをコピーできませんでした",
-        "copy_link": "リンクをコピー",
-        "draft": "下書き",
-        "edit_episodes": "エピソードを編集",
-        "episodes_count_one": "{{count}} エピソード",
-        "episodes_count_other": "{{count}} エピソード",
-        "episodes_short": "エピソード",
-        "filters": {
-          "all": "すべて",
-          "drafts": "下書き",
-          "published": "公開済み"
-        },
-        "make_private": "非公開にする",
-        "make_public": "公開にする",
-        "no_description": "まだ説明がありません",
-        "published_toast": "ポッドキャストを公開しました",
-        "showing_count": "{{total}} 件中 {{shown}} 件を表示",
-        "sort": {
-          "episodes": "エピソード数順",
-          "name": "名前",
-          "newest": "新しい順",
-          "updated": "最終更新順"
-        },
-        "sort_label": "ポッドキャストを並べ替え",
-        "stats": {
-          "drafts": "下書き",
-          "episodes": "エピソード",
-          "published": "公開済み",
-          "total": "すべてのポッドキャスト"
-        },
-        "status_filter": "ステータスで絞り込み",
-        "subtitle": "音声シリーズを公開し、エピソードを管理します。",
-        "unpublished_toast": "ポッドキャストを非公開にしました"
-      }
-    },
-    "distribution": {
-      "copied": "クリップボードにコピーしました",
-      "rss_title": "RSSフィード",
-      "rss_description": "ポッドキャストのRSSフィードは自動的に生成されます。このURLを使って、ポッドキャストをディレクトリに登録してください。",
-      "copy": "コピー",
-      "preview": "プレビュー",
-      "unpublished_warning": "このポッドキャストは現在非公開です。ディレクトリに登録する前に、まず公開してください。",
-      "directories_title": "ポッドキャストディレクトリに登録",
-      "directories_description": "主要なプラットフォームにポッドキャストを掲載するには、次の手順に従ってください。各プラットフォームでRSSフィードのURLを登録する必要があります。",
-      "apple": {
-        "subtitle": "Apple Musicにも配信されます",
-        "step1": "<link>podcastsconnect.apple.com</link>にアクセスし、Apple IDでログインします",
-        "step2": "<strong>+</strong>ボタンをクリックし、「新しい番組」を選択します",
-        "step3": "「RSSフィードで番組を追加」を選択し、RSSフィードのURLを貼り付けます",
-        "step4": "Appleがフィードを検証します。審査には通常1～5営業日かかります"
-      },
-      "spotify": {
-        "subtitle": "最大のポッドキャスト視聴プラットフォーム",
-        "step1": "<link>podcasters.spotify.com</link>にアクセスし、ログインするかアカウントを作成します",
-        "step2": "「Get started」をクリックし、「I have a podcast with a hosting provider」を選択します",
-        "step3": "RSSフィードのURLを貼り付けて「Next」をクリックします",
-        "step4": "所有権を確認し、詳細を入力して送信します（通常は数時間で公開されます）"
-      },
-      "youtube_music": {
-        "subtitle": "Google PodcastsはYouTube Musicに移行しました",
-        "step1": "<link>podcasts.google.com/publish</link>にアクセスします",
-        "step2": "Googleアカウントでログインし、「ポッドキャストを追加」をクリックします",
-        "step3": "RSSフィードのURLを貼り付け、メールで所有権を確認します",
-        "step4": "ポッドキャストがYouTube MusicとGoogle検索結果に表示されます"
-      },
-      "amazon": {
-        "subtitle": "Alexa対応デバイスでも利用できます",
-        "step1": "<link>podcasters.amazon.com</link>にアクセスし、Amazonアカウントでログインします",
-        "step2": "「Add your podcast」をクリックし、RSSフィードのURLを貼り付けます",
-        "step3": "ポッドキャストの詳細を確認し、審査に送信します"
-      },
-      "tips_title": "配信を成功させるためのヒント",
-      "tip_thumbnail": "ポッドキャストに<strong>サムネイル画像</strong>があることを確認してください（Apple Podcastsでは1400x1400以上）",
-      "tip_episode": "登録前に、<strong>公開済みのエピソードを1つ以上</strong>用意してください",
-      "tip_description": "わかりやすい<strong>ポッドキャストの説明</strong>を入力してください。見つけてもらいやすくなります",
-      "tip_auto": "フィードを登録すると、新しいエピソードはすべてのプラットフォームに自動的に表示されます",
-      "tip_propagate": "更新がすべてのプラットフォームに反映されるまで、数時間かかることがあります",
-      "check_cover": "ポッドキャストにカバー画像がある",
-      "check_description": "ポッドキャストに説明がある",
-      "check_episode": "公開済みのエピソードが 1 件以上ある",
-      "check_published": "ポッドキャストが公開されている",
-      "checklist_description": "ディレクトリがフィードを受け付ける前に確認する項目です。",
-      "checklist_title": "提出の準備はできましたか？",
-      "tips_description": "番組が承認され、見つけてもらいやすくなるためのちょっとしたコツです。"
-    },
-    "player": {
-      "minimize": "最小化"
-    },
-    "actions": "ポッドキャストの操作",
-    "load_failed": "ポッドキャストを読み込めませんでした",
-    "failed_to_load": "ポッドキャストを読み込めませんでした",
-    "listen": {
-      "about": "概要",
-      "all_podcasts": "すべてのポッドキャスト",
-      "by": "{{names}}",
-      "close_player": "プレーヤーを閉じる",
-      "continue_listening": "続きを聴く",
-      "episode_count_one": "{{count}} エピソード",
-      "episode_count_other": "{{count}} エピソード",
-      "eyebrow": "ポッドキャスト",
-      "feed_hint": "この RSS フィードで、お好みのポッドキャストアプリからフォローできます",
-      "latest": "最新",
-      "latest_on": "最新：{{date}}",
-      "length_hr_min": "{{h}} 時間 {{m}} 分",
-      "length_min_one": "{{count}} 分",
-      "length_min_other": "{{count}} 分",
-      "length_sec_one": "{{count}} 秒",
-      "length_sec_other": "{{count}} 秒",
-      "link_copied": "リンクをコピーしました",
-      "mute": "ミュート",
-      "new": "新着",
-      "no_episodes_description": "新しいエピソードは公開されるとすぐにここに表示されます。",
-      "now_playing": "再生中",
-      "open_player": "プレーヤーを開く",
-      "pause": "一時停止",
-      "pause_episode": "{{title}} を一時停止",
-      "play": "再生",
-      "play_episode": "{{title}} を再生",
-      "play_error": "このエピソードを再生できませんでした。しばらくしてからもう一度お試しください。",
-      "play_latest": "最新を再生",
-      "play_latest_of": "{{name}} の最新エピソードを再生",
-      "played": "再生済み",
-      "player": "ポッドキャストプレーヤー",
-      "resume": "再開",
-      "seek": "シーク",
-      "share": "共有",
-      "sort_label": "エピソードの順序",
-      "sort_newest": "新しい順",
-      "sort_order": "順番どおり",
-      "speed": "再生速度",
-      "time_left": "残り {{time}}",
-      "total_length": "合計時間",
-      "unmute": "ミュート解除",
-      "up_next": "次に再生",
-      "updated": "更新",
-      "volume": "音量"
-    },
-    "search_results_one": "「{{query}}」のポッドキャストが {{count}} 件見つかりました"
-  },
   "library": {
     "library": "ライブラリ",
     "my_library": "マイライブラリ",
     "new_folder": "新しいフォルダー",
     "tabs": {
       "courses": "コース",
-      "podcasts": "ポッドキャスト",
       "communities": "コミュニティ",
       "boards": "ボード",
       "playgrounds": "Plays",
@@ -3675,7 +3365,6 @@
       "no_resource": "リソースが設定されていません",
       "open": "開く",
       "kind_course": "コース",
-      "kind_podcast": "ポッドキャスト",
       "kind_community": "コミュニティ",
       "kind_board": "ボード",
       "kind_playground": "Play"
@@ -3999,7 +3688,6 @@
       "communities": "コミュニティ",
       "discussions": "ディスカッション",
       "playgrounds": "Plays",
-      "podcasts": "ポッドキャスト",
       "activities": "レッスン",
       "folders": "フォルダー"
     },
@@ -4023,7 +3711,6 @@
         "communities": "コミュニティ",
         "discussions": "ディスカッション",
         "playgrounds": "Plays",
-        "podcasts": "ポッドキャスト",
         "users": "メンバー"
       },
       "keys": {
@@ -4044,10 +3731,6 @@
         "library": {
           "description": "グループ化されたコンテンツのフォルダー",
           "keywords": "ライブラリ, フォルダー, コレクション, バンドル, パス, library"
-        },
-        "podcasts": {
-          "description": "エピソードを聴く",
-          "keywords": "ポッドキャスト, 音声, エピソード, 番組, 聴く, podcasts"
         },
         "communities": {
           "description": "他のメンバーとのディスカッション",
@@ -4151,7 +3834,6 @@
         "folder": "フォルダー",
         "page": "ページ",
         "playground": "Play",
-        "podcast": "ポッドキャスト",
         "user": "メンバー"
       },
       "updated": "更新",
@@ -4922,7 +4604,6 @@
       "settings": "設定",
       "courses": "コース",
       "communities": "コミュニティ",
-      "podcasts": "ポッドキャスト",
       "boards": "ボード",
       "published": "公開済み",
       "draft": "下書き",
@@ -7113,10 +6794,6 @@
             "title": "決済",
             "description": "コースとサブスクリプションの決済処理を有効にする"
           },
-          "podcasts": {
-            "title": "ポッドキャスト",
-            "description": "組織のポッドキャスト作成とオーディオコンテンツを有効にする"
-          },
           "boards": {
             "title": "ボード",
             "description": "プロジェクト管理向けに、リストとカードを使った共同ボードを作成します"
@@ -7931,7 +7608,6 @@
             "assignments": "課題",
             "folders": "フォルダー",
             "paths": "学習パス",
-            "podcasts": "ポッドキャスト",
             "boards": "ボード",
             "playgrounds": "Plays",
             "versioning": "バージョン履歴",
@@ -9244,7 +8920,6 @@
             "usergroups": "グループ",
             "communities": "コミュニティ",
             "boards": "ボード",
-            "podcasts": "ポッドキャスト",
             "roles": "ロール",
             "organizations": "組織"
           },
@@ -10399,8 +10074,7 @@
         "users": "ユーザー",
         "communities": "コミュニティ",
         "discussions": "ディスカッション",
-        "playgrounds": "Plays",
-        "podcasts": "ポッドキャスト"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10418,10 +10092,6 @@
         "communities": {
           "description": "コミュニティを管理",
           "keywords": "フォーラム, ディスカッション, メンバー, 投稿"
-        },
-        "podcasts": {
-          "description": "ポッドキャストを管理",
-          "keywords": "オーディオ, エピソード, 番組"
         },
         "boards": {
           "description": "ボードを管理",
@@ -12900,10 +12570,7 @@
         "topic_required": "台本を生成するためのトピックまたはテキストを追加してください。",
         "script_ready": "台本ができました。確認してから音声を生成してください",
         "script_failed": "台本を生成できませんでした。もう一度お試しください。",
-        "loading_playlist": "プレイリストを読み込み中...",
         "tab_generate": "生成",
-        "tab_episode": "エピソード",
-        "tab_playlist": "プレイリスト",
         "uploading_progress": "アップロード中... {{progress}}%",
         "drop_or_browse": "音声ファイルをドロップするか、クリックして選択",
         "supported_formats": "MP3、WAV、OGG、M4Aに対応",
@@ -12926,10 +12593,7 @@
         "generating": "生成中…",
         "generate_audio": "音声を生成",
         "credits_with_script": "台本 {{scriptCost}}クレジット · 音声 {{audioCost}}クレジット · Powered by Gemini",
-        "credits_audio_only": "AIクレジットを{{cost}}消費します · Powered by Gemini",
-        "no_podcasts": "ポッドキャストが見つかりません",
-        "back_to_podcasts": "ポッドキャストに戻る",
-        "no_episodes": "エピソードが見つかりません"
+        "credits_audio_only": "AIクレジットを{{cost}}消費します · Powered by Gemini"
       },
       "callout_block": {
         "change_type": "コールアウトの種類を変更",
@@ -15780,8 +15444,6 @@
           "payments_desc": "コースを販売し、サブスクリプションで収益を生み出しましょう。",
           "communities": "コミュニティディスカッション",
           "communities_desc": "学習者がつながり、質問し、アイデアを共有できます。",
-          "podcasts": "ポッドキャスト作成",
-          "podcasts_desc": "音声コンテンツを配信し、どこにいても学習者に届けましょう。",
           "playgrounds": "インタラクティブな Play",
           "playgrounds_desc": "ステップ形式のインタラクティブなアクティビティで学習者が練習し、バッジを獲得できるようにします。",
           "ai": "1,000 AIクレジット",
@@ -24020,7 +23682,6 @@
       "types": {
         "course": "コース",
         "path": "パス",
-        "podcast": "ポッドキャスト",
         "community": "コミュニティ",
         "folder": "フォルダー"
       },
@@ -24030,7 +23691,6 @@
         "courses": "コース",
         "activities": "無料レッスン",
         "paths": "ラーニングパス",
-        "podcasts": "ポッドキャスト",
         "communities": "コミュニティ",
         "library": "ライブラリ",
         "live": "ライブセッション",
@@ -26204,7 +25864,6 @@
       "course": "注目のコース",
       "paths": "学習パス",
       "communities": "コミュニティ",
-      "podcasts": "ポッドキャスト",
       "live_sessions": "ライブセッション",
       "instructors": "人物",
       "testimonials": "お客様の声",
@@ -26251,7 +25910,6 @@
       "course": "注目のコース",
       "paths": "パス",
       "communities": "コミュニティ",
-      "podcasts": "ポッドキャスト",
       "live_sessions": "ライブセッション",
       "pricing": "料金",
       "form": "お問い合わせフォーム",
@@ -26277,7 +25935,6 @@
       "featured_course": "注目のコース",
       "paths": "学習パス",
       "communities": "コミュニティ",
-      "podcasts": "ポッドキャスト",
       "live_sessions": "ライブセッション",
       "instructors": "講師",
       "testimonials": "お客様の声",
@@ -28342,7 +27999,6 @@
         "course": "コース",
         "path": "パス",
         "community": "コミュニティ",
-        "podcast": "ポッドキャスト",
         "live_session": "ライブセッション",
         "board": "ボード",
         "folder": "ライブラリフォルダー",

@@ -1225,17 +1225,7 @@ html[data-theme='dark']:not(:has([data-adm-theme])) .lh-translation-chip:hover {
 html[data-theme='dark']:not(:has([data-adm-theme])) [data-kbd-active] { outline-color: rgb(255 255 255 / 0.6); }
 html[data-theme='dark']:not(:has([data-adm-theme])) .collaboration-cursor__label { color: #0d0d0d; }
 
-/* Community discussions and messages (inline <style> blocks with literal
-   light colors). */
-html[data-theme='dark']:not(:has([data-adm-theme])) :is(.discussion-content-readonly, .discussion-editor-content) .ProseMirror :is(h2, h3, strong) { color: var(--lhd-n900); }
-html[data-theme='dark']:not(:has([data-adm-theme])) :is(.discussion-content-readonly, .discussion-editor-content) .ProseMirror :is(p, .discussion-bullet-list, .discussion-ordered-list) { color: var(--lhd-n700); }
-html[data-theme='dark']:not(:has([data-adm-theme])) :is(.discussion-content-readonly, .discussion-editor-content) .ProseMirror .discussion-blockquote { border-inline-start-color: #3f3f46; color: var(--lhd-n500); }
-html[data-theme='dark']:not(:has([data-adm-theme])) :is(.discussion-content-readonly, .discussion-editor-content) .ProseMirror :not(pre) > code { background-color: rgb(255 255 255 / 0.07); color: var(--lhd-n800); }
-html[data-theme='dark']:not(:has([data-adm-theme])) :is(.discussion-content-readonly, .discussion-editor-content) .ProseMirror :is(.discussion-code-block, pre) { background-color: #0b0b0d; box-shadow: inset 0 0 0 1px var(--lhd-border); }
-html[data-theme='dark']:not(:has([data-adm-theme])) :is(.discussion-content-readonly, .discussion-editor-content) .ProseMirror :is(a, .discussion-link) { color: #7cb4ff; }
-html[data-theme='dark']:not(:has([data-adm-theme])) :is(.discussion-content-readonly, .discussion-editor-content) .ProseMirror :is(a, .discussion-link):hover { color: #a5cbff; }
-html[data-theme='dark']:not(:has([data-adm-theme])) .discussion-editor-content { border-color: var(--lhd-border-field) !important; }
-html[data-theme='dark']:not(:has([data-adm-theme])) .discussion-editor-content .ProseMirror p.is-editor-empty:first-child::before { color: var(--lhd-n400); }
+/* Messages (inline <style> blocks with literal light colors). */
 html[data-theme='dark']:not(:has([data-adm-theme])) .lh-msg-md:not(.lh-msg-md-inverted) :is(h1, h2, h3, h4, strong) { color: var(--lhd-n900); }
 html[data-theme='dark']:not(:has([data-adm-theme])) .lh-msg-md:not(.lh-msg-md-inverted) :not(pre) > code { background: rgb(255 255 255 / 0.07); color: var(--lhd-n800); }
 html[data-theme='dark']:not(:has([data-adm-theme])) .lh-msg-md:not(.lh-msg-md-inverted) hr { border-top-color: var(--lhd-border-raised); }

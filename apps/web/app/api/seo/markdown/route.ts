@@ -9,7 +9,7 @@ import { badRequest, notFoundText, orgslugFrom, publicResponse, routeParams, req
 const MD = 'text/markdown; charset=utf-8'
 
 /**
- * Markdown alternate of a public page (`/course/x.md`, `/community/c/42-t.md`,
+ * Markdown alternate of a public page (`/course/x.md`, `/path/x.md`,
  * `/index.md` for the home page). The API answers only for pages an
  * anonymous visitor can open and that may be indexed; everything else 404s.
  * Markdown copies are `noindex` (the HTML page is the canonical one) and

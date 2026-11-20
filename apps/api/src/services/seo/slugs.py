@@ -18,11 +18,9 @@ from fastapi import HTTPException
 from sqlalchemy import delete, event, or_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.db.communities.communities import Community
 from src.db.courses.courses import Course
 from src.db.folders.folders import Folder
 from src.db.paths import Path
-from src.db.podcasts.podcasts import Podcast
 from src.db.seo import ResourceSlugRedirect
 from src.services.seo.slugify import UUID_LIKE_RE, base_slug, first_free, slug_error, slugify
 
@@ -37,8 +35,6 @@ class SlugResource:
 RESOURCES: dict[str, SlugResource] = {
     "course": SlugResource(Course, "course_uuid", "course_"),
     "path": SlugResource(Path, "path_uuid", "path_"),
-    "podcast": SlugResource(Podcast, "podcast_uuid", "podcast_"),
-    "community": SlugResource(Community, "community_uuid", "community_"),
     "folder": SlugResource(Folder, "folder_uuid", "folder_"),
 }
 

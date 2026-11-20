@@ -4,8 +4,6 @@ import { getAllOrgCourses } from '@services/courses/courses'
 import { getAssignmentsFromACourse } from '@services/courses/assignments'
 import { getOrgPaths } from '@services/paths/paths'
 import { getBoards } from '@ee/services/boards/boards'
-import { getCommunities } from '@services/communities/communities'
-import { getOrgPodcasts } from '@services/podcasts/podcasts'
 import { asArray } from '@services/utils/ts/requests'
 
 // Query options for the dashboard's main lists, shared by the pages that read
@@ -54,18 +52,6 @@ export const dashBoardsQuery = (orgslug: string, orgId: number, token: string) =
   staleTime: 60_000,
 })
 
-export const dashCommunitiesQuery = (orgId: number, token?: string) => ({
-  queryKey: queryKeys.community.list(orgId),
-  queryFn: () => getCommunities(orgId, 1, 100, null, token),
-  staleTime: 30_000,
-})
-
-export const dashPodcastsQuery = (orgslug: string, token?: string) => ({
-  queryKey: queryKeys.podcasts.dashList(orgslug),
-  queryFn: async () => asArray<any>(await getOrgPodcasts(orgslug, null, token, true)),
-  staleTime: 30_000,
-})
-
 // Strip the org prefix (subdomain or /orgs/<slug>) so a dashboard href can be
 // matched whatever form the link was built in.
 function dashPath(href: string): string {
@@ -110,12 +96,6 @@ export function prefetchDashData(queryClient: QueryClient, href: string, ctx: Da
       break
     case '/dash/boards':
       if (orgId) queryClient.prefetchQuery(dashBoardsQuery(orgslug, orgId, token))
-      break
-    case '/dash/communities':
-      if (orgId) queryClient.prefetchQuery(dashCommunitiesQuery(orgId, token))
-      break
-    case '/dash/podcasts':
-      queryClient.prefetchQuery(dashPodcastsQuery(orgslug, token))
       break
   }
 }

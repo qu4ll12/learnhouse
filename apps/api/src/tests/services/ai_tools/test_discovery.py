@@ -10,9 +10,6 @@ import pytest
 from fastapi import HTTPException
 from pydantic import BaseModel, Field
 
-from src.db.communities.communities import Community
-from src.db.communities.discussion_comments import DiscussionComment
-from src.db.communities.discussions import Discussion
 from src.db.courses.activities import Activity, ActivitySubTypeEnum, ActivityTypeEnum
 from src.db.courses.assignments import (
     Assignment,
@@ -139,8 +136,7 @@ def no_search_throttle():
 
 @pytest.fixture(autouse=True)
 def quiet_side_effects():
-    with patch("src.services.communities.discussions.track", new_callable=AsyncMock):
-        yield
+    yield
 
 
 async def search(registry, ctx, **args):
@@ -263,10 +259,6 @@ async def test_search_rate_limit_is_keyed_to_the_acting_person(db, org, admin_us
 
 @pytest.fixture
 async def gardening(db, org, other_org, admin_user, user_role):
-    mine = await add(db, Community(name="Gardening club", public=True, org_id=org.id, community_uuid="community_garden", creation_date=NOW, update_date=NOW))
-    theirs = await add(db, Community(name="Gardening abroad", public=True, org_id=other_org.id, community_uuid="community_garden_f", creation_date=NOW, update_date=NOW))
-    await add(db, Discussion(title="Gardening tips", content="", community_id=mine.id, org_id=org.id, author_id=admin_user.id, discussion_uuid="discussion_garden", creation_date=NOW, update_date=NOW))
-    await add(db, Discussion(title="Gardening tips too", content="", community_id=theirs.id, org_id=other_org.id, author_id=admin_user.id, discussion_uuid="discussion_garden_f", creation_date=NOW, update_date=NOW))
     await add(db, Folder(name="Gardening shelf", description="", public=True, org_id=org.id, folder_uuid="folder_garden", creation_date=NOW, update_date=NOW))
     await add(db, Folder(name="Gardening shelf", description="", public=True, org_id=other_org.id, folder_uuid="folder_garden_f", creation_date=NOW, update_date=NOW))
     await _member(db, org, user_role, "user_gardener", "gardener", "Gardening", "Fan", id=50)
@@ -274,24 +266,23 @@ async def gardening(db, org, other_org, admin_user, user_role):
     await _member(db, other_org, foreign_role, "user_gardener_f", "gardener_f", "Gardening", "Elsewhere", id=51)
 
 
-GARDEN_FOREIGN = {"community_garden_f", "discussion_garden_f", "folder_garden_f", "user_gardener_f"}
+GARDEN_FOREIGN = {"folder_garden_f", "user_gardener_f"}
 
 
 async def test_search_maps_every_org_search_kind(db, org, admin_user, registry, gardening):
     out = await search(registry, ctx_for(db, org, admin_user), query="Gardening", limit=25)
     by_uuid = {m["uuid"]: m for m in out["matches"]}
-    assert {"community_garden", "discussion_garden", "folder_garden", "user_gardener"} <= set(by_uuid)
+    assert {"folder_garden", "user_gardener"} <= set(by_uuid)
     assert not set(by_uuid) & GARDEN_FOREIGN
     member = by_uuid["user_gardener"]
     assert member["kind"] == "member" and member["name"] == "Gardening Fan" and member["username"] == "gardener"
     assert "email" not in member
-    assert by_uuid["discussion_garden"]["url"].endswith("/community/garden/discussion/garden")
 
 
 async def test_learner_org_search_stays_in_the_org(db, org, regular_user, registry, gardening):
     out = await search(registry, ctx_for(db, org, regular_user), query="Gardening", limit=25)
     found = {m["uuid"] for m in out["matches"]}
-    assert "community_garden" in found and not found & GARDEN_FOREIGN
+    assert "folder_garden" in found and not found & GARDEN_FOREIGN
 
 
 async def test_groups_and_roles_stay_in_the_org(db, org, other_org, admin_user, registry):
@@ -385,18 +376,9 @@ async def test_fetch_task_opens_its_assignment(db, org, admin_user, fetch_regist
     assert "What is 2+2?" in out["text"]
 
 
-async def test_fetch_comment_opens_its_discussion_marked_untrusted(db, org, admin_user, fetch_registry):
-    community = await add(db, Community(name="Main", public=True, org_id=org.id, community_uuid="community_main", creation_date=NOW, update_date=NOW))
-    thread = await add(db, Discussion(title="Welcome", content="Say hello", community_id=community.id, org_id=org.id, author_id=admin_user.id, discussion_uuid="discussion_welcome", creation_date=NOW, update_date=NOW))
-    await add(db, DiscussionComment(content="hi there", discussion_id=thread.id, author_id=admin_user.id, comment_uuid="comment_hi", creation_date=NOW, update_date=NOW))
-    out = ok(await run_tool(fetch_registry, "fetch", {"id": "comment_hi"}, ctx_for(db, org, admin_user)))
-    assert out["id"] == "comment_hi" and out["metadata"]["kind"] == "discussion"
-    assert out["note"] == UNTRUSTED_NOTE and "Welcome" in out["text"] and "hi there" in out["text"]
-
-
 async def test_fetch_refuses_children_of_other_orgs(db, org, other_org, admin_user, admin_role, fetch_registry, foreign_rows):
     await add(db, UserOrganization(user_id=admin_user.id, org_id=other_org.id, role_id=admin_role.id, creation_date=NOW, update_date=NOW))
-    for kind in ("chapter", "assignment_task", "comment", "user", "assignment", "discussion"):
+    for kind in ("chapter", "assignment_task", "user", "assignment"):
         out = await run_tool(fetch_registry, "fetch", {"id": foreign_rows[kind]}, ctx_for(db, org, admin_user))
         assert out.denied_code == "http_404", (kind, out.denied_code, out.reason)
 
@@ -434,10 +416,7 @@ async def foreign_rows(db, other_org):
     ))
     await add(db, UserGroup(name="Theirs", description="", org_id=o, usergroup_uuid="usergroup_f", creation_date=NOW, update_date=NOW))
     role = await add(db, Role(name="Theirs", org_id=o, role_type=RoleTypeEnum.TYPE_ORGANIZATION, role_uuid="role_f", rights={}, creation_date=NOW, update_date=NOW))
-    community = await add(db, Community(name="Theirs", public=True, org_id=o, community_uuid="community_f", creation_date=NOW, update_date=NOW))
     user = await _member(db, other_org, role, "user_f", "theirs", "Their", "Member", id=901)
-    thread = await add(db, Discussion(title="Theirs", content="", community_id=community.id, org_id=o, author_id=user.id, discussion_uuid="discussion_f", creation_date=NOW, update_date=NOW))
-    await add(db, DiscussionComment(content="theirs", discussion_id=thread.id, author_id=user.id, comment_uuid="comment_f", creation_date=NOW, update_date=NOW))
     await add(db, Folder(name="Theirs", description="", public=True, org_id=o, folder_uuid="folder_f", creation_date=NOW, update_date=NOW))
     await add(db, Media(name="Theirs", org_id=o, media_uuid="media_f", creation_date=NOW, update_date=NOW))
     await add(db, Path(name="Theirs", published=True, org_id=o, path_uuid="path_f", creation_date=NOW, update_date=NOW))
@@ -511,21 +490,6 @@ async def test_targets_for_unprefixed_and_unknown_args(db, org, admin_user):
         "kind": "widget", "name": "W",
     }
     assert await describe_target("delete_course", {"course_uuid": 5}, "course_uuid", org.id, db) == {"kind": "course", "uuid": "5"}
-
-
-async def test_targets_name_comments_only_inside_the_org(db, org, admin_user, foreign_rows):
-    community = await add(db, Community(name="Main", public=True, org_id=org.id, community_uuid="community_main", creation_date=NOW, update_date=NOW))
-    thread = await add(db, Discussion(title="Welcome", content="", community_id=community.id, org_id=org.id, author_id=admin_user.id, discussion_uuid="discussion_welcome", creation_date=NOW, update_date=NOW))
-    await add(db, DiscussionComment(content="c" * 80, discussion_id=thread.id, author_id=admin_user.id, comment_uuid="comment_long", creation_date=NOW, update_date=NOW))
-    await add(db, DiscussionComment(content="short", discussion_id=thread.id, author_id=admin_user.id, comment_uuid="comment_short", creation_date=NOW, update_date=NOW))
-    long = await describe_target("delete_comment", {"comment_uuid": "comment_long"}, "comment_uuid", org.id, db)
-    assert long["name"] == "c" * 60 + "..."
-    assert (await describe_target("delete_comment", {"comment_uuid": "comment_short"}, "comment_uuid", org.id, db))["name"] == "short"
-    theirs = await describe_target("delete_comment", {"comment_uuid": "comment_f"}, "comment_uuid", org.id, db)
-    assert theirs == {"kind": "comment", "uuid": "comment_f"}
-    # A foreign id with a new name shows only the name the caller typed.
-    renamed = await describe_target("update_course", {"course_uuid": "course_f", "name": "Mine now"}, "course_uuid", org.id, db)
-    assert renamed == {"kind": "course", "uuid": "course_f", "name": "Mine now"}
 
 
 # ─── registry ────────────────────────────────────────────────────────────────

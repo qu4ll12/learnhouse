@@ -12,9 +12,6 @@ from src.db.courses.chapter_activities import ChapterActivity
 from src.db.folders.folders import Folder, FolderRead
 from src.db.organizations import Organization
 from src.db.user_organizations import UserOrganization
-from src.db.communities.communities import Community, CommunityRead
-from src.db.communities.discussions import Discussion, DiscussionRead
-from src.db.podcasts.podcasts import Podcast, PodcastRead
 from src.services.courses.courses import accessible_courses_filter, search_courses
 from src.services.search.normalization import (
     LIKE_ESCAPE_CHAR,
@@ -26,20 +23,7 @@ from src.security.auth import resolve_acting_user_id
 from src.services.orgs.auth_policy import viewer_for_org
 from src.security.org_auth import is_org_admin, is_org_member
 from src.security.backoffice import is_user_backoffice_staff
-from src.services.communities.communities import (
-    accessible_community_ids_select,
-    can_read_all_communities,
-    community_read,
-)
 from src.services.folders.folders import accessible_folder_ids_select
-from src.services.podcasts.podcasts import accessible_podcast_ids_query
-
-
-class SearchDiscussionRead(DiscussionRead):
-    """DiscussionRead plus the parent community UUID so the UI can deep-link
-    to `/community/{uuid}/discussion/{uuid}` without another round trip."""
-
-    community_uuid: str = ""
 
 
 class SearchActivityRead(BaseModel):
@@ -79,18 +63,14 @@ class SearchResult(BaseModel):
     # is_backoffice_staff / extra_metadata (the answers to the org's custom signup
     # fields): PII the member directory deliberately restricts to admins.
     users: List[UserReadPublic]
-    communities: List[CommunityRead]
-    discussions: List[SearchDiscussionRead]
     # Plays (EE): PlaygroundRead objects, empty without EE.
     playgrounds: List[Any]
-    podcasts: List[PodcastRead]
+    podcasts: List[Any] = []
 
     total_courses: int = 0
     total_activities: int = 0
     total_folders: int = 0
     total_users: int = 0
-    total_communities: int = 0
-    total_discussions: int = 0
     total_playgrounds: int = 0
     total_podcasts: int = 0
 
@@ -101,8 +81,6 @@ def _empty_result() -> SearchResult:
         activities=[],
         folders=[],
         users=[],
-        communities=[],
-        discussions=[],
         playgrounds=[],
         podcasts=[],
     )
@@ -177,8 +155,7 @@ async def _paginate_and_count_rows(
 ) -> tuple[list, int]:
     """Like ``_paginate_and_count`` but preserves multi-column ``Row`` tuples.
 
-    Use this for selects that return more than one column, e.g.
-    ``select(Discussion, Community.community_uuid)``.
+    Use this for selects that return more than one column.
     """
     offset = (page - 1) * limit
     rows = (await db_session.execute(query.offset(offset).limit(limit))).all()
@@ -205,8 +182,6 @@ async def search_across_org(
     - Org members additionally see org-scoped non-public content where the
       resource itself doesn't restrict it further (e.g. unpublished items and
       usergroup-restricted playgrounds are always excluded from search).
-      Usergroup-restricted communities (and their discussions) and podcasts
-      only show up for members of a linked group, as in their listings.
     - User hits are serialized as ``UserReadPublic``, never ``UserRead``: search
       is open to every member, so it must not expose the PII the dedicated
       member directory restricts to admins.
@@ -375,61 +350,6 @@ async def search_across_org(
 
         users, total_users = await _paginate_and_count(db_session, users_q, page, limit)
 
-    # ── Communities ──────────────────────────────────────────────────────────
-    communities_q = (
-        select(Community)
-        .where(Community.org_id == org.id)
-        .where(_ilike_terms([Community.name, Community.description], patterns))
-    )
-    # Members get the same usergroup-aware visibility as the community
-    # listing; only community managers / org admins see every community.
-    community_filter = None
-    if only_public or (is_token and not _token_reads_content(current_user, "communities")):
-        community_filter = Community.public == sa_true()
-    elif is_token:
-        pass  # communities read right: every community of the token's org
-    elif not await can_read_all_communities(request, org, acting_user_id, db_session):
-        community_filter = Community.id.in_(  # type: ignore[attr-defined]
-            accessible_community_ids_select(org.id, acting_user_id)
-        )
-    if community_filter is not None:
-        communities_q = communities_q.where(community_filter)
-    communities, total_communities = await _paginate_and_count(
-        db_session, communities_q, page, limit
-    )
-
-    # ── Discussions (inherit access from their community) ────────────────────
-    discussions_q = (
-        select(Discussion, Community.community_uuid)
-        .join(Community, Community.id == Discussion.community_id)
-        .where(Discussion.org_id == org.id)
-        .where(_ilike_terms([Discussion.title, Discussion.content], patterns))
-    )
-    if community_filter is not None:
-        discussions_q = discussions_q.where(community_filter)
-    discussions, total_discussions = await _paginate_and_count_rows(
-        db_session, discussions_q, page, limit
-    )
-
-    # ── Podcasts ─────────────────────────────────────────────────────────────
-    podcasts_q = (
-        select(Podcast)
-        .where(Podcast.org_id == org.id)
-        .where(Podcast.published == sa_true())
-        .where(_ilike_terms([Podcast.name, Podcast.description, Podcast.tags], patterns))
-    )
-    if only_public or (is_token and not _token_reads_content(current_user, "podcasts")):
-        podcasts_q = podcasts_q.where(Podcast.public == sa_true())
-    elif not is_token and not await is_org_admin(acting_user_id, org.id, db_session):
-        # Same visibility as the podcast listing: usergroup-restricted
-        # podcasts only for members of a linked group (or active authors).
-        podcasts_q = podcasts_q.where(
-            Podcast.id.in_(accessible_podcast_ids_query(acting_user_id))  # type: ignore[union-attr]
-        )
-    podcasts, total_podcasts = await _paginate_and_count(
-        db_session, podcasts_q, page, limit
-    )
-
     activity_reads = [
         SearchActivityRead(
             activity_uuid=activity.activity_uuid,
@@ -450,9 +370,6 @@ async def search_across_org(
     folder_reads = [FolderRead.model_validate(f) for f in folders]
 
     user_reads = [UserReadPublic.model_validate(u) for u in users]
-    community_reads = [community_read(c) for c in communities]
-    # Content sold through a product stays out of search for people who have
-    # not bought it: discussions of a sold community, a sold playground's HTML.
     from src.core.ee_hooks import is_ee_resource_locked
 
     locked: dict[str, bool] = {}
@@ -461,15 +378,6 @@ async def search_across_org(
         if resource_uuid not in locked:
             locked[resource_uuid] = await is_ee_resource_locked(request, db_session, current_user, resource_uuid)
         return locked[resource_uuid]
-
-    discussion_reads = [
-        SearchDiscussionRead(
-            **discussion.model_dump(),
-            community_uuid=community_uuid or "",
-        )
-        for discussion, community_uuid in discussions
-        if not (community_uuid and await _locked(community_uuid))
-    ]
 
     # Plays are an EE feature; without EE there are none to search.
     from src.core.ee_hooks import get_ee_module
@@ -490,23 +398,17 @@ async def search_across_org(
             is_locked=_locked,
         )
 
-    podcast_reads = [PodcastRead(**p.model_dump(), authors=[]) for p in podcasts]
-
     return SearchResult(
         courses=courses,
         activities=activity_reads,
         folders=folder_reads,
         users=user_reads,
-        communities=community_reads,
-        discussions=discussion_reads,
         playgrounds=playground_reads,
-        podcasts=podcast_reads,
+        podcasts=[],
         total_courses=total_courses,
         total_activities=total_activities,
         total_folders=total_folders,
         total_users=total_users,
-        total_communities=total_communities,
-        total_discussions=total_discussions,
         total_playgrounds=total_playgrounds,
-        total_podcasts=total_podcasts,
+        total_podcasts=0,
     )

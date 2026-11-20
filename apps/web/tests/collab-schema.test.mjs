@@ -32,7 +32,7 @@ const { getLinkExtension } = await import("../components/Objects/Editor/EditorCo
 const Blocks = await import("../components/Objects/Editor/Blocks/extensions");
 const { default: CommentMark } = await import("../components/Objects/Editor/Comments/CommentMark.ts");
 const { default: AIStreamingMark } = await import("../components/Objects/Editor/Extensions/AIStreaming/AIStreamingMark");
-const { CommunityTag } = await import("../components/Objects/Communities/Tags/CommunityTag");
+const { CommunityTag } = await import("../components/Objects/Editor/Extensions/CommunityTag/CommunityTag");
 
 // The collab server's converter. It lives in apps/collab and uses that app's
 // copy of yjs, so documents cross over as encoded updates (as on the wire).

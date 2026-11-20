@@ -306,12 +306,12 @@ class TestFeatureResolve:
         assert members["disabled_by"] == "platform"
 
     def test_org_toggle_in_self_hosted_modes(self):
-        config = {"config_version": "2.0", "admin_toggles": {"podcasts": {"org_disabled": True}}}
+        config = {"config_version": "2.0", "admin_toggles": {"folders": {"org_disabled": True}}}
         for mode in ("ee", "oss"):
             with patch("src.security.features_utils.resolve.get_deployment_mode", return_value=mode):
-                podcasts = resolve_feature("podcasts", config, org_id=0)
-            assert podcasts["enabled"] is False
-            assert podcasts["disabled_by"] == "org"
+                folders = resolve_feature("folders", config, org_id=0)
+            assert folders["enabled"] is False
+            assert folders["disabled_by"] == "org"
 
     def test_locked_feature_reports_the_plan_that_unlocks_it(self):
         with patch("src.security.features_utils.resolve.get_deployment_mode", return_value="saas"):
@@ -320,9 +320,9 @@ class TestFeatureResolve:
             assert resolve_feature("live_sessions", standard, org_id=0)["upgrade_plan"] == "business"
             pro = {"config_version": "2.0", "plan": "pro"}
             assert resolve_feature("live_sessions", pro, org_id=0)["upgrade_plan"] == "business"
-            assert resolve_feature("communities", standard, org_id=0)["upgrade_plan"] is None
+            assert resolve_feature("payments", standard, org_id=0)["upgrade_plan"] is None
             free = {"config_version": "2.0", "plan": "free"}
-            assert resolve_feature("communities", free, org_id=0)["upgrade_plan"] == "standard"
+            assert resolve_feature("payments", free, org_id=0)["upgrade_plan"] == "standard"
             personal = {"config_version": "2.0", "plan": "personal"}
             assert resolve_feature("paths", personal, org_id=0)["upgrade_plan"] == "pro"
 
@@ -334,7 +334,7 @@ class TestFeatureResolve:
         # No plan includes it.
         assert get_upgrade_plan("free", "not_a_feature") is None
         # Unknown current plan starts from the bottom of the business line.
-        assert get_upgrade_plan("oss", "communities") == "standard"
+        assert get_upgrade_plan("oss", "payments") == "standard"
         # The personal line can move up through the business plans.
         assert get_upgrade_plan("personal-family", "sso") == "business"
         # Business is the first plan that unlocks SSO from the business line.
@@ -397,7 +397,7 @@ class TestFeatureResolve:
         ):
             result = resolve_all_features({"config_version": "2.0"}, org_id=0)
         mock_fetch.assert_not_called()
-        assert len(result) == 29
+        assert len(result) == 27
 
     def test_resolve_all_features_uses_resolve_feature_for_every_entry(self):
         calls = []
@@ -418,7 +418,6 @@ class TestFeatureResolve:
             "boards",
             "collaboration",
             "folders",
-            "communities",
             "courses",
             "live_sessions",
             "lti",
@@ -427,7 +426,6 @@ class TestFeatureResolve:
             "paths",
             "payments",
             "playgrounds",
-            "podcasts",
             "roles",
             "scorm",
             "sso",
@@ -440,5 +438,5 @@ class TestFeatureResolve:
             "crm",
             "crm_salesforce",
         ]
-        assert len(calls) == 29
+        assert len(calls) == 27
         assert calls[0] == ("ai", {"config_version": "2.0"}, 9)

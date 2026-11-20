@@ -26,7 +26,6 @@ from src.services.ai.schemas.editor import SendEditorAIChatMessage
 from src.services.ai.schemas.quiz import GenerateQuizRequest
 from src.services.ai.schemas.scenario import GenerateScenarioRequest
 from src.services.api_tokens import api_tokens as api_tokens_service
-from src.services.communities import discussions
 from src.services.media import media as media_service
 
 pytestmark = pytest.mark.asyncio
@@ -266,37 +265,6 @@ async def test_media_create_rejects_token_for_other_org():
 # ---------------------------------------------------------------------------
 # 4. Discussion edits by API tokens of another org
 # ---------------------------------------------------------------------------
-
-
-def _discussion_db():
-    discussion = SimpleNamespace(
-        discussion_uuid="d1", community_id=10, author_id=1, edit_count=0
-    )
-    community = SimpleNamespace(id=10, org_id=1, community_uuid="community_1")
-    return _db_returning(discussion, community)
-
-
-@pytest.mark.parametrize(
-    "call",
-    [
-        lambda tok, db: discussions.update_discussion(
-            MagicMock(), "d1", discussions.DiscussionUpdate(title="t"), tok, db
-        ),
-        lambda tok, db: discussions.pin_discussion(MagicMock(), "d1", True, tok, db),
-        lambda tok, db: discussions.lock_discussion(MagicMock(), "d1", True, tok, db),
-        lambda tok, db: discussions.delete_discussion(MagicMock(), "d1", tok, db),
-    ],
-    ids=["update", "pin", "lock", "delete"],
-)
-async def test_discussion_writes_reject_token_from_other_org(call):
-    token = APITokenUser(org_id=2, created_by_user_id=1, rights={})
-    admin = AsyncMock(return_value=True)
-    with patch.object(discussions, "authorization_verify_if_user_is_anon", new=AsyncMock()), \
-         patch.object(discussions, "authorization_verify_based_on_org_admin_status", new=admin):
-        with pytest.raises(HTTPException) as exc:
-            await call(token, _discussion_db())
-    assert exc.value.status_code == 403
-    admin.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

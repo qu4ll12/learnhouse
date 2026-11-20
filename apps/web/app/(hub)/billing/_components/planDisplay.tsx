@@ -23,7 +23,6 @@ import {
   EnvelopeSimple,
   Files,
   FlowArrow,
-  Garage,
   Globe,
   GlobeStand,
   HandCoins,
@@ -195,7 +194,6 @@ const STATIC_HIGHLIGHTS: Record<CardPlanId, [Icon, string, string][]> = {
     [GlobeStand, 'atlas', 'Atlas AI & course translation'],
     [CurrencyCircleDollar, 'payments', 'Payments with 0% platform fees'],
     [CalendarCheck, 'drip', 'Drip content & discount codes'],
-    [Garage, 'communities', 'Communities & podcasts'],
     [DeviceMobile, 'app', 'iOS & Android app'],
     [ChartBar, 'analytics', 'Analytics'],
   ],
@@ -321,7 +319,6 @@ export function compareGroups(t: TFn, limits?: PlanLimits): CompareGroup[] {
       key: 'g_community',
       tint: 'text-purple-500',
       rows: [
-        { key: 'communities', icon: Garage, cells: [Y, Y, Y, Y] },
         { key: 'messaging', icon: ChatsCircle, cells: [Y, Y, Y, Y] },
         { key: 'mobile_app', icon: DeviceMobile, cells: [Y, Y, Y, Y] },
         { key: 'atlas', icon: GlobeStand, cells: [Y, Y, Y, Y] },

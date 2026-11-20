@@ -70,6 +70,7 @@ async def test_inbox_flow(client, db, org, admin_user):
 
 async def test_bad_query_is_rejected(client):
     assert (await client.get(B, params={"category": "spam"})).status_code == 422
+    assert (await client.get(B, params={"category": "community"})).status_code == 422
     assert (await client.get(B, params={"limit": 0})).status_code == 422
     assert (await client.get(B, params={"cursor": "x"})).status_code == 400
 

@@ -1,4 +1,4 @@
-"""What a group unlocks: courses, paths, communities, podcasts, live
+"""What a group unlocks: courses, paths, communities, live
 sessions, boards and library items, each with an optional access window.
 
 A link restricts the resource to the groups linked to it (the existing
@@ -33,7 +33,7 @@ from src.services.usergroups.common import (
 
 # uuid prefix -> kind shown in the UI
 KINDS = {
-    "course_": "course", "path_": "path", "community_": "community", "podcast_": "podcast",
+    "course_": "course", "path_": "path",
     "livesession_": "live_session", "board_": "board", "folder_": "folder", "media_": "media",
 }
 
@@ -52,12 +52,6 @@ def _model(kind: str):
     if kind == "path":
         from src.db.paths import Path
         return Path, Path.path_uuid, "name"
-    if kind == "community":
-        from src.db.communities.communities import Community
-        return Community, Community.community_uuid, "name"
-    if kind == "podcast":
-        from src.db.podcasts.podcasts import Podcast
-        return Podcast, Podcast.podcast_uuid, "name"
     if kind == "board":
         from src.core.ee_hooks import get_ee_module
 

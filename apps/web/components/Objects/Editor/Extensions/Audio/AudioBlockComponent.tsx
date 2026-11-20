@@ -4,24 +4,20 @@ import { CreditCost } from '@components/Objects/AI/CreditCost'
 import { useAICreditPrices, useRefreshAICredits } from '@components/Hooks/useAICredits'
 import { minutesFromText } from '@services/ai/credits'
 import {
-  CircleNotch, Headphones, UploadSimple, WarningCircle, Play, Pause, MusicNote, Radio, List,
-  SkipBack, SkipForward, Clock, Users
+  CircleNotch, Headphones, UploadSimple, WarningCircle, Radio, Users
 } from '@phosphor-icons/react'
 import { AIButton, AIMark } from '@components/Objects/AI/AIBrand'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
 import { generateAudioBlock, generateScript, type GenerateAudioSpeaker } from '../../../../../services/blocks/Audio/audio'
-import { getAudioBlockStreamUrl, getPodcastAudioStreamUrl } from '@services/media/media'
+import { getAudioBlockStreamUrl } from '@services/media/media'
+import InlineAudioPlayer from '@components/Objects/Media/InlineAudioPlayer'
 import { useOrg } from '@components/Contexts/OrgContext'
-import { useOrgMembership } from '@components/Contexts/OrgContext'
 import { useCourse } from '@components/Contexts/CourseContext'
 import { useEditorProvider } from '@components/Contexts/Editor/EditorContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { cn } from '@/lib/utils'
-import { getOrgPodcasts, getPodcastMeta, type Podcast, type PodcastEpisode, type PodcastMeta } from '@services/podcasts/podcasts'
-import { safePlay } from '@/lib/media/safePlay'
-import InlineAudioPlayer, { formatTime } from '@components/Objects/Media/InlineAudioPlayer'
 import { BlockChrome, BlockPopover, BlockToolbarButton, BlockToolbarDivider, CommitInput, Segmented, SettingsField } from '../../Blocks/ui/BlockChrome'
 import BlockCaption from '../../Blocks/ui/BlockCaption'
 import MediaSourcePicker from '../../Blocks/ui/MediaSourcePicker'
@@ -45,7 +41,7 @@ const AUDIO_SIZES = {
 
 type AudioSize = keyof typeof AUDIO_SIZES
 type SourceType = 'upload' | 'episode' | 'podcast'
-type TabType = 'upload' | 'generate' | 'episode' | 'podcast'
+type TabType = 'upload' | 'generate'
 
 // AI audio generation (Gemini TTS). Curated subset of the prebuilt voices, and a
 // list of well-supported languages. Language is otherwise auto-detected from the
@@ -79,16 +75,6 @@ interface AudioBlockObject {
     file_id: string
     file_format: string
     activity_uuid?: string
-  }
-  episode?: {
-    podcast_uuid: string
-    episode_uuid: string
-    audio_file: string
-    title: string
-  }
-  podcast?: {
-    podcast_uuid: string
-    name: string
   }
   size: AudioSize
 }
@@ -126,210 +112,12 @@ interface ExtendedNodeViewProps extends Omit<NodeViewProps, 'extension'> {
 }
 
 
-// ─── Playlist Player (podcast-player inspired episode list) ───
-
-function PlaylistPlayer({
-  episodes,
-  podcastName,
-  orgUUID,
-  podcastUUID,
-}: {
-  episodes: PodcastEpisode[]
-  podcastName: string
-  orgUUID: string
-  podcastUUID: string
-}) {
-  const audioRef = React.useRef<HTMLAudioElement>(null)
-  const progressRef = React.useRef<HTMLDivElement>(null)
-  const [activeEpisode, setActiveEpisode] = React.useState<PodcastEpisode | null>(null)
-  const [isPlaying, setIsPlaying] = React.useState(false)
-  const [currentTime, setCurrentTime] = React.useState(0)
-  const [duration, setDuration] = React.useState(0)
-
-  const playEpisode = (episode: PodcastEpisode) => {
-    const url = getPodcastAudioStreamUrl(orgUUID, podcastUUID, episode.episode_uuid, episode.audio_file)
-    setActiveEpisode(episode)
-    setCurrentTime(0)
-    setDuration(0)
-    if (audioRef.current) {
-      audioRef.current.src = url
-      safePlay(audioRef.current)
-      setIsPlaying(true)
-    }
-  }
-
-  React.useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    const onTimeUpdate = () => setCurrentTime(audio.currentTime)
-    const onLoadedMetadata = () => setDuration(audio.duration)
-    const onEnded = () => {
-      setIsPlaying(false)
-      // Auto-advance to next episode
-      if (activeEpisode) {
-        const idx = episodes.findIndex((e) => e.episode_uuid === activeEpisode.episode_uuid)
-        if (idx >= 0 && idx < episodes.length - 1) {
-          playEpisode(episodes[idx + 1])
-        }
-      }
-    }
-    audio.addEventListener('timeupdate', onTimeUpdate)
-    audio.addEventListener('loadedmetadata', onLoadedMetadata)
-    audio.addEventListener('ended', onEnded)
-    return () => {
-      audio.removeEventListener('timeupdate', onTimeUpdate)
-      audio.removeEventListener('loadedmetadata', onLoadedMetadata)
-      audio.removeEventListener('ended', onEnded)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeEpisode])
-
-  const togglePlay = () => {
-    const audio = audioRef.current
-    if (!audio || !activeEpisode) return
-    if (isPlaying) { audio.pause() } else { safePlay(audio) }
-    setIsPlaying(!isPlaying)
-  }
-
-  const skip = (delta: number) => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.currentTime = Math.max(0, Math.min(audio.currentTime + delta, duration))
-  }
-
-  const seekTo = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current
-    const bar = progressRef.current
-    if (!audio || !bar) return
-    const rect = bar.getBoundingClientRect()
-    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
-    audio.currentTime = ratio * duration
-  }
-
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0
-
-  return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      <audio ref={audioRef} preload="metadata" />
-
-      {/* Header */}
-      <div className="px-4 pt-3 pb-2 border-b border-gray-100 flex items-center gap-2">
-        <Radio weight="duotone" size={14} className="text-gray-400 flex-shrink-0" />
-        <span className="text-sm font-semibold text-gray-900">{podcastName}</span>
-        <span className="text-xs text-gray-400 ms-auto">{episodes.length} episodes</span>
-      </div>
-
-      {/* Episode list */}
-      <div className="max-h-64 overflow-y-auto divide-y divide-gray-50">
-        {episodes.map((ep) => {
-          const isCurrent = activeEpisode?.episode_uuid === ep.episode_uuid
-          const isEpPlaying = isCurrent && isPlaying
-          return (
-            <div
-              key={ep.episode_uuid}
-              onClick={() => (isCurrent ? togglePlay() : playEpisode(ep))}
-              className={cn(
-                'flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors',
-                isCurrent ? 'bg-gray-100' : 'hover:bg-gray-50'
-              )}
-            >
-              {/* Play/Pause indicator */}
-              <div
-                className={cn(
-                  'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors',
-                  isCurrent ? 'bg-gray-900' : 'bg-gray-100 group-hover:bg-gray-200'
-                )}
-              >
-                {isEpPlaying ? (
-                  <Pause weight="duotone" size={14} className={isCurrent ? 'text-white' : 'text-gray-600'} fill={isCurrent ? 'white' : 'currentColor'} />
-                ) : (
-                  <Play weight="duotone" size={14} className={isCurrent ? 'text-white' : 'text-gray-600'} fill={isCurrent ? 'white' : 'currentColor'} />
-                )}
-              </div>
-
-              {/* Episode info */}
-              <div className="flex-1 min-w-0">
-                <h4 className={cn('text-sm truncate', isCurrent ? 'font-semibold text-gray-900' : 'text-gray-800')}>
-                  {ep.title}
-                </h4>
-                {ep.duration_seconds > 0 && (
-                  <span className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                    <Clock weight="duotone" size={10} />
-                    {formatTime(ep.duration_seconds)}
-                  </span>
-                )}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Bottom player bar (visible when an episode is active) */}
-      {activeEpisode && (
-        <div className="border-t border-gray-200 px-4 py-3 bg-gray-50">
-          {/* Now playing title */}
-          <div className="flex items-center gap-2 mb-2">
-            <MusicNote weight="duotone" size={12} className="text-gray-400 flex-shrink-0" />
-            <span className="text-xs font-medium text-gray-700 truncate">{activeEpisode.title}</span>
-          </div>
-
-          {/* Controls row */}
-          <div className="flex items-center gap-2">
-            <button onClick={() => skip(-15)} className="p-1 max-md:p-2.5 rounded-full hover:bg-gray-200 transition-colors outline-none">
-              <SkipBack weight="duotone" size={14} className="text-gray-600" />
-            </button>
-
-            <button
-              onClick={togglePlay}
-              className="rounded-full bg-gray-900 hover:bg-gray-800 p-2 max-md:p-3 transition-colors outline-none"
-            >
-              {isPlaying ? (
-                <Pause weight="duotone" size={14} className="text-white" fill="white" />
-              ) : (
-                <Play weight="duotone" size={14} className="text-white" fill="white" />
-              )}
-            </button>
-
-            <button onClick={() => skip(15)} className="p-1 max-md:p-2.5 rounded-full hover:bg-gray-200 transition-colors outline-none">
-              <SkipForward weight="duotone" size={14} className="text-gray-600" />
-            </button>
-
-            <span className="text-xs text-gray-500 tabular-nums flex-shrink-0 w-8 text-end">
-              {formatTime(currentTime)}
-            </span>
-
-            <div
-              ref={progressRef}
-              onClick={seekTo}
-              // dir="ltr": see InlineAudioPlayer. Fill, thumb and seek math all
-              // assume left-to-right, and audio transport is LTR everywhere.
-              dir="ltr"
-              className="flex-1 h-1 max-md:h-1.5 bg-gray-200 rounded-full cursor-pointer relative group"
-            >
-              <div className="h-full bg-gray-900 rounded-full transition-all duration-100" style={{ width: `${progress}%` }} />
-              <div
-                className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 max-md:w-3.5 max-md:h-3.5 bg-gray-900 rounded-full opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity"
-                style={{ left: `calc(${progress}% - 5px)` }}
-              />
-            </div>
-
-            <span className="text-xs text-gray-500 tabular-nums flex-shrink-0 w-8">
-              {formatTime(duration)}
-            </span>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
 // ─── Main AudioBlockComponent ───
 
 function AudioBlockComponent(props: ExtendedNodeViewProps) {
   const { t } = useTranslation()
   const { node, extension, updateAttributes } = props
   const org = useOrg() as Organization | null
-  const { orgslug } = useOrgMembership()
   const course = useCourse() as Course | null
   const editorState = useEditorProvider() as EditorState
   const session = useLHSession() as Session
@@ -337,7 +125,6 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
   // The block reads its source from the node attrs (the shared document), so
   // undo and collaborators' changes show; writes go through updateAttributes.
   const blockObject: AudioBlockObject | null = node.attrs.blockObject || null
-  const setBlockObject = (_next: AudioBlockObject | null) => {}
   const [pendingSize, setPendingSize] = React.useState<AudioSize>('medium')
   const selectedSize: AudioSize = blockObject?.size || pendingSize
   const setSelectedSize = (size: AudioSize) => {
@@ -368,100 +155,8 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
   const [isGenerating, setIsGenerating] = React.useState(false)
   const [isGeneratingScript, setIsGeneratingScript] = React.useState(false)
 
-  // Podcast selection state
-  const [podcasts, setPodcasts] = React.useState<Podcast[]>([])
-  const [podcastsLoading, setPodcastsLoading] = React.useState(false)
-  const [selectedPodcast, setSelectedPodcast] = React.useState<Podcast | null>(null)
-  const [episodes, setEpisodes] = React.useState<PodcastEpisode[]>([])
-  const [episodesLoading, setEpisodesLoading] = React.useState(false)
-
-  // Playlist meta for preview mode
-  const [playlistMeta, setPlaylistMeta] = React.useState<PodcastMeta | null>(null)
-
   const isEditable = editorState?.isEditable
   const access_token = session?.data?.tokens?.access_token
-
-  // Fetch podcasts when episode or podcast tab is active
-  React.useEffect(() => {
-    if ((activeTab === 'episode' || activeTab === 'podcast') && podcasts.length === 0 && !podcastsLoading) {
-      fetchPodcasts()
-    }
-  }, [activeTab])
-
-  // Fetch playlist meta for podcast source_type
-  React.useEffect(() => {
-    if (blockObject?.source_type === 'podcast' && blockObject.podcast) {
-      fetchPlaylistMeta(blockObject.podcast.podcast_uuid)
-    }
-  }, [blockObject?.source_type, blockObject?.podcast?.podcast_uuid])
-
-  const fetchPodcasts = async () => {
-    if (!orgslug) return
-    setPodcastsLoading(true)
-    try {
-      const res = await getOrgPodcasts(orgslug, null, access_token, true)
-      setPodcasts(res?.data || res || [])
-    } catch {
-      setPodcasts([])
-    } finally {
-      setPodcastsLoading(false)
-    }
-  }
-
-  const fetchEpisodes = async (podcast_uuid: string) => {
-    setEpisodesLoading(true)
-    try {
-      const meta = await getPodcastMeta(podcast_uuid, null, access_token)
-      setEpisodes(meta?.episodes || [])
-    } catch {
-      setEpisodes([])
-    } finally {
-      setEpisodesLoading(false)
-    }
-  }
-
-  const fetchPlaylistMeta = async (podcast_uuid: string) => {
-    try {
-      const meta = await getPodcastMeta(podcast_uuid, null, access_token)
-      setPlaylistMeta(meta)
-    } catch {
-      setPlaylistMeta(null)
-    }
-  }
-
-  const handleSelectPodcast = (podcast: Podcast) => {
-    setSelectedPodcast(podcast)
-    fetchEpisodes(podcast.podcast_uuid)
-  }
-
-  const handleSelectEpisode = (episode: PodcastEpisode) => {
-    if (!selectedPodcast) return
-    const newBlockObject: AudioBlockObject = {
-      source_type: 'episode',
-      episode: {
-        podcast_uuid: selectedPodcast.podcast_uuid,
-        episode_uuid: episode.episode_uuid,
-        audio_file: episode.audio_file,
-        title: episode.title,
-      },
-      size: selectedSize,
-    }
-    setBlockObject(newBlockObject)
-    updateAttributes({ blockObject: newBlockObject })
-  }
-
-  const handleSelectPodcastPlaylist = (podcast: Podcast) => {
-    const newBlockObject: AudioBlockObject = {
-      source_type: 'podcast',
-      podcast: {
-        podcast_uuid: podcast.podcast_uuid,
-        name: podcast.name,
-      },
-      size: selectedSize,
-    }
-    setBlockObject(newBlockObject)
-    updateAttributes({ blockObject: newBlockObject })
-  }
 
   const upload = useBlockUpload({
     kind: 'audio',
@@ -510,7 +205,6 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
       refreshCredits()
       // Generated audio is stored like an upload, so treat it identically.
       const newBlockObject: AudioBlockObject = { ...object, source_type: 'upload', size: selectedSize }
-      setBlockObject(newBlockObject)
       updateAttributes({ blockObject: newBlockObject })
       toast.success(t('editor.blocks.audio_block.generated'))
     } catch (err: any) {
@@ -561,9 +255,6 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
   const handleRemove = () => {
     updateAttributes({ blockObject: null })
     setError(null)
-    setSelectedPodcast(null)
-    setEpisodes([])
-    setPlaylistMeta(null)
   }
 
   // Build audio URLs
@@ -578,16 +269,6 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
         )
       : null
 
-  const episodeAudioUrl =
-    blockObject?.source_type === 'episode' && blockObject.episode && org?.org_uuid
-      ? getPodcastAudioStreamUrl(
-          org.org_uuid,
-          blockObject.episode.podcast_uuid,
-          blockObject.episode.episode_uuid,
-          blockObject.episode.audio_file
-        )
-      : null
-
   const getMaxWidth = (size: AudioSize) => {
     const mw = AUDIO_SIZES[size].maxWidth
     return typeof mw === 'number' ? mw : '100%'
@@ -596,6 +277,7 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
   // ===== PREVIEW MODE =====
   if (!isEditable) {
     if (!blockObject) return null
+    if (blockObject.source_type !== 'upload' && !caption.trim() && !transcript.trim()) return null
     const maxWidth = getMaxWidth(blockObject.size || 'medium')
 
     return (
@@ -604,26 +286,6 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
           <div style={{ maxWidth, width: '100%' }}>
             {blockObject.source_type === 'upload' && uploadAudioUrl && (
               <InlineAudioPlayer src={uploadAudioUrl} />
-            )}
-
-            {blockObject.source_type === 'episode' && episodeAudioUrl && (
-              <InlineAudioPlayer src={episodeAudioUrl} title={blockObject.episode?.title} />
-            )}
-
-            {blockObject.source_type === 'podcast' && blockObject.podcast && org?.org_uuid && (
-              playlistMeta?.episodes && playlistMeta.episodes.length > 0 ? (
-                <PlaylistPlayer
-                  episodes={playlistMeta.episodes}
-                  podcastName={blockObject.podcast.name}
-                  orgUUID={org.org_uuid}
-                  podcastUUID={blockObject.podcast.podcast_uuid}
-                />
-              ) : (
-                <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-4 py-6 text-center">
-                  <CircleNotch weight="duotone" className="w-5 h-5 animate-spin mx-auto text-gray-400" />
-                  <p className="text-sm text-gray-400 mt-2">{t('editor.blocks.audio_block.loading_playlist')}</p>
-                </div>
-              )
             )}
             <BlockCaption value={caption} editable={false} />
             {transcript.trim() && (
@@ -711,8 +373,6 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
               {([
                 { key: 'upload' as TabType, icon: UploadSimple, label: t('editor.blocks.common.upload') },
                 { key: 'generate' as TabType, icon: AITabIcon, label: t('editor.blocks.audio_block.tab_generate') },
-                { key: 'episode' as TabType, icon: MusicNote, label: t('editor.blocks.audio_block.tab_episode') },
-                { key: 'podcast' as TabType, icon: List, label: t('editor.blocks.audio_block.tab_playlist') },
               ]).map((tab) => (
                 <button
                   key={tab.key}
@@ -924,98 +584,6 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
                 )}
               </div>
             )}
-
-            {/* Episode Tab */}
-            {activeTab === 'episode' && (
-              <div className="space-y-3">
-                {podcastsLoading ? (
-                  <div className="flex items-center justify-center py-6">
-                    <CircleNotch weight="duotone" className="w-5 h-5 animate-spin text-neutral-400" />
-                  </div>
-                ) : !selectedPodcast ? (
-                  <div className="space-y-1 max-h-60 overflow-y-auto">
-                    {podcasts.length === 0 ? (
-                      <p className="text-sm text-neutral-400 text-center py-4">{t('editor.blocks.audio_block.no_podcasts')}</p>
-                    ) : (
-                      podcasts.map((p) => (
-                        <div
-                          key={p.podcast_uuid}
-                          onClick={() => handleSelectPodcast(p)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer hover:bg-neutral-100 transition-colors"
-                        >
-                          <Radio weight="duotone" size={14} className="text-neutral-400 flex-shrink-0" />
-                          <span className="text-sm text-neutral-700 truncate">{p.name}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => { setSelectedPodcast(null); setEpisodes([]) }}
-                      className="text-xs text-blue-500 hover:text-blue-600 flex items-center gap-1 outline-none"
-                    >
-                      &larr; {t('editor.blocks.audio_block.back_to_podcasts')}
-                    </button>
-                    <p className="text-sm font-medium text-neutral-700">{selectedPodcast.name}</p>
-                    {episodesLoading ? (
-                      <div className="flex items-center justify-center py-4">
-                        <CircleNotch weight="duotone" className="w-5 h-5 animate-spin text-neutral-400" />
-                      </div>
-                    ) : (
-                      <div className="space-y-1 max-h-48 overflow-y-auto">
-                        {episodes.length === 0 ? (
-                          <p className="text-sm text-neutral-400 text-center py-4">{t('editor.blocks.audio_block.no_episodes')}</p>
-                        ) : (
-                          episodes.map((ep) => (
-                            <div
-                              key={ep.episode_uuid}
-                              onClick={() => handleSelectEpisode(ep)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors"
-                            >
-                              <MusicNote weight="duotone" size={14} className="text-neutral-400 flex-shrink-0" />
-                              <span className="text-sm text-neutral-700 truncate">{ep.title}</span>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Podcast (Playlist) Tab */}
-            {activeTab === 'podcast' && (
-              <div className="space-y-3">
-                {podcastsLoading ? (
-                  <div className="flex items-center justify-center py-6">
-                    <CircleNotch weight="duotone" className="w-5 h-5 animate-spin text-neutral-400" />
-                  </div>
-                ) : (
-                  <div className="space-y-1 max-h-60 overflow-y-auto">
-                    {podcasts.length === 0 ? (
-                      <p className="text-sm text-neutral-400 text-center py-4">{t('editor.blocks.audio_block.no_podcasts')}</p>
-                    ) : (
-                      podcasts.map((p) => (
-                        <div
-                          key={p.podcast_uuid}
-                          onClick={() => handleSelectPodcastPlaylist(p)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors"
-                        >
-                          <Radio weight="duotone" size={14} className="text-neutral-400 flex-shrink-0" />
-                          <div className="min-w-0">
-                            <span className="text-sm text-neutral-700 truncate block">{p.name}</span>
-                            <span className="text-xs text-neutral-400">{p.description}</span>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-
             {error && (
               <div className="flex items-center gap-2 text-sm text-red-500 font-medium bg-red-50 rounded-lg p-3">
                 <WarningCircle weight="duotone" size={16} />
@@ -1034,28 +602,8 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
                 {blockObject.source_type === 'upload' && uploadAudioUrl && (
                   <InlineAudioPlayer src={uploadAudioUrl} />
                 )}
-
-                {blockObject.source_type === 'episode' && episodeAudioUrl && (
-                  <InlineAudioPlayer src={episodeAudioUrl} title={blockObject.episode?.title} />
-                )}
-
-                {blockObject.source_type === 'podcast' && blockObject.podcast && org?.org_uuid && (
-                  playlistMeta?.episodes && playlistMeta.episodes.length > 0 ? (
-                    <PlaylistPlayer
-                      episodes={playlistMeta.episodes}
-                      podcastName={blockObject.podcast.name}
-                      orgUUID={org.org_uuid}
-                      podcastUUID={blockObject.podcast.podcast_uuid}
-                    />
-                  ) : (
-                    <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-4 py-4">
-                      <div className="flex items-center gap-2">
-                        <Radio size={14} className="text-gray-400" />
-                        <span className="text-sm font-medium text-gray-700">{blockObject.podcast.name}</span>
-                      </div>
-                      <p className="text-xs text-gray-400 mt-1">{t('editor.blocks.audio_block.loading_playlist')}</p>
-                    </div>
-                  )
+                {blockObject.source_type !== 'upload' && (
+                  <p className="text-sm text-neutral-500">{t('editor.blocks.audio_removed', 'This audio source is no longer available.')}</p>
                 )}
               </div>
             </div>

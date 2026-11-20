@@ -663,9 +663,6 @@ class TestLearnHouseNativeFields:
 
     @pytest.mark.asyncio
     async def test_loaded_from_learnhouse_data(self, mock_request, db, org, course, chapter, activity, admin_user, regular_user):
-        from src.db.communities.communities import Community
-        from src.db.communities.discussion_comments import DiscussionComment
-        from src.db.communities.discussions import Discussion
         from src.db.courses.assignments import (
             Assignment, AssignmentUserSubmission, AssignmentUserSubmissionStatus, GradingTypeEnum,
         )
@@ -683,21 +680,15 @@ class TestLearnHouseNativeFields:
             title="Quiz", description="", grading_type=list(GradingTypeEnum)[0], assignment_uuid="assignment_2",
             org_id=org.id, course_id=course.id, chapter_id=chapter.id, activity_id=activity.id,
         )
-        community = Community(name="Lounge", org_id=org.id, community_uuid="community_lounge")
-        db.add_all([a1, a2, community])
+        db.add_all([a1, a2])
         await db.commit()
-        for a in (cert, a1, a2, community):
+        for a in (cert, a1, a2):
             await db.refresh(a)
         db.add(CertificateUser(user_id=regular_user.id, certification_id=cert.id, user_certification_uuid="uc_1", created_at="2026-10-02T10:00:00"))
         db.add(AssignmentUserSubmission(
             creation_date=now, update_date=now, assignmentusersubmission_uuid="s1",
             submission_status=AssignmentUserSubmissionStatus.GRADED, grade=90, user_id=regular_user.id, assignment_id=a1.id,
         ))
-        discussion = Discussion(title="Hi", community_id=community.id, org_id=org.id, author_id=regular_user.id, discussion_uuid="discussion_1")
-        db.add(discussion)
-        await db.commit()
-        await db.refresh(discussion)
-        db.add(DiscussionComment(content="Me too", discussion_id=discussion.id, author_id=regular_user.id, comment_uuid="comment_1"))
         await db.commit()
 
         from src.db.trail_runs import TrailRun
@@ -722,7 +713,7 @@ class TestLearnHouseNativeFields:
         assert activity.activity_uuid in ctx.completed_activity_uuids
         assert (ctx.certified, ctx.certified_on) == (True, date(2026, 10, 2))
         assert (ctx.assignment_total, ctx.assignments_submitted, ctx.assignment_average) == (2, frozenset({"assignment_1"}), 90)
-        assert (ctx.community_posts, ctx.communities_active) == (2, frozenset({"community_lounge"}))
+        assert (ctx.community_posts, ctx.communities_active) == (0, frozenset())
 
         with patch("src.services.courses.activities.activities.check_resource_access", new_callable=AsyncMock):
             options = await get_dynamic_options(mock_request, activity.activity_uuid, admin_user, db)

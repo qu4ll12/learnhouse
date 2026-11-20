@@ -773,7 +773,7 @@ ELEMENTS: dict[str, tuple[type[BaseModel], bool, str]] = {
     "courses": (CoursesProps, False, "data"),
     "course": (CourseProps, False, "data"),
     "paths": (PathsProps, False, "data"),
-    "communities": (CollectionProps, False, "data"),
+    "communities": (CollectionProps, False, "data"),  # Kept for saved pages only
     "podcasts": (CollectionProps, False, "data"),
     "live_sessions": (LiveSessionsProps, False, "data"),
     "instructors": (InstructorsProps, False, "data"),

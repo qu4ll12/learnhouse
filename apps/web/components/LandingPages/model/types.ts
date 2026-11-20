@@ -89,7 +89,7 @@ export interface ResponsiveStyle {
 export type ElementType =
   | 'section' | 'container' | 'columns'
   | 'heading' | 'text' | 'richtext' | 'image' | 'video' | 'button' | 'icon' | 'divider' | 'spacer' | 'embed' | 'list' | 'html'
-  | 'courses' | 'course' | 'paths' | 'communities' | 'podcasts' | 'live_sessions' | 'instructors'
+  | 'courses' | 'course' | 'paths' | 'live_sessions' | 'instructors'
   | 'testimonials' | 'pricing' | 'faq' | 'stats' | 'logos' | 'features' | 'steps' | 'gallery' | 'countdown'
   | 'newsletter' | 'form' | 'navbar' | 'footer' | 'symbol'
 

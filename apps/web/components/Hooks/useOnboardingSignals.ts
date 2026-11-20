@@ -8,8 +8,7 @@ import { dashCoursesQuery } from '@/lib/query/dashQueries'
  * What the launch plan needs beyond the checklist itself: the course the admin
  * most recently edited, so "Add content" opens it directly. Which steps are
  * done now comes from the server (GET /onboarding/orgs/{id}), which reads the
- * org's data in one request instead of five from the browser (one of which,
- * communities, a free plan refused).
+ * org's data in one request instead of several from the browser.
  */
 export function useOnboardingSignals(enabled = true) {
   const org = useOrg() as any

@@ -75,7 +75,7 @@ def submission_files_belong_to(task_submission, user_id: int) -> bool:
 # fall through to the public branch.
 _CONTENT_PATH_KEYWORDS = frozenset({
     "orgs", "users", "courses", "activities", "assignments", "tasks", "subs",
-    "solution", "thumbnails", "podcasts", "episodes", "media",
+    "solution", "thumbnails", "media",
 })
 
 

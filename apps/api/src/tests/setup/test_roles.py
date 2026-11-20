@@ -50,8 +50,6 @@ class TestRightsModel:
             "assignments": self.get_valid_permission(),
             "roles": self.get_valid_permission(),
             "dashboard": self.get_valid_dashboard_permission(),
-            "communities": self.get_valid_permission(),
-            "discussions": self.get_valid_permission_with_own(),
             "podcasts": self.get_valid_permission_with_own(),
             "boards": self.get_valid_permission_with_own(),
             "playgrounds": self.get_valid_permission_with_own(),
@@ -71,54 +69,13 @@ class TestRightsModel:
         assert rights.activities is not None
         assert rights.roles is not None
         assert rights.dashboard is not None
-        assert rights.communities is not None
-        assert rights.discussions is not None
         assert rights.podcasts is not None
-
-    def test_rights_model_missing_communities(self):
-        """Test that Rights model fails validation when communities is missing"""
-        fields = self.get_all_required_rights_fields()
-        del fields["communities"]
-
-        with pytest.raises(ValidationError) as exc_info:
-            Rights(**fields)
-
-        errors = exc_info.value.errors()
-        assert len(errors) == 1
-        assert errors[0]["loc"] == ("communities",)
-        assert errors[0]["type"] == "missing"
-
-    def test_rights_model_missing_discussions(self):
-        """Test that Rights model fails validation when discussions is missing"""
-        fields = self.get_all_required_rights_fields()
-        del fields["discussions"]
-
-        with pytest.raises(ValidationError) as exc_info:
-            Rights(**fields)
-
-        errors = exc_info.value.errors()
-        assert len(errors) == 1
-        assert errors[0]["loc"] == ("discussions",)
-        assert errors[0]["type"] == "missing"
-
-    def test_rights_model_missing_podcasts(self):
-        """Test that Rights model fails validation when podcasts is missing"""
-        fields = self.get_all_required_rights_fields()
-        del fields["podcasts"]
-
-        with pytest.raises(ValidationError) as exc_info:
-            Rights(**fields)
-
-        errors = exc_info.value.errors()
-        assert len(errors) == 1
-        assert errors[0]["loc"] == ("podcasts",)
-        assert errors[0]["type"] == "missing"
 
     def test_rights_model_missing_multiple_fields(self):
         """Test that Rights model fails with multiple missing fields"""
         fields = self.get_all_required_rights_fields()
-        del fields["communities"]
-        del fields["discussions"]
+        del fields["courses"]
+        del fields["users"]
 
         with pytest.raises(ValidationError) as exc_info:
             Rights(**fields)
@@ -126,8 +83,8 @@ class TestRightsModel:
         errors = exc_info.value.errors()
         assert len(errors) == 2
         error_locs = {error["loc"][0] for error in errors}
-        assert "communities" in error_locs
-        assert "discussions" in error_locs
+        assert "courses" in error_locs
+        assert "users" in error_locs
 
     def test_rights_model_missing_courses(self):
         """Test that Rights model fails when courses is missing"""
@@ -164,24 +121,11 @@ class TestRightsModel:
         errors = exc_info.value.errors()
         assert any("courses" in str(error["loc"]) for error in errors)
 
-    def test_rights_model_wrong_type_for_discussions(self):
-        """Test that Rights model fails when discussions has wrong type"""
-        fields = self.get_all_required_rights_fields()
-        fields["discussions"] = self.get_valid_permission()  # Should be PermissionsWithOwn
-
-        with pytest.raises(ValidationError) as exc_info:
-            Rights(**fields)
-
-        errors = exc_info.value.errors()
-        assert any("discussions" in str(error["loc"]) for error in errors)
-
     def test_rights_model_getitem(self):
         """Test that Rights model supports indexing via __getitem__"""
         rights = Rights(**self.get_all_required_rights_fields())
 
         assert rights["courses"] == rights.courses
-        assert rights["communities"] == rights.communities
-        assert rights["discussions"] == rights.discussions
 
     def test_rights_model_dump(self):
         """Test that Rights model can be serialized to dict"""
@@ -189,11 +133,29 @@ class TestRightsModel:
         dumped = rights.model_dump()
 
         assert "courses" in dumped
-        assert "communities" in dumped
-        assert "discussions" in dumped
         assert "podcasts" in dumped
         assert "assignments" in dumped
-        assert len(dumped) == 16  # All 16 fields
+        assert len(dumped) == 14
+
+    def test_rights_model_missing_podcasts_defaults_to_no_access(self):
+        """Podcasts are removed; the field stays optional so stored roles still load"""
+        fields = self.get_all_required_rights_fields()
+        del fields["podcasts"]
+
+        rights = Rights(**fields)
+
+        assert not any(rights.podcasts.model_dump().values())
+
+    def test_rights_model_legacy_communities_and_discussions_loads(self):
+        """Stored legacy roles with communities and discussions rights still load"""
+        fields = self.get_all_required_rights_fields()
+        rights = Rights(
+            **fields,
+            communities=self.get_valid_permission().model_dump(),
+            discussions=self.get_valid_permission_with_own().model_dump(),
+        )
+
+        assert rights.courses is not None
 
 
 class TestPermissionModels:
@@ -256,8 +218,6 @@ class TestDefaultRolesValidation:
         "assignments",
         "roles",
         "dashboard",
-        "communities",
-        "discussions",
         "podcasts",
         "boards",
         "playgrounds",
@@ -340,21 +300,6 @@ class TestDefaultRolesValidation:
             dashboard=DashboardPermission(
                 action_access=True,
             ),
-            communities=Permission(
-                action_create=True,
-                action_read=True,
-                action_update=True,
-                action_delete=True,
-            ),
-            discussions=PermissionsWithOwn(
-                action_create=True,
-                action_read=True,
-                action_read_own=True,
-                action_update=True,
-                action_update_own=True,
-                action_delete=True,
-                action_delete_own=True,
-            ),
             podcasts=PermissionsWithOwn(
                 action_create=True,
                 action_read=True,
@@ -435,21 +380,6 @@ class TestDefaultRolesValidation:
             dashboard=DashboardPermission(
                 action_access=False,
             ),
-            communities=Permission(
-                action_create=False,
-                action_read=True,
-                action_update=False,
-                action_delete=False,
-            ),
-            discussions=PermissionsWithOwn(
-                action_create=True,
-                action_read=True,
-                action_read_own=True,
-                action_update=False,
-                action_update_own=True,
-                action_delete=False,
-                action_delete_own=True,
-            ),
             podcasts=PermissionsWithOwn(
                 action_create=False,
                 action_read=True,
@@ -528,21 +458,6 @@ class TestDefaultRolesValidation:
             dashboard=DashboardPermission(
                 action_access=True,
             ),
-            communities=Permission(
-                action_create=True,
-                action_read=True,
-                action_update=True,
-                action_delete=True,
-            ),
-            discussions=PermissionsWithOwn(
-                action_create=True,
-                action_read=True,
-                action_read_own=True,
-                action_update=True,
-                action_update_own=True,
-                action_delete=True,
-                action_delete_own=True,
-            ),
             podcasts=PermissionsWithOwn(
                 action_create=True,
                 action_read=True,
@@ -584,8 +499,6 @@ class TestRightsFieldConsistency:
             "assignments",
             "roles",
             "dashboard",
-            "communities",
-            "discussions",
             "podcasts",
             "boards",
             "playgrounds",

@@ -8,15 +8,12 @@ from fastapi import HTTPException, Request, UploadFile
 from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.db.communities.communities import Community
-from src.db.communities.discussions import Discussion
 from src.db.courses.activities import Activity, ActivityLockType
 from src.db.courses.courses import Course
 from src.db.folders.folders import Folder
 from src.db.organization_config import OrganizationConfig
 from src.db.organizations import Organization
 from src.db.paths import Path
-from src.db.podcasts.podcasts import Podcast
 from src.db.seo import SeoSettingsUpdate, clean_seo
 from src.db.users import AnonymousUser, APITokenUser, PublicUser
 from src.security.api_token_utils import require_token_right
@@ -39,7 +36,7 @@ def public_key(resource_type: str, resource: Any) -> str:
 
 
 def _is_openly_public(resource_type: str, resource: Any) -> bool:
-    if resource_type in ("course", "podcast", "path"):
+    if resource_type in ("course", "path"):
         return bool(resource.public and resource.published)
     return bool(resource.public)
 
@@ -153,7 +150,7 @@ async def require_edit(request: Request, db_session: AsyncSession, current_user,
 
 
 # Role/token rights bucket that governs each resource type's authoring.
-RIGHTS_BUCKET = {"course": "courses", "path": "courses", "podcast": "podcasts", "community": "communities", "folder": "folders"}
+RIGHTS_BUCKET = {"course": "courses", "path": "courses", "folder": "folders"}
 
 
 async def require_author(
@@ -292,8 +289,7 @@ async def sitemap_data(db_session: AsyncSession, org_slug: str, request: Optiona
     nobody answered past the org's thin-thread age are left out too.
     """
     from src.core.ee_hooks import get_ee_paid_locked_activity_ids
-    from src.services.seo.indexnow import thread_segment
-    from src.services.seo.public import _anon_locked, _comment_counts, feature_indexable, is_thin_thread
+    from src.services.seo.public import _anon_locked, feature_indexable
 
     if request is None:
         request = Request({"type": "http", "method": "GET", "path": "/", "headers": [], "query_string": b""})
@@ -305,12 +301,11 @@ async def sitemap_data(db_session: AsyncSession, org_slug: str, request: Optiona
             "org_uuid": org.org_uuid,
             "name": org.name,
             "indexing_disabled": bool(seo_config.get("indexing_disabled")),
-            "noindex_communities": bool(seo_config.get("noindex_communities")),
             # Sections the web app adds itself (EE live sessions, newsletters, store).
             "features": {f: feature_indexable(seo_config, f) for f in ("live", "newsletters", "pages", "store")},
         },
         "courses": [], "activities": [], "paths": [], "podcasts": [],
-        "communities": [], "discussions": [], "folders": [], "pages": [],
+        "folders": [], "pages": [],
     }
     if result["org"]["indexing_disabled"]:
         return result
@@ -374,54 +369,7 @@ async def sitemap_data(db_session: AsyncSession, org_slug: str, request: Optiona
         )
     ).scalars().all() if feature_indexable(seo_config, "paths") else []
     result["paths"] = [_entry("path", p, p.thumbnail_image) for p in paths if not _noindexed(p.seo)]
-
-    podcasts = (
-        await db_session.execute(
-            select(Podcast)
-            .where(Podcast.org_id == org.id, Podcast.public == True, Podcast.published == True)  # noqa: E712
-            .order_by(Podcast.id)
-            .limit(SITEMAP_MAX_ITEMS)
-        )
-    ).scalars().all() if feature_indexable(seo_config, "podcasts") else []
-    result["podcasts"] = [_entry("podcast", p, p.thumbnail_image) for p in podcasts if not _noindexed(p.seo)]
-
-    if not result["org"]["noindex_communities"]:
-        communities = (
-            await db_session.execute(
-                select(Community)
-                .where(Community.org_id == org.id, Community.public == True)  # noqa: E712
-                .order_by(Community.id)
-                .limit(SITEMAP_MAX_ITEMS)
-            )
-        ).scalars().all()
-        listed_communities = {c.id: c for c in communities if not _noindexed(c.seo)}
-        result["communities"] = [_entry("community", c, c.thumbnail_image) for c in listed_communities.values()]
-        # Threads of sold communities are behind the paywall: not listed.
-        open_communities = {
-            cid: c for cid, c in listed_communities.items() if not await _anon_locked(request, db_session, c.community_uuid)
-        }
-        if open_communities:
-            discussions = (
-                await db_session.execute(
-                    select(Discussion.id, Discussion.community_id, Discussion.title,
-                           Discussion.update_date, Discussion.creation_date)
-                    .where(Discussion.community_id.in_(list(open_communities)))
-                    .order_by(Discussion.id.desc())
-                    .limit(SITEMAP_MAX_ITEMS)
-                )
-            ).all()
-            counts = await _comment_counts(db_session, [row[0] for row in discussions])
-            result["discussions"] = [
-                {
-                    "community_key": public_key("community", open_communities[community_id]),
-                    "key": thread_segment(discussion_id, title),
-                    "name": title,
-                    "replies": counts.get(discussion_id, 0),
-                    "lastmod": update_date or creation_date or "",
-                }
-                for discussion_id, community_id, title, update_date, creation_date in discussions
-                if not is_thin_thread(seo_config, counts.get(discussion_id, 0), creation_date)
-            ]
+    result["podcasts"] = []
 
     folders = (
         await db_session.execute(
@@ -468,8 +416,6 @@ async def seo_health(request: Request, db_session: AsyncSession, current_user, o
     queries = [
         ("course", select(Course).where(Course.org_id == org_id)),
         ("path", select(Path).where(Path.org_id == org_id)),
-        ("podcast", select(Podcast).where(Podcast.org_id == org_id)),
-        ("community", select(Community).where(Community.org_id == org_id)),
         ("folder", select(Folder).where(Folder.org_id == org_id)),
     ]
     for resource_type, statement in queries:

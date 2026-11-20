@@ -19,8 +19,8 @@ export type Section = (typeof SECTIONS)[number]
 
 /** Optional features by area, in the order the Features section lists them. */
 export const FEATURE_GROUPS: { key: 'content' | 'engagement' | 'selling'; features: OptionalFeatureKey[] }[] = [
-  { key: 'content', features: ['paths', 'folders', 'podcasts', 'boards', 'playgrounds'] },
-  { key: 'engagement', features: ['communities', 'live_sessions', 'newsletter'] },
+  { key: 'content', features: ['paths', 'folders', 'boards', 'playgrounds'] },
+  { key: 'engagement', features: ['live_sessions', 'newsletter'] },
   { key: 'selling', features: ['payments'] },
 ]
 

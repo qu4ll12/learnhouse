@@ -142,15 +142,11 @@ def _sort_items(
 def _resource_registry():
     """prefix -> (resource_type label, model, uuid_field). Lazy to avoid cycles."""
     from src.db.courses.courses import Course
-    from src.db.podcasts.podcasts import Podcast
-    from src.db.communities.communities import Community
     from src.db.media.media import Media
     from src.core.ee_hooks import get_ee_module
 
     registry = {
         "course_": ("courses", Course, "course_uuid"),
-        "podcast_": ("podcasts", Podcast, "podcast_uuid"),
-        "community_": ("communities", Community, "community_uuid"),
         "media_": ("media", Media, "media_uuid"),
     }
     # Boards are an EE feature: without EE a board_ uuid is unknown.
@@ -173,9 +169,7 @@ def _public_resource_dump(resource) -> dict:
     reachable via GET /media/{uuid}/file).
     """
     from src.core.ee_hooks import get_ee_module
-    from src.db.communities.communities import Community
     from src.db.media.media import Media, MediaRead
-    from src.services.communities.communities import community_read
 
     if isinstance(resource, Media):
         return MediaRead.model_validate(resource, from_attributes=True).model_dump()
@@ -183,15 +177,12 @@ def _public_resource_dump(resource) -> dict:
     if boards is not None and isinstance(resource, boards.Board):
         # The table row carries the raw collaborative document (ydoc_state).
         return boards.BoardRead.model_validate(resource, from_attributes=True).model_dump()
-    if isinstance(resource, Community):
-        # The moderators' word list is not for readers.
-        return community_read(resource).model_dump()
     return resource.model_dump()
 
 
 # Resource types gated by their own RBAC rules (usergroup links, folder-aware
 # media privacy); filtered per item through check_resource_access.
-_RBAC_GATED_RESOURCE_TYPES = ("boards", "communities", "media")
+_RBAC_GATED_RESOURCE_TYPES = ("boards", "media")
 
 
 async def _can_read(request, current_user, db_session: AsyncSession, resource_uuid: str) -> bool:
@@ -229,7 +220,7 @@ async def _can_read_item(
 
 
 # Resource types whose rows carry draft / usergroup restrictions of their own.
-_GATED_RESOURCE_TYPES = ("courses", "podcasts")
+_GATED_RESOURCE_TYPES = ("courses",)
 
 
 async def _hidden_gated_uuids(
@@ -238,9 +229,9 @@ async def _hidden_gated_uuids(
     include_private: bool,
     viewer_id: Optional[int],
 ) -> set[str]:
-    """UUIDs of courses/podcasts in ``gated`` the viewer may not see.
+    """UUIDs of courses in ``gated`` the viewer may not see.
 
-    Mirrors the course/podcast listings: anonymous and non-member viewers get
+    Mirrors the course listings: anonymous and non-member viewers get
     public + published only; members also see published org-wide items (not
     linked to a UserGroup), plus items linked to a UserGroup they belong to or
     that they actively author (drafts included); org admins see everything.
@@ -313,9 +304,9 @@ async def _resolve_items(
     sibling folders are ordered by; otherwise a folder's content would render
     in a different order than the dashboard shows.
 
-    Courses and podcasts the viewer can't read (drafts, usergroup-restricted)
+    Courses the viewer can't read (drafts, usergroup-restricted)
     are left out, so a folder can't leak their metadata; see
-    ``_hidden_gated_uuids`` for ``viewer_id``. Boards, communities and media
+    ``_hidden_gated_uuids`` for ``viewer_id``. Boards and media
     are checked through RBAC for the ``current_user`` when one is given.
     """
     registry = _resource_registry()

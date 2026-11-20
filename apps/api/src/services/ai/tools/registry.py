@@ -59,8 +59,6 @@ _RBAC_PREFIXES = (
     "chapter_",
     "podcast_",
     "episode_",
-    "community_",
-    "discussion_",
     "folder_",
     "media_",
     "board_",

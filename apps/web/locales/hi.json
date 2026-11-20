@@ -93,10 +93,6 @@
           "title": "स्टैंडर्ड फीचर",
           "description": "कम्युनिटीज़ एक प्रीमियम फीचर है जो केवल हमारे स्टैंडर्ड प्लान या उससे ऊपर के संगठनों के लिए उपलब्ध है। अपने सदस्यों के लिए डिस्कशन कम्युनिटीज़ अनलॉक करने के लिए अपग्रेड करें।"
         },
-        "podcasts": {
-          "title": "Standard सुविधा",
-          "description": "Podcasts एक प्रीमियम सुविधा है जो केवल हमारे Standard प्लान या उससे ऊपर के संगठनों के लिए उपलब्ध है। अपने सदस्यों के साथ पॉडकास्ट बनाने और साझा करने के लिए अपग्रेड करें।"
-        },
         "audit_logs": {
           "title": "एंटरप्राइज़ सुविधा",
           "description": "ऑडिट लॉग एक प्रीमियम सुविधा है जो केवल एंटरप्राइज़ प्लान के संगठनों के लिए उपलब्ध है। अपने संगठन की गतिविधियों की पूर्ण दृश्यता प्राप्त करने के लिए अपग्रेड करें।"
@@ -247,12 +243,6 @@
           "b2": "रिमाइंडर अपने आप भेजे जाते हैं",
           "b3": "रिकॉर्डिंग कोर्स के साथ ही रहती हैं"
         },
-        "podcasts": {
-          "title": "चलते-फिरते शिक्षार्थियों तक पहुँचें",
-          "b1": "अपने कोर्स के साथ ऑडियो एपिसोड प्रकाशित करें",
-          "b2": "ऐसा प्लेयर जो याद रखता है कि हर श्रोता कहाँ रुका था",
-          "b3": "AI से पाठों को एपिसोड में बदलें"
-        },
         "usergroups": {
           "title": "शिक्षार्थियों को समूहों में व्यवस्थित करें",
           "b1": "किसी समूह को उसके लिए बने कोर्स तक पहुँच दें",
@@ -393,7 +383,6 @@
           "library": "लाइब्रेरी",
           "folders": "लाइब्रेरी",
           "communities": "समुदाय",
-          "podcasts": "पॉडकास्ट",
           "payments": "भुगतान",
           "trail": "प्रगति ट्रैकिंग",
           "boards": "बोर्ड",
@@ -3041,311 +3030,12 @@
       "hand_place": "आपका हाथ उठा है · कतार में #{{place}}"
     }
   },
-  "podcasts": {
-    "podcasts": "पॉडकास्ट",
-    "browse_description": "इस संगठन के पॉडकास्ट सुनें",
-    "new_podcast": "नया पॉडकास्ट",
-    "search_placeholder": "पॉडकास्ट खोजें...",
-    "no_podcasts": "अभी तक कोई पॉडकास्ट नहीं",
-    "no_podcasts_description": "वर्तमान में कोई पॉडकास्ट उपलब्ध नहीं है",
-    "create_podcasts_placeholder": "अपने दर्शकों के साथ ऑडियो सामग्री साझा करने के लिए पॉडकास्ट बनाएं",
-    "no_search_results": "कोई पॉडकास्ट नहीं मिला",
-    "try_different_search": "कोई अलग खोज शब्द आज़माएं",
-    "search_results_one": "\"{{query}}\" के लिए {{count}} पॉडकास्ट मिला",
-    "search_results_other": "\"{{query}}\" के लिए {{count}} पॉडकास्ट मिले",
-    "podcast_name": "पॉडकास्ट का नाम",
-    "podcast_name_required": "पॉडकास्ट का नाम आवश्यक है",
-    "podcast_thumbnail": "पॉडकास्ट थंबनेल",
-    "podcast_tags": "टैग",
-    "podcast_visibility": "दृश्यता",
-    "create_podcast": "पॉडकास्ट बनाएं",
-    "create_new_podcast": "अपने संगठन के लिए एक नया पॉडकास्ट बनाएं",
-    "create_podcast_btn": "पॉडकास्ट बनाएं",
-    "creating_podcast": "पॉडकास्ट बनाया जा रहा है...",
-    "podcast_created_success": "पॉडकास्ट सफलतापूर्वक बनाया गया",
-    "failed_to_create_podcast": "पॉडकास्ट बनाने में विफल",
-    "episodes": "एपिसोड",
-    "no_episodes": "अभी तक कोई एपिसोड नहीं",
-    "hosted_by": "प्रस्तुतकर्ता",
-    "tags": "टैग",
-    "manage_podcast": "पॉडकास्ट प्रबंधित करें",
-    "published": "प्रकाशित",
-    "unpublished": "अप्रकाशित",
-    "public": "सार्वजनिक",
-    "private": "निजी",
-    "listen_now": "अभी सुनें",
-    "delete_podcast": "पॉडकास्ट हटाएं",
-    "delete_podcast_title": "पॉडकास्ट हटाएं?",
-    "delete_podcast_confirm": "क्या आप वाकई इस पॉडकास्ट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती और सभी एपिसोड हटा दिए जाएंगे।",
-    "deleting_podcast": "पॉडकास्ट हटाया जा रहा है...",
-    "podcast_deleted_success": "पॉडकास्ट सफलतापूर्वक हटाया गया",
-    "podcast_deleted_error": "पॉडकास्ट हटाने में विफल",
-    "edit_content": "सामग्री संपादित करें",
-    "form": {
-      "name_required": "पॉडकास्ट का नाम आवश्यक है",
-      "name_min_length": "नाम कम से कम 3 अक्षरों का होना चाहिए",
-      "name_max_length": "नाम अधिकतम 100 अक्षरों का होना चाहिए",
-      "description_max_length": "विवरण अधिकतम 500 अक्षरों का होना चाहिए"
-    },
-    "modals": {
-      "create": {
-        "title": "नया पॉडकास्ट बनाएं",
-        "description": "नया पॉडकास्ट बनाने के लिए विवरण भरें",
-        "form": {
-          "name_label": "पॉडकास्ट का नाम",
-          "name_placeholder": "पॉडकास्ट का नाम दर्ज करें",
-          "description_label": "विवरण",
-          "description_placeholder": "पॉडकास्ट विवरण दर्ज करें",
-          "public_label": "इस पॉडकास्ट को सार्वजनिक बनाएं"
-        },
-        "cancel": "रद्द करें",
-        "submit": "पॉडकास्ट बनाएं",
-        "generated_image_failed": "तैयार की गई छवि लोड नहीं हो सकी",
-        "draft_hint": "नए पॉडकास्ट ड्राफ़्ट के रूप में शुरू होते हैं। पहला एपिसोड तैयार होने पर प्रकाशित करें।"
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "सामान्य",
-        "episodes": "एपिसोड",
-        "distribution": "वितरण"
-      },
-      "view_podcast": "पॉडकास्ट देखें",
-      "saving": "सहेजा जा रहा है...",
-      "saved": "परिवर्तन सहेजे गए",
-      "save_error": "परिवर्तन सहेजने में विफल",
-      "save_changes": "परिवर्तन सहेजें",
-      "form": {
-        "thumbnail": "थंबनेल",
-        "upload_thumbnail": "थंबनेल अपलोड करें",
-        "thumbnail_hint": "अनुशंसित आकार: 1400x1400px। JPG या PNG।",
-        "about": "बारे में",
-        "about_placeholder": "श्रोताओं को इस पॉडकास्ट के बारे में और बताएं...",
-        "about_max_length": "विवरण अधिकतम 2000 अक्षरों का होना चाहिए",
-        "tags_placeholder": "संगीत, शिक्षा, टेक",
-        "tags_hint": "टैग को कॉमा से अलग करें",
-        "visibility": "दृश्यता सेटिंग्स",
-        "public_hint": "कोई भी इस पॉडकास्ट को ढूंढ और सुन सकता है",
-        "published_hint": "इस पॉडकास्ट को अपने संगठन पेज पर दृश्यमान बनाएं",
-        "private_hint": "केवल आपके संगठन के साइन-इन सदस्य सुन सकते हैं"
-      },
-      "episodes": {
-        "new_episode": "नया एपिसोड",
-        "new_episode_description": "इस पॉडकास्ट में एक नया एपिसोड जोड़ें",
-        "no_episodes_description": "अपना पहला एपिसोड जोड़कर शुरुआत करें",
-        "create_first": "पहला एपिसोड बनाएं",
-        "creating": "एपिसोड बनाया जा रहा है...",
-        "created": "एपिसोड बनाया गया",
-        "create_error": "एपिसोड बनाने में विफल",
-        "create": "एपिसोड बनाएं",
-        "deleting": "एपिसोड हटाया जा रहा है...",
-        "deleted": "एपिसोड हटाया गया",
-        "delete_error": "एपिसोड हटाने में विफल",
-        "delete": "हटाएं",
-        "delete_title": "एपिसोड हटाएं?",
-        "delete_confirm": "क्या आप वाकई इस एपिसोड को हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
-        "updating": "एपिसोड अपडेट किया जा रहा है...",
-        "updated": "एपिसोड अपडेट किया गया",
-        "update_error": "एपिसोड अपडेट करने में विफल",
-        "edit": "संपादित करें",
-        "edit_episode": "एपिसोड संपादित करें",
-        "edit_episode_description": "एपिसोड विवरण अपडेट करें",
-        "save": "परिवर्तन सहेजें",
-        "publish": "प्रकाशित करें",
-        "unpublish": "अप्रकाशित करें",
-        "no_audio": "कोई ऑडियो फ़ाइल नहीं",
-        "title_label": "शीर्षक",
-        "title_placeholder": "एपिसोड का शीर्षक दर्ज करें",
-        "description_label": "विवरण",
-        "description_placeholder": "एपिसोड विवरण दर्ज करें",
-        "audio_label": "ऑडियो फ़ाइल",
-        "upload_audio": "ऑडियो फ़ाइल अपलोड करें",
-        "replace_audio": "ऑडियो फ़ाइल बदलें",
-        "audio_hint": "MP3, WAV, या M4A फ़ाइलें समर्थित हैं",
-        "actions": "एपिसोड की क्रियाएँ",
-        "cover_drop_hint": "चौकोर छवि, JPG या PNG। खाली होने पर पॉडकास्ट का कवर इस्तेमाल होता है।",
-        "cover_hint": "वैकल्पिक",
-        "cover_label": "एपिसोड कवर",
-        "drag_to_reorder": "क्रम बदलने के लिए खींचें",
-        "drop_hint": "फ़ाइल यहाँ छोड़ें या ब्राउज़ करने के लिए क्लिक करें",
-        "move_down": "नीचे ले जाएँ",
-        "move_up": "ऊपर ले जाएँ",
-        "pause": "रोकें",
-        "play": "चलाएँ",
-        "publish_hint": "प्रकाशित एपिसोड श्रोताओं को और RSS फ़ीड में दिखते हैं।",
-        "publish_now": "तुरंत प्रकाशित करें",
-        "remove_file": "फ़ाइल हटाएँ",
-        "reorder_error": "नया क्रम सेव नहीं हो सका",
-        "reorder_hint": "क्रम बदलने के लिए हैंडल खींचें, या मेनू में ऊपर ले जाएँ / नीचे ले जाएँ का उपयोग करें।",
-        "replace_cover": "कवर बदलें",
-        "section_description": "ऑडियो एपिसोड जोड़ें। श्रोता उन्हें इसी क्रम में सुनते हैं।",
-        "summary_one": "{{count}} एपिसोड · {{published}} प्रकाशित · कुल {{duration}}",
-        "summary_other": "{{count}} एपिसोड · {{published}} प्रकाशित · कुल {{duration}}",
-        "upload_cover": "कवर अपलोड करें",
-        "wrong_file_type": "यह फ़ाइल प्रकार यहाँ समर्थित नहीं है"
-      },
-      "back_to_podcasts": "पॉडकास्ट पर वापस जाएँ",
-      "general": {
-        "cover_drop": "छवि यहाँ छोड़ें या ब्राउज़ करने के लिए क्लिक करें",
-        "details_description": "नाम, सारांश और टैग जो श्रोता देखते हैं।",
-        "details_title": "विवरण",
-        "discard_cover": "नया कवर हटाएँ",
-        "replace_cover": "कवर बदलें",
-        "visibility_description": "ये स्विच पलटते ही सेव हो जाते हैं।"
-      },
-      "list": {
-        "clear_filters": "फ़िल्टर हटाएँ",
-        "columns": {
-          "authors": "लेखक",
-          "podcast": "पॉडकास्ट",
-          "updated": "अपडेट किया गया",
-          "visibility": "दृश्यता"
-        },
-        "copy_failed": "लिंक कॉपी नहीं हो सका",
-        "copy_link": "लिंक कॉपी करें",
-        "draft": "ड्राफ़्ट",
-        "edit_episodes": "एपिसोड संपादित करें",
-        "episodes_count_one": "{{count}} एपिसोड",
-        "episodes_count_other": "{{count}} एपिसोड",
-        "episodes_short": "एपिसोड",
-        "filters": {
-          "all": "सभी",
-          "drafts": "ड्राफ़्ट",
-          "published": "प्रकाशित"
-        },
-        "make_private": "निजी बनाएँ",
-        "make_public": "सार्वजनिक बनाएँ",
-        "no_description": "अभी कोई विवरण नहीं",
-        "published_toast": "पॉडकास्ट प्रकाशित हुआ",
-        "showing_count": "{{total}} में से {{shown}} दिख रहे हैं",
-        "sort": {
-          "episodes": "सबसे ज़्यादा एपिसोड",
-          "name": "नाम",
-          "newest": "सबसे नया",
-          "updated": "हाल में अपडेट किए गए"
-        },
-        "sort_label": "पॉडकास्ट क्रमबद्ध करें",
-        "stats": {
-          "drafts": "ड्राफ़्ट",
-          "episodes": "एपिसोड",
-          "published": "प्रकाशित",
-          "total": "सभी पॉडकास्ट"
-        },
-        "status_filter": "स्थिति के अनुसार फ़िल्टर करें",
-        "subtitle": "ऑडियो सीरीज़ प्रकाशित करें और उनके एपिसोड प्रबंधित करें।",
-        "unpublished_toast": "पॉडकास्ट का प्रकाशन हटाया गया"
-      }
-    },
-    "distribution": {
-      "copied": "क्लिपबोर्ड पर कॉपी किया गया",
-      "rss_title": "RSS फ़ीड",
-      "rss_description": "आपके पॉडकास्ट की RSS फ़ीड अपने-आप बनती है। अपने पॉडकास्ट को डायरेक्टरी में सबमिट करने के लिए इस URL का उपयोग करें।",
-      "copy": "कॉपी करें",
-      "preview": "प्रीव्यू",
-      "unpublished_warning": "आपका पॉडकास्ट फ़िलहाल अप्रकाशित है। डायरेक्टरी में सबमिट करने से पहले इसे प्रकाशित करें।",
-      "directories_title": "पॉडकास्ट डायरेक्टरी में सबमिट करें",
-      "directories_description": "अपने पॉडकास्ट को प्रमुख प्लेटफ़ॉर्म पर सूचीबद्ध कराने के लिए ये चरण अपनाएं। हर प्लेटफ़ॉर्म पर आपको अपनी RSS फ़ीड का URL सबमिट करना होता है।",
-      "apple": {
-        "subtitle": "Apple Music पर भी वितरित होता है",
-        "step1": "<link>podcastsconnect.apple.com</link> पर जाएं और अपनी Apple ID से साइन इन करें",
-        "step2": "<strong>+</strong> बटन पर क्लिक करें और \"New Show\" चुनें",
-        "step3": "\"Add a show with an RSS feed\" चुनें और अपनी RSS फ़ीड का URL पेस्ट करें",
-        "step4": "Apple आपकी फ़ीड को मान्य करेगा; समीक्षा में आमतौर पर 1-5 कार्य दिवस लगते हैं"
-      },
-      "spotify": {
-        "subtitle": "सबसे बड़ा पॉडकास्ट सुनने का प्लेटफ़ॉर्म",
-        "step1": "<link>podcasters.spotify.com</link> पर जाएं और साइन इन करें या खाता बनाएं",
-        "step2": "\"Get started\" पर क्लिक करें, फिर \"I have a podcast with a hosting provider\" चुनें",
-        "step3": "अपनी RSS फ़ीड का URL पेस्ट करें और \"Next\" पर क्लिक करें",
-        "step4": "स्वामित्व सत्यापित करें, विवरण भरें और सबमिट करें (आमतौर पर कुछ घंटों में लाइव हो जाता है)"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts अब YouTube Music पर चला गया है",
-        "step1": "<link>podcasts.google.com/publish</link> पर जाएं",
-        "step2": "अपने Google खाते से साइन इन करें और \"Add a podcast\" पर क्लिक करें",
-        "step3": "अपनी RSS फ़ीड का URL पेस्ट करें और ईमेल के ज़रिए स्वामित्व सत्यापित करें",
-        "step4": "आपका पॉडकास्ट YouTube Music और Google सर्च परिणामों में दिखेगा"
-      },
-      "amazon": {
-        "subtitle": "Alexa डिवाइस पर भी उपलब्ध",
-        "step1": "<link>podcasters.amazon.com</link> पर जाएं और अपने Amazon खाते से साइन इन करें",
-        "step2": "\"Add your podcast\" पर क्लिक करें और अपनी RSS फ़ीड का URL पेस्ट करें",
-        "step3": "अपने पॉडकास्ट का विवरण जांचें और समीक्षा के लिए सबमिट करें"
-      },
-      "tips_title": "सफल वितरण के लिए सुझाव",
-      "tip_thumbnail": "सुनिश्चित करें कि आपके पॉडकास्ट में <strong>थंबनेल छवि</strong> हो (Apple Podcasts के लिए न्यूनतम 1400x1400)",
-      "tip_episode": "सबमिट करने से पहले कम से कम <strong>एक प्रकाशित एपिसोड</strong> रखें",
-      "tip_description": "<strong>पॉडकास्ट का विस्तृत विवरण</strong> भरें; इससे पॉडकास्ट खोजे जाने में आसानी होती है",
-      "tip_auto": "फ़ीड सबमिट होने के बाद नए एपिसोड सभी प्लेटफ़ॉर्म पर अपने-आप दिखने लगेंगे",
-      "tip_propagate": "अपडेट को सभी प्लेटफ़ॉर्म पर पहुंचने में कुछ घंटे लग सकते हैं",
-      "check_cover": "पॉडकास्ट में कवर छवि है",
-      "check_description": "पॉडकास्ट में विवरण है",
-      "check_episode": "कम से कम एक प्रकाशित एपिसोड",
-      "check_published": "पॉडकास्ट प्रकाशित है",
-      "checklist_description": "फ़ीड स्वीकार करने से पहले डायरेक्टरी क्या जाँचती हैं।",
-      "checklist_title": "सबमिट करने के लिए तैयार?",
-      "tips_description": "छोटी बातें जो आपके शो को स्वीकार होने और ढूँढे जाने में मदद करती हैं।"
-    },
-    "player": {
-      "minimize": "छोटा करें"
-    },
-    "actions": "पॉडकास्ट की कार्रवाइयां",
-    "load_failed": "पॉडकास्ट लोड नहीं हो सका",
-    "failed_to_load": "पॉडकास्ट लोड नहीं हो सका",
-    "listen": {
-      "about": "परिचय",
-      "all_podcasts": "सभी पॉडकास्ट",
-      "by": "{{names}} द्वारा",
-      "close_player": "प्लेयर बंद करें",
-      "continue_listening": "सुनना जारी रखें",
-      "episode_count_one": "{{count}} एपिसोड",
-      "episode_count_other": "{{count}} एपिसोड",
-      "eyebrow": "पॉडकास्ट",
-      "feed_hint": "इस RSS फ़ीड के साथ किसी भी पॉडकास्ट ऐप में फ़ॉलो करें",
-      "latest": "नवीनतम",
-      "latest_on": "नवीनतम {{date}}",
-      "length_hr_min": "{{h}} घं. {{m}} मि.",
-      "length_min_one": "{{count}} मि.",
-      "length_min_other": "{{count}} मि.",
-      "length_sec_one": "{{count}} से.",
-      "length_sec_other": "{{count}} से.",
-      "link_copied": "लिंक कॉपी हो गया",
-      "mute": "म्यूट करें",
-      "new": "नया",
-      "no_episodes_description": "नए एपिसोड प्रकाशित होते ही यहाँ दिखेंगे।",
-      "now_playing": "अभी चल रहा है",
-      "open_player": "प्लेयर खोलें",
-      "pause": "रोकें",
-      "pause_episode": "{{title}} रोकें",
-      "play": "चलाएँ",
-      "play_episode": "{{title}} चलाएँ",
-      "play_error": "यह एपिसोड चल नहीं सका। बाद में फिर कोशिश करें।",
-      "play_latest": "नवीनतम चलाएँ",
-      "play_latest_of": "{{name}} का नवीनतम एपिसोड चलाएँ",
-      "played": "सुना जा चुका",
-      "player": "पॉडकास्ट प्लेयर",
-      "resume": "फिर शुरू करें",
-      "seek": "आगे-पीछे करें",
-      "share": "साझा करें",
-      "sort_label": "एपिसोड का क्रम",
-      "sort_newest": "सबसे नया",
-      "sort_order": "क्रम से",
-      "speed": "प्लेबैक गति",
-      "time_left": "{{time}} बचा",
-      "total_length": "कुल अवधि",
-      "unmute": "अनम्यूट करें",
-      "up_next": "आगे",
-      "updated": "अपडेट किया गया",
-      "volume": "वॉल्यूम"
-    }
-  },
   "library": {
     "library": "लाइब्रेरी",
     "my_library": "मेरी लाइब्रेरी",
     "new_folder": "नया फ़ोल्डर",
     "tabs": {
       "courses": "पाठ्यक्रम",
-      "podcasts": "पॉडकास्ट",
       "communities": "कम्युनिटी",
       "boards": "बोर्ड",
       "playgrounds": "Plays",
@@ -3693,7 +3383,6 @@
       "no_resource": "कोई संसाधन कॉन्फ़िगर नहीं है",
       "open": "खोलें",
       "kind_course": "पाठ्यक्रम",
-      "kind_podcast": "पॉडकास्ट",
       "kind_community": "कम्युनिटी",
       "kind_board": "बोर्ड",
       "kind_playground": "Play"
@@ -4017,7 +3706,6 @@
       "communities": "समुदाय",
       "discussions": "चर्चाएँ",
       "playgrounds": "Plays",
-      "podcasts": "पॉडकास्ट",
       "activities": "पाठ",
       "folders": "फ़ोल्डर"
     },
@@ -4042,7 +3730,6 @@
         "communities": "कम्युनिटी",
         "discussions": "चर्चाएं",
         "playgrounds": "Plays",
-        "podcasts": "पॉडकास्ट",
         "users": "सदस्य"
       },
       "keys": {
@@ -4063,10 +3750,6 @@
         "library": {
           "description": "समूहबद्ध कंटेंट के फ़ोल्डर",
           "keywords": "लाइब्रेरी, फ़ोल्डर, संग्रह, बंडल, पाथ, library, folders"
-        },
-        "podcasts": {
-          "description": "एपिसोड सुनें",
-          "keywords": "पॉडकास्ट, ऑडियो, एपिसोड, शो, सुनें, podcasts, audio"
         },
         "communities": {
           "description": "अन्य सदस्यों के साथ चर्चाएं",
@@ -4170,7 +3853,6 @@
         "folder": "फ़ोल्डर",
         "page": "पेज",
         "playground": "Play",
-        "podcast": "पॉडकास्ट",
         "user": "सदस्य"
       },
       "updated": "अपडेट किया गया",
@@ -4942,7 +4624,6 @@
       "settings": "सेटिंग्स",
       "courses": "पाठ्यक्रम",
       "communities": "समुदाय",
-      "podcasts": "पॉडकास्ट",
       "boards": "बोर्ड",
       "published": "प्रकाशित",
       "draft": "ड्राफ्ट",
@@ -7133,10 +6814,6 @@
             "title": "भुगतान",
             "description": "कोर्स और सदस्यता के लिए भुगतान प्रोसेसिंग सक्षम करें"
           },
-          "podcasts": {
-            "title": "पॉडकास्ट",
-            "description": "अपने संगठन के लिए पॉडकास्ट निर्माण और ऑडियो सामग्री सक्षम करें"
-          },
           "boards": {
             "title": "बोर्ड",
             "description": "प्रोजेक्ट प्रबंधन के लिए सूचियों और कार्ड वाले सहयोगी बोर्ड बनाएं"
@@ -7955,7 +7632,6 @@
             "assignments": "असाइनमेंट",
             "folders": "फ़ोल्डर",
             "paths": "लर्निंग पाथ",
-            "podcasts": "पॉडकास्ट",
             "boards": "बोर्ड",
             "playgrounds": "Plays",
             "versioning": "संस्करण इतिहास",
@@ -9272,7 +8948,6 @@
             "usergroups": "समूह",
             "communities": "कम्युनिटी",
             "boards": "बोर्ड",
-            "podcasts": "पॉडकास्ट",
             "roles": "भूमिकाएँ",
             "organizations": "संगठन"
           },
@@ -10427,8 +10102,7 @@
         "users": "उपयोगकर्ता",
         "communities": "समुदाय",
         "discussions": "चर्चाएँ",
-        "playgrounds": "Plays",
-        "podcasts": "पॉडकास्ट"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10446,10 +10120,6 @@
         "communities": {
           "description": "समुदाय प्रबंधित करें",
           "keywords": "फोरम, चर्चाएँ, सदस्य, पोस्ट"
-        },
-        "podcasts": {
-          "description": "पॉडकास्ट प्रबंधित करें",
-          "keywords": "ऑडियो, एपिसोड, शो"
         },
         "boards": {
           "description": "बोर्ड प्रबंधित करें",
@@ -12932,10 +12602,7 @@
         "topic_required": "स्क्रिप्ट बनाने के लिए कोई विषय या कुछ टेक्स्ट जोड़ें।",
         "script_ready": "स्क्रिप्ट तैयार है। इसकी समीक्षा करें, फिर ऑडियो बनाएं",
         "script_failed": "स्क्रिप्ट नहीं बन सकी। कृपया दोबारा प्रयास करें।",
-        "loading_playlist": "प्लेलिस्ट लोड हो रही है...",
         "tab_generate": "बनाएं",
-        "tab_episode": "एपिसोड",
-        "tab_playlist": "प्लेलिस्ट",
         "uploading_progress": "अपलोड हो रहा है... {{progress}}%",
         "drop_or_browse": "ऑडियो फ़ाइल यहां छोड़ें या ब्राउज़ करने के लिए क्लिक करें",
         "supported_formats": "MP3, WAV, OGG, M4A समर्थित",
@@ -12958,10 +12625,7 @@
         "generating": "बन रहा है…",
         "generate_audio": "ऑडियो बनाएं",
         "credits_with_script": "स्क्रिप्ट {{scriptCost}} क्रेडिट · ऑडियो {{audioCost}} क्रेडिट · Gemini द्वारा संचालित",
-        "credits_audio_only": "{{cost}} AI क्रेडिट लगते हैं · Gemini द्वारा संचालित",
-        "no_podcasts": "कोई पॉडकास्ट नहीं मिला",
-        "back_to_podcasts": "पॉडकास्ट पर वापस जाएं",
-        "no_episodes": "कोई एपिसोड नहीं मिला"
+        "credits_audio_only": "{{cost}} AI क्रेडिट लगते हैं · Gemini द्वारा संचालित"
       },
       "callout_block": {
         "change_type": "कॉलआउट का प्रकार बदलें",
@@ -15813,8 +15477,6 @@
           "payments_desc": "कोर्स बेचें और राजस्व के लिए सदस्यताएँ प्रदान करें।",
           "communities": "समुदाय चर्चाएँ",
           "communities_desc": "शिक्षार्थियों को जुड़ने, सवाल पूछने और विचार साझा करने दें।",
-          "podcasts": "पॉडकास्ट बनाएँ",
-          "podcasts_desc": "ऑडियो कंटेंट दें और शिक्षार्थियों तक कहीं भी पहुँचें।",
           "playgrounds": "इंटरैक्टिव Plays",
           "playgrounds_desc": "लर्नर्स को चरण-दर-चरण इंटरैक्टिव गतिविधियों से अभ्यास करने और बैज कमाने दें।",
           "ai": "1,000 AI क्रेडिट",
@@ -24059,7 +23721,6 @@
       "types": {
         "course": "कोर्स",
         "path": "पाथ",
-        "podcast": "पॉडकास्ट",
         "community": "समुदाय",
         "folder": "फ़ोल्डर"
       },
@@ -24069,7 +23730,6 @@
         "courses": "कोर्स",
         "activities": "मुफ़्त पाठ",
         "paths": "लर्निंग पाथ",
-        "podcasts": "पॉडकास्ट",
         "communities": "कम्युनिटी",
         "library": "लाइब्रेरी",
         "live": "लाइव सेशन",
@@ -26243,7 +25903,6 @@
       "course": "फ़ीचर्ड कोर्स",
       "paths": "लर्निंग पाथ",
       "communities": "कम्युनिटी",
-      "podcasts": "पॉडकास्ट",
       "live_sessions": "लाइव सेशन",
       "instructors": "लोग",
       "testimonials": "प्रशंसापत्र",
@@ -26290,7 +25949,6 @@
       "course": "फ़ीचर्ड कोर्स",
       "paths": "पाथ",
       "communities": "कम्युनिटी",
-      "podcasts": "पॉडकास्ट",
       "live_sessions": "लाइव सेशन",
       "pricing": "प्राइसिंग",
       "form": "संपर्क फ़ॉर्म",
@@ -26316,7 +25974,6 @@
       "featured_course": "फ़ीचर्ड कोर्स",
       "paths": "लर्निंग पाथ",
       "communities": "कम्युनिटी",
-      "podcasts": "पॉडकास्ट",
       "live_sessions": "लाइव सेशन",
       "instructors": "इंस्ट्रक्टर",
       "testimonials": "प्रशंसापत्र",
@@ -28381,7 +28038,6 @@
         "course": "कोर्स",
         "path": "पाथ",
         "community": "कम्युनिटी",
-        "podcast": "पॉडकास्ट",
         "live_session": "लाइव सेशन",
         "board": "बोर्ड",
         "folder": "लाइब्रेरी फ़ोल्डर",

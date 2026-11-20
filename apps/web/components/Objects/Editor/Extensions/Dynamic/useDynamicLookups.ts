@@ -11,7 +11,6 @@ import {
   getDynamicOptions,
   getEditorVariables,
 } from '@services/courses/dynamicContent'
-import { useTaggableCommunities } from '@components/Objects/Communities/Tags/communityTags'
 import { DynamicActivityContext } from './DynamicReach'
 import { VariableDef, customVariableDef } from './dynamicRules'
 import { queryKeys } from '@/lib/query/keys'
@@ -22,15 +21,14 @@ export interface LookupOption {
   label: string
 }
 
-// Names for the uuids stored in rules: the org's user groups and
-// communities, the course's activities and assignments. Only fetched where
+// Names for the uuids stored in rules: the org's user groups, the
+// course's activities and assignments. Only fetched where
 // an editor actually shows rules.
 export function useDynamicLookups(enabled: boolean = true) {
   const org = useOrg() as any
   const { accessToken } = useAuth()
   const course = useContext(CourseContext) as any
   const activityUuid = useContext(DynamicActivityContext)
-  const communitiesRaw = useTaggableCommunities()
 
   const { data: usergroupsRaw } = useQuery({
     queryKey: queryKeys.usergroups.list(org?.id),
@@ -69,10 +67,6 @@ export function useDynamicLookups(enabled: boolean = true) {
       value: a.assignment_uuid,
       label: a.title,
     }))
-    const communities: LookupOption[] = communitiesRaw.map((c) => ({
-      value: c.community_uuid,
-      label: c.name,
-    }))
     const toRecord = (options: LookupOption[]) =>
       Object.fromEntries(options.map((o) => [o.value, o.label]))
     const customVariables: EditorVariable[] = variablesRaw ?? []
@@ -81,15 +75,13 @@ export function useDynamicLookups(enabled: boolean = true) {
       usergroups,
       activities,
       assignments,
-      communities,
       customVariables,
       customDefs,
       names: {
         usergroups: toRecord(usergroups),
         activities: toRecord(activities),
         assignments: toRecord(assignments),
-        communities: toRecord(communities),
       },
     }
-  }, [usergroupsRaw, variablesRaw, optionsRaw, communitiesRaw, course?.courseStructure])
+  }, [usergroupsRaw, variablesRaw, optionsRaw, course?.courseStructure])
 }

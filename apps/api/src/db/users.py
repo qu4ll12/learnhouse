@@ -163,13 +163,13 @@ class UserReadPublic(SQLModel):
 
 
 class UserReadAuthor(SQLModel):
-    """Minimal author projection for community comments/discussions.
+    """Minimal author projection for course authors and contributors.
 
-    SECURITY: comment/discussion authors are returned to *every* reader of a
-    thread (often anonymous). It must therefore expose ONLY the fields needed to
-    render an author chip, never ``email``, ``is_backoffice_staff``, ``signup_method``
-    or the raw ``details``/``profile``/``extra_metadata`` blobs that ``UserRead``
-    carries. The frontend reads only id/user_uuid/username/name/avatar.
+    SECURITY: Author info is returned to readers of public courses. It must
+    therefore expose ONLY the fields needed to render an author chip, never
+    ``email``, ``is_backoffice_staff``, ``signup_method`` or the raw
+    ``details``/``profile``/``extra_metadata`` blobs that ``UserRead`` carries.
+    The frontend reads only id/user_uuid/username/name/avatar.
     """
     id: int
     user_uuid: str

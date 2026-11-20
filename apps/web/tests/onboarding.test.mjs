@@ -62,7 +62,7 @@ describe('summarize', () => {
 })
 
 describe('stepsDoneFromData', () => {
-  const none = { courseCount: 0, hasLesson: false, hasLogo: false, memberCount: 1, inviteCount: 0, communityCount: 0 }
+  const none = { courseCount: 0, hasLesson: false, hasLogo: false, memberCount: 1, inviteCount: 0 }
 
   test('a new org has nothing done', () => {
     expect(stepsDoneFromData(none)).toEqual([])
@@ -72,7 +72,6 @@ describe('stepsDoneFromData', () => {
     expect(stepsDoneFromData({ ...none, courseCount: 1 })).toEqual(['create_course'])
     expect(stepsDoneFromData({ ...none, hasLesson: true })).toEqual(['add_content'])
     expect(stepsDoneFromData({ ...none, hasLogo: true })).toEqual(['brand_school'])
-    expect(stepsDoneFromData({ ...none, communityCount: 2 })).toEqual(['build_community'])
   })
 
   test('the admin alone is not a learner; another member or an invite is', () => {

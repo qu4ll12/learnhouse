@@ -1,7 +1,7 @@
 """Library tools: browse folders, organize them, place content, find media.
 
 The library is Drive-like: folders nest, and resources (courses, podcasts,
-communities, boards, media) are placed in folders or at the library root.
+boards, media) are placed in folders or at the library root.
 Placing or removing a resource only moves its library entry; the resource
 itself is never changed. Every id is loaded through `refs` (only from the
 connected organization) before the folder services run their own checks.
@@ -48,15 +48,13 @@ FolderColor = Literal["violet", "blue", "emerald", "amber", "rose", "cyan", "fuc
 # Library item type -> ref kind (and the page a person opens it on).
 _ITEM_KIND = {
     "courses": "course",
-    "podcasts": "podcast",
-    "communities": "community",
     "boards": "board",
     "playgrounds": "playground",
     "media": "media",
 }
 # Prefixes a library entry can hold (playgrounds use bare ids and cannot be
 # filed by id).
-_PLACEABLE = ("course_", "podcast_", "community_", "board_", "media_")
+_PLACEABLE = ("course_", "board_", "media_")
 # list_media with a query scans at most this many items the caller can see.
 MEDIA_SCAN = 2000
 _MEDIA_PAGE = 100
@@ -76,7 +74,7 @@ async def _folder_ref(ctx: ToolContext, folder, **extra) -> dict:
 
 
 async def _item_url(ctx: ToolContext, kind: str, uuid: str) -> str | None:
-    if kind in ("course", "community", "board", "playground"):
+    if kind in ("course", "board", "playground"):
         return await refs.web_url(ctx, kind, **{kind: uuid})
     return None
 
@@ -136,19 +134,10 @@ async def _load_resource(ctx: ToolContext, resource_uuid: str) -> tuple[str, dic
         raise HTTPException(
             status_code=400,
             detail=(
-                f"'{resource_uuid}' is not a valid library resource id. Pass a course_, podcast_, "
-                "community_, board_ or media_ uuid."
+                f"'{resource_uuid}' is not a valid library resource id. Pass a course_, "
+                "board_ or media_ uuid."
             ),
         )
-    if uuid.startswith("podcast_"):
-        from src.db.podcasts.podcasts import Podcast
-
-        row = (
-            await ctx.db_session.execute(select(Podcast).where(Podcast.podcast_uuid == uuid))
-        ).scalars().first()
-        if row is None or row.org_id != ctx.org.id:
-            raise refs.not_found("podcast", uuid)
-        return "podcast", refs.ref("podcast", uuid, row.name)
     kind = refs.kind_of(uuid)
     row = await refs.load(ctx, kind, uuid)
     return kind, refs.ref(kind, uuid, refs.label(kind, row), await _item_url(ctx, kind, uuid))
@@ -261,7 +250,7 @@ class DeleteFolderParams(BaseModel):
 
 class PlaceInLibraryParams(BaseModel):
     resource_uuid: str = Field(
-        ..., max_length=100, description="Resource to place: a course_, podcast_, community_, board_ or media_ uuid."
+        ..., max_length=100, description="Resource to place: a course_, board_ or media_ uuid."
     )
     folder_uuid: str | None = Field(
         None, max_length=100, description="Folder to place it in (or remove it from); omit for the library root."
@@ -487,7 +476,7 @@ SPECS: list[ToolSpec] = [
         name="browse_library",
         description=(
             "Open the library root or one folder: its sub-folders, then the resources placed in it "
-            "(courses, podcasts, communities, boards, media), each with kind and link. Paged; a "
+            "(courses, boards, media), each with kind and link. Paged; a "
             "folder also returns its path."
         ),
         params_model=BrowseLibraryParams,

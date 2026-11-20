@@ -93,10 +93,6 @@
           "title": "标准版功能",
           "description": "社区是仅对标准版或更高版本计划的组织可用的高级功能。升级以解锁成员的讨论社区。"
         },
-        "podcasts": {
-          "title": "标准功能",
-          "description": "播客是仅限标准方案及以上组织使用的高级功能。升级以创建和分享播客。"
-        },
         "audit_logs": {
           "title": "企业版功能",
           "description": "审计日志是仅适用于企业版组织的高级功能。升级以获得组织活动的完整可见性。"
@@ -246,12 +242,6 @@
           "b2": "自动发送提醒",
           "b3": "回放保存在课程旁边"
         },
-        "podcasts": {
-          "title": "让学员随时随地学习",
-          "b1": "在课程旁发布音频节目",
-          "b2": "播放器会记住每位听众停在哪里",
-          "b3": "用 AI 把课时变成节目"
-        },
         "usergroups": {
           "title": "将学员分组管理",
           "b1": "为小组开放专属课程",
@@ -392,7 +382,6 @@
           "library": "资料库",
           "folders": "资料库",
           "communities": "社区",
-          "podcasts": "播客",
           "payments": "支付",
           "trail": "进度跟踪",
           "boards": "面板",
@@ -3023,311 +3012,12 @@
       "hand_place": "你已举手 · 排第 #{{place}} 位"
     }
   },
-  "podcasts": {
-    "podcasts": "播客",
-    "browse_description": "收听此组织的播客",
-    "new_podcast": "新播客",
-    "search_placeholder": "搜索播客...",
-    "no_podcasts": "暂无播客",
-    "no_podcasts_description": "目前没有可用的播客",
-    "create_podcasts_placeholder": "创建播客与您的受众分享音频内容",
-    "no_search_results": "未找到播客",
-    "try_different_search": "尝试其他搜索词",
-    "search_results_other": "找到 {{count}} 个与“{{query}}”相关的播客",
-    "podcast_name": "播客名称",
-    "podcast_name_required": "播客名称为必填",
-    "podcast_thumbnail": "播客缩略图",
-    "podcast_tags": "标签",
-    "podcast_visibility": "可见性",
-    "create_podcast": "创建播客",
-    "create_new_podcast": "为您的组织创建新播客",
-    "create_podcast_btn": "创建播客",
-    "creating_podcast": "创建播客中...",
-    "podcast_created_success": "播客创建成功",
-    "failed_to_create_podcast": "创建播客失败",
-    "episodes": "剧集",
-    "no_episodes": "暂无剧集",
-    "hosted_by": "主持人",
-    "tags": "标签",
-    "manage_podcast": "管理播客",
-    "published": "已发布",
-    "unpublished": "未发布",
-    "public": "公开",
-    "private": "私密",
-    "listen_now": "立即收听",
-    "delete_podcast": "删除播客",
-    "delete_podcast_title": "删除播客？",
-    "delete_podcast_confirm": "确定要删除此播客吗？此操作无法撤销，所有剧集将被删除。",
-    "deleting_podcast": "正在删除播客...",
-    "podcast_deleted_success": "播客删除成功",
-    "podcast_deleted_error": "播客删除失败",
-    "edit_content": "编辑内容",
-    "form": {
-      "name_required": "播客名称为必填",
-      "name_min_length": "名称至少3个字符",
-      "name_max_length": "名称最多100个字符",
-      "description_max_length": "描述最多500个字符"
-    },
-    "modals": {
-      "create": {
-        "title": "创建新播客",
-        "description": "填写详细信息以创建新播客",
-        "form": {
-          "name_label": "播客名称",
-          "name_placeholder": "输入播客名称",
-          "description_label": "描述",
-          "description_placeholder": "输入播客描述",
-          "public_label": "将此播客设为公开"
-        },
-        "cancel": "取消",
-        "submit": "创建播客",
-        "generated_image_failed": "加载生成的图片失败",
-        "draft_hint": "新播客会先保存为草稿。第一集准备好后再发布。"
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "常规",
-        "episodes": "剧集",
-        "distribution": "分发"
-      },
-      "view_podcast": "查看播客",
-      "saving": "保存中...",
-      "saved": "更改已保存",
-      "save_error": "保存更改失败",
-      "save_changes": "保存更改",
-      "form": {
-        "thumbnail": "缩略图",
-        "upload_thumbnail": "上传缩略图",
-        "thumbnail_hint": "建议尺寸：1400x1400px。JPG 或 PNG。",
-        "about": "关于",
-        "about_placeholder": "告诉听众更多关于此播客的信息...",
-        "about_max_length": "关于最多2000个字符",
-        "tags_placeholder": "音乐, 教育, 科技",
-        "tags_hint": "用逗号分隔标签",
-        "visibility": "可见性设置",
-        "public_hint": "任何人都可以找到和收听此播客",
-        "published_hint": "在您的组织页面上显示此播客",
-        "private_hint": "仅限组织中已登录的成员收听"
-      },
-      "episodes": {
-        "new_episode": "新剧集",
-        "new_episode_description": "为此播客添加新剧集",
-        "no_episodes_description": "从添加第一个剧集开始",
-        "create_first": "创建第一个剧集",
-        "creating": "创建剧集中...",
-        "created": "剧集已创建",
-        "create_error": "创建剧集失败",
-        "create": "创建剧集",
-        "deleting": "删除剧集中...",
-        "deleted": "剧集已删除",
-        "delete_error": "删除剧集失败",
-        "delete": "删除",
-        "delete_title": "删除剧集？",
-        "delete_confirm": "确定要删除此剧集吗？此操作无法撤消。",
-        "updating": "更新剧集中...",
-        "updated": "剧集已更新",
-        "update_error": "更新剧集失败",
-        "edit": "编辑",
-        "edit_episode": "编辑剧集",
-        "edit_episode_description": "更新剧集详情",
-        "save": "保存更改",
-        "publish": "发布",
-        "unpublish": "取消发布",
-        "no_audio": "无音频文件",
-        "title_label": "标题",
-        "title_placeholder": "输入剧集标题",
-        "description_label": "描述",
-        "description_placeholder": "输入剧集描述",
-        "audio_label": "音频文件",
-        "upload_audio": "上传音频文件",
-        "replace_audio": "替换音频文件",
-        "audio_hint": "支持 MP3、WAV 或 M4A 文件",
-        "actions": "单集操作",
-        "cover_drop_hint": "正方形图片，JPG 或 PNG。留空则使用播客封面。",
-        "cover_hint": "可选",
-        "cover_label": "单集封面",
-        "drag_to_reorder": "拖动以重新排序",
-        "drop_hint": "将文件拖放到此处，或点击浏览",
-        "move_down": "下移",
-        "move_up": "上移",
-        "pause": "暂停",
-        "play": "播放",
-        "publish_hint": "已发布的单集会展示给听众，并包含在 RSS 订阅源中。",
-        "publish_now": "立即发布",
-        "remove_file": "移除文件",
-        "reorder_error": "无法保存新的顺序",
-        "reorder_hint": "拖动手柄可调整顺序，也可使用菜单中的“上移”或“下移”。",
-        "replace_cover": "替换封面",
-        "section_description": "添加音频单集。听众将按此顺序收听。",
-        "summary_one": "{{count}} 集 · 已发布 {{published}} 集 · 共 {{duration}}",
-        "summary_other": "{{count}} 集 · 已发布 {{published}} 集 · 共 {{duration}}",
-        "upload_cover": "上传封面",
-        "wrong_file_type": "此处不支持该文件类型"
-      },
-      "back_to_podcasts": "返回播客",
-      "general": {
-        "cover_drop": "将图片拖放到此处，或点击浏览",
-        "details_description": "听众看到的名称、简介和标签。",
-        "details_title": "详情",
-        "discard_cover": "放弃新封面",
-        "replace_cover": "替换封面",
-        "visibility_description": "这些开关在切换后会立即保存。"
-      },
-      "list": {
-        "clear_filters": "清除筛选",
-        "columns": {
-          "authors": "作者",
-          "podcast": "播客",
-          "updated": "更新时间",
-          "visibility": "可见范围"
-        },
-        "copy_failed": "无法复制链接",
-        "copy_link": "复制链接",
-        "draft": "草稿",
-        "edit_episodes": "编辑单集",
-        "episodes_count_one": "{{count}} 集",
-        "episodes_count_other": "{{count}} 集",
-        "episodes_short": "单集",
-        "filters": {
-          "all": "全部",
-          "drafts": "草稿",
-          "published": "已发布"
-        },
-        "make_private": "设为私有",
-        "make_public": "设为公开",
-        "no_description": "暂无描述",
-        "published_toast": "播客已发布",
-        "showing_count": "显示 {{shown}} / {{total}}",
-        "sort": {
-          "episodes": "单集最多",
-          "name": "名称",
-          "newest": "最新",
-          "updated": "最近更新"
-        },
-        "sort_label": "播客排序",
-        "stats": {
-          "drafts": "草稿",
-          "episodes": "单集",
-          "published": "已发布",
-          "total": "全部播客"
-        },
-        "status_filter": "按状态筛选",
-        "subtitle": "发布音频系列并管理其单集。",
-        "unpublished_toast": "播客已取消发布"
-      }
-    },
-    "distribution": {
-      "copied": "已复制到剪贴板",
-      "rss_title": "RSS 订阅源",
-      "rss_description": "您的播客 RSS 订阅源会自动生成。使用此 URL 将您的播客提交到各个目录。",
-      "copy": "复制",
-      "preview": "预览",
-      "unpublished_warning": "您的播客目前尚未发布。请先发布，再提交到各个目录。",
-      "directories_title": "提交到播客目录",
-      "directories_description": "按照以下步骤让您的播客上架各大平台。每个平台都需要您提交 RSS 订阅源 URL。",
-      "apple": {
-        "subtitle": "同时分发到 Apple Music",
-        "step1": "前往 <link>podcastsconnect.apple.com</link>，并使用您的 Apple ID 登录",
-        "step2": "点击 <strong>+</strong> 按钮并选择“New Show”",
-        "step3": "选择“Add a show with an RSS feed”并粘贴您的 RSS 订阅源 URL",
-        "step4": "Apple 会验证您的订阅源，审核通常需要 1-5 个工作日"
-      },
-      "spotify": {
-        "subtitle": "最大的播客收听平台",
-        "step1": "前往 <link>podcasters.spotify.com</link>，登录或创建账户",
-        "step2": "点击“Get started”，然后选择“I have a podcast with a hosting provider”",
-        "step3": "粘贴您的 RSS 订阅源 URL，然后点击“Next”",
-        "step4": "验证所有权，填写详细信息并提交（通常几小时内上线）"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts 已迁移至 YouTube Music",
-        "step1": "前往 <link>podcasts.google.com/publish</link>",
-        "step2": "使用您的 Google 账户登录，然后点击“Add a podcast”",
-        "step3": "粘贴您的 RSS 订阅源 URL，并通过电子邮件验证所有权",
-        "step4": "您的播客将出现在 YouTube Music 和 Google 搜索结果中"
-      },
-      "amazon": {
-        "subtitle": "也可在 Alexa 设备上收听",
-        "step1": "前往 <link>podcasters.amazon.com</link>，并使用您的 Amazon 账户登录",
-        "step2": "点击“Add your podcast”并粘贴您的 RSS 订阅源 URL",
-        "step3": "检查您的播客详细信息并提交审核"
-      },
-      "tips_title": "成功分发的小贴士",
-      "tip_thumbnail": "请确保您的播客有<strong>缩略图</strong>（Apple Podcasts 要求至少 1400x1400）",
-      "tip_episode": "提交前至少要有<strong>一期已发布的节目</strong>",
-      "tip_description": "填写一段描述性的<strong>播客简介</strong>，这有助于被发现",
-      "tip_auto": "订阅源提交后，新节目会自动出现在所有平台上",
-      "tip_propagate": "更新可能需要几小时才能同步到各平台",
-      "check_cover": "播客有封面图片",
-      "check_description": "播客有描述",
-      "check_episode": "至少有一集已发布",
-      "check_published": "播客已发布",
-      "checklist_description": "各收录平台在接受订阅源之前会检查的内容。",
-      "checklist_title": "准备好提交了吗？",
-      "tips_description": "一些小细节，有助于您的节目通过审核并被更多人发现。"
-    },
-    "player": {
-      "minimize": "最小化"
-    },
-    "actions": "播客操作",
-    "load_failed": "加载播客失败",
-    "failed_to_load": "加载播客失败",
-    "listen": {
-      "about": "简介",
-      "all_podcasts": "全部播客",
-      "by": "{{names}}",
-      "close_player": "关闭播放器",
-      "continue_listening": "继续收听",
-      "episode_count_one": "{{count}} 集",
-      "episode_count_other": "{{count}} 集",
-      "eyebrow": "播客",
-      "feed_hint": "使用此 RSS 订阅源，可在任意播客应用中关注",
-      "latest": "最新",
-      "latest_on": "最新：{{date}}",
-      "length_hr_min": "{{h}} 小时 {{m}} 分钟",
-      "length_min_one": "{{count}} 分钟",
-      "length_min_other": "{{count}} 分钟",
-      "length_sec_one": "{{count}} 秒",
-      "length_sec_other": "{{count}} 秒",
-      "link_copied": "链接已复制",
-      "mute": "静音",
-      "new": "新",
-      "no_episodes_description": "新单集一发布就会显示在这里。",
-      "now_playing": "正在播放",
-      "open_player": "打开播放器",
-      "pause": "暂停",
-      "pause_episode": "暂停 {{title}}",
-      "play": "播放",
-      "play_episode": "播放 {{title}}",
-      "play_error": "无法播放此单集，请稍后重试。",
-      "play_latest": "播放最新一集",
-      "play_latest_of": "播放 {{name}} 的最新一集",
-      "played": "已播放",
-      "player": "播客播放器",
-      "resume": "继续播放",
-      "seek": "拖动进度",
-      "share": "分享",
-      "sort_label": "单集顺序",
-      "sort_newest": "最新",
-      "sort_order": "按顺序",
-      "speed": "播放速度",
-      "time_left": "剩余 {{time}}",
-      "total_length": "总时长",
-      "unmute": "取消静音",
-      "up_next": "即将播放",
-      "updated": "更新",
-      "volume": "音量"
-    },
-    "search_results_one": "找到 {{count}} 个与“{{query}}”相关的播客"
-  },
   "library": {
     "library": "资源库",
     "my_library": "我的资源库",
     "new_folder": "新建文件夹",
     "tabs": {
       "courses": "课程",
-      "podcasts": "播客",
       "communities": "社区",
       "boards": "看板",
       "playgrounds": "Plays",
@@ -3675,7 +3365,6 @@
       "no_resource": "未配置资源",
       "open": "打开",
       "kind_course": "课程",
-      "kind_podcast": "播客",
       "kind_community": "社区",
       "kind_board": "看板",
       "kind_playground": "Play"
@@ -3999,7 +3688,6 @@
       "communities": "社区",
       "discussions": "讨论",
       "playgrounds": "Plays",
-      "podcasts": "播客",
       "activities": "课时",
       "folders": "文件夹"
     },
@@ -4023,7 +3711,6 @@
         "communities": "社区",
         "discussions": "讨论",
         "playgrounds": "Plays",
-        "podcasts": "播客",
         "users": "成员"
       },
       "keys": {
@@ -4044,10 +3731,6 @@
         "library": {
           "description": "按分组整理的内容文件夹",
           "keywords": "资源库, 文件夹, 合集, 套装, 路径, library, folders, collections, bundles, paths"
-        },
-        "podcasts": {
-          "description": "收听节目",
-          "keywords": "播客, 音频, 节目, 收听, podcasts, audio, episodes, listen"
         },
         "communities": {
           "description": "与其他成员讨论",
@@ -4151,7 +3834,6 @@
         "folder": "文件夹",
         "page": "页面",
         "playground": "Play",
-        "podcast": "播客",
         "user": "成员"
       },
       "updated": "更新",
@@ -4922,7 +4604,6 @@
       "settings": "设置",
       "courses": "课程",
       "communities": "社区",
-      "podcasts": "播客",
       "boards": "看板",
       "published": "已发布",
       "draft": "草稿",
@@ -7113,10 +6794,6 @@
             "title": "支付",
             "description": "为课程和订阅启用支付处理"
           },
-          "podcasts": {
-            "title": "播客",
-            "description": "为您的组织启用播客创建和音频内容"
-          },
           "boards": {
             "title": "看板",
             "description": "创建带有列表和卡片的协作看板，用于项目管理"
@@ -7931,7 +7608,6 @@
             "assignments": "作业",
             "folders": "文件夹",
             "paths": "学习路径",
-            "podcasts": "播客",
             "boards": "看板",
             "playgrounds": "Plays",
             "versioning": "版本历史",
@@ -9244,7 +8920,6 @@
             "usergroups": "分组",
             "communities": "社区",
             "boards": "看板",
-            "podcasts": "播客",
             "roles": "角色",
             "organizations": "组织"
           },
@@ -10399,8 +10074,7 @@
         "users": "用户",
         "communities": "社区",
         "discussions": "讨论",
-        "playgrounds": "Plays",
-        "podcasts": "播客"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10418,10 +10092,6 @@
         "communities": {
           "description": "管理社区",
           "keywords": "论坛, 讨论, 成员, 帖子"
-        },
-        "podcasts": {
-          "description": "管理播客",
-          "keywords": "音频, 集数, 节目"
         },
         "boards": {
           "description": "管理看板",
@@ -12900,10 +12570,7 @@
         "topic_required": "请添加主题或一些文字以生成脚本。",
         "script_ready": "脚本已就绪。请先审阅，再生成音频",
         "script_failed": "生成脚本失败。请重试。",
-        "loading_playlist": "正在加载播放列表...",
         "tab_generate": "生成",
-        "tab_episode": "节目",
-        "tab_playlist": "播放列表",
         "uploading_progress": "正在上传... {{progress}}%",
         "drop_or_browse": "拖放音频文件或点击浏览",
         "supported_formats": "支持 MP3、WAV、OGG、M4A",
@@ -12926,10 +12593,7 @@
         "generating": "正在生成…",
         "generate_audio": "生成音频",
         "credits_with_script": "脚本 {{scriptCost}} 额度 · 音频 {{audioCost}} 额度 · 由 Gemini 提供支持",
-        "credits_audio_only": "消耗 {{cost}} 个 AI 额度 · 由 Gemini 提供支持",
-        "no_podcasts": "未找到播客",
-        "back_to_podcasts": "返回播客",
-        "no_episodes": "未找到节目"
+        "credits_audio_only": "消耗 {{cost}} 个 AI 额度 · 由 Gemini 提供支持"
       },
       "callout_block": {
         "change_type": "更改提示框类型",
@@ -15780,8 +15444,6 @@
           "payments_desc": "出售课程并提供订阅以创造收入。",
           "communities": "社区讨论",
           "communities_desc": "让学员交流互动、提问和分享想法。",
-          "podcasts": "创建播客",
-          "podcasts_desc": "提供音频内容，随时随地触达学员。",
           "playgrounds": "互动 Play",
           "playgrounds_desc": "让学习者通过分步互动活动进行练习并赢得徽章。",
           "ai": "1,000 AI 积分",
@@ -24020,7 +23682,6 @@
       "types": {
         "course": "课程",
         "path": "路径",
-        "podcast": "播客",
         "community": "社区",
         "folder": "文件夹"
       },
@@ -24030,7 +23691,6 @@
         "courses": "课程",
         "activities": "免费课时",
         "paths": "学习路径",
-        "podcasts": "播客",
         "communities": "社区",
         "library": "资料库",
         "live": "直播课程",
@@ -26204,7 +25864,6 @@
       "course": "精选课程",
       "paths": "学习路径",
       "communities": "社区",
-      "podcasts": "播客",
       "live_sessions": "直播课",
       "instructors": "人物",
       "testimonials": "学员评价",
@@ -26251,7 +25910,6 @@
       "course": "精选课程",
       "paths": "路径",
       "communities": "社区",
-      "podcasts": "播客",
       "live_sessions": "直播课",
       "pricing": "定价",
       "form": "联系表单",
@@ -26277,7 +25935,6 @@
       "featured_course": "精选课程",
       "paths": "学习路径",
       "communities": "社区",
-      "podcasts": "播客",
       "live_sessions": "直播课",
       "instructors": "讲师",
       "testimonials": "学员评价",
@@ -28342,7 +27999,6 @@
         "course": "课程",
         "path": "路径",
         "community": "社区",
-        "podcast": "播客",
         "live_session": "直播课",
         "board": "看板",
         "folder": "资料库文件夹",

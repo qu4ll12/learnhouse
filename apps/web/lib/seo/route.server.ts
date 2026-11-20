@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import {
-  getCommunityThumbnailMediaDirectory,
   getCourseThumbnailMediaDirectory,
-  getEpisodeAudioMediaDirectory,
-  getEpisodeThumbnailMediaDirectory,
   getOrgLogoMediaDirectory,
   getPathThumbnailMediaDirectory,
-  getPodcastThumbnailMediaDirectory,
 } from '@services/media/media'
 import type { FeedMedia } from './feedMapping'
 
@@ -68,9 +64,5 @@ export function badRequest(message: string) {
 export const feedMedia: FeedMedia = {
   course: getCourseThumbnailMediaDirectory,
   path: getPathThumbnailMediaDirectory,
-  podcast: getPodcastThumbnailMediaDirectory,
-  community: getCommunityThumbnailMediaDirectory,
-  episodeImage: getEpisodeThumbnailMediaDirectory,
-  episodeAudio: getEpisodeAudioMediaDirectory,
   orgLogo: getOrgLogoMediaDirectory,
 }

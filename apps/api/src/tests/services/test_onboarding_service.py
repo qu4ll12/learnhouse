@@ -12,7 +12,6 @@ import pytest
 from fastapi import HTTPException
 from sqlmodel import select
 
-from src.db.communities.communities import Community
 from src.db.courses.courses import Course
 from src.db.org_onboarding import OrgOnboarding
 from src.db.organization_config import OrganizationConfig
@@ -166,7 +165,6 @@ class TestChecklist:
     async def test_signals_from_real_rows(self, db, org, admin_user, regular_user, activity):
         org.logo_image = "logo.png"
         db.add(org)
-        db.add(Community(name="C", org_id=org.id, community_uuid="c1"))
         db.add(UserGroup(name="G", description="", org_id=org.id, usergroup_uuid="g1"))
         from src.db.landing_pages import LandingPage
 
@@ -174,7 +172,7 @@ class TestChecklist:
         await db.commit()
         with redis():
             done = await state.data_signals(db, org)
-        assert done == {"create_course", "add_content", "publish_course", "brand_school", "invite_learners", "build_community", "create_group", "share_grow"}
+        assert done == {"create_course", "add_content", "publish_course", "brand_school", "invite_learners", "create_group", "share_grow"}
 
     async def test_pending_invite_counts_as_inviting(self, db, org, admin_user):
         with redis() as r:

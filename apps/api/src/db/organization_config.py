@@ -1,6 +1,6 @@
 import re
 from typing import Literal, Optional
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 from sqlalchemy import JSON, BigInteger, Column, ForeignKey
 from sqlmodel import Field, SQLModel
 
@@ -43,16 +43,8 @@ class AssignmentOrgConfig(BaseModel):
 
 
 class PaymentOrgConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     enabled: bool = False
-
-
-class DiscussionOrgConfig(BaseModel):
-    enabled: bool = True
-    limit: int = 10
-
-
-class CommunitiesOrgConfig(BaseModel):
-    enabled: bool = True
 
 
 class FoldersOrgConfig(BaseModel):
@@ -92,6 +84,7 @@ class PlaygroundsOrgConfig(BaseModel):
 
 
 class OrgFeatureConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     courses: CourseOrgConfig = CourseOrgConfig()
     members: MemberOrgConfig = MemberOrgConfig()
     usergroups: UserGroupOrgConfig = UserGroupOrgConfig()
@@ -99,8 +92,6 @@ class OrgFeatureConfig(BaseModel):
     ai: AIOrgConfig = AIOrgConfig()
     assignments: AssignmentOrgConfig = AssignmentOrgConfig()
     payments: PaymentOrgConfig = PaymentOrgConfig()
-    discussions: DiscussionOrgConfig = DiscussionOrgConfig()
-    communities: CommunitiesOrgConfig = CommunitiesOrgConfig()
     folders: FoldersOrgConfig = FoldersOrgConfig()
     analytics: AnalyticsOrgConfig = AnalyticsOrgConfig()
     collaboration: CollaborationOrgConfig = CollaborationOrgConfig()
@@ -211,6 +202,7 @@ class SecurityAdminToggle(BaseModel):
 
 
 class AdminToggles(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     security: SecurityAdminToggle = SecurityAdminToggle()
     ai: AIAdminToggle = AIAdminToggle()
     analytics: FeatureAdminToggle = FeatureAdminToggle()
@@ -218,7 +210,6 @@ class AdminToggles(BaseModel):
     boards: FeatureAdminToggle = FeatureAdminToggle()
     collaboration: FeatureAdminToggle = FeatureAdminToggle()
     folders: FeatureAdminToggle = FeatureAdminToggle()
-    communities: FeatureAdminToggle = FeatureAdminToggle()
     members: MembersAdminToggle = MembersAdminToggle()
     paths: FeatureAdminToggle = FeatureAdminToggle()
     messaging: FeatureAdminToggle = FeatureAdminToggle()
@@ -288,12 +279,13 @@ _CRAWLER_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _INDEXNOW_KEY_RE = re.compile(r"^[A-Za-z0-9-]{8,64}$")
 # Public sections an org can keep out of search engines one by one.
 SEO_INDEXABLE_FEATURES = (
-    "courses", "activities", "paths", "podcasts", "library", "live",
+    "courses", "activities", "paths", "library", "live",
     "newsletters", "pages", "store",
 )
 
 
 class SeoOrgConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     default_meta_title_suffix: str = ""
     # "%s" is replaced with the page name; wins over the suffix when set.
     default_title_template: str = Field(default="", max_length=120)
@@ -304,7 +296,6 @@ class SeoOrgConfig(BaseModel):
     yandex_verification: str = ""
     pinterest_verification: str = ""
     twitter_handle: str = ""
-    noindex_communities: bool = False
     # Hide the whole org from search engines (noindex everywhere, robots.txt
     # Disallow: /, empty sitemap).
     indexing_disabled: bool = False
@@ -339,12 +330,8 @@ class SeoOrgConfig(BaseModel):
     # Extra user agents to block, on top of the policy (one token each).
     ai_crawlers_blocked: list[str] = Field(default_factory=list, max_length=40)
     # Per-feature indexing switch; a missing key means indexable. Keys are the
-    # public sections (see SEO_INDEXABLE_FEATURES). Communities keep their own
-    # long-standing switch, ``noindex_communities``.
+    # public sections (see SEO_INDEXABLE_FEATURES).
     indexable_features: dict[str, bool] = Field(default_factory=dict)
-    # Spam/low-value control: community threads with no replies are noindexed
-    # (and left out of the sitemap) once they are this many days old. 0 = never.
-    thin_thread_noindex_days: int = Field(default=90, ge=0, le=3650)
     # RSS/Atom/JSON feeds and llms.txt / Markdown alternates for AI search.
     feeds_enabled: bool = True
     llms_txt_enabled: bool = True
@@ -391,7 +378,7 @@ class SeoOrgConfig(BaseModel):
 
 
 class MenuLinkItem(BaseModel):
-    # Built-in types: courses | library | podcasts | communities | playgrounds | store
+    # Built-in types: courses | library | playgrounds | store
     # plus "custom" for an admin-defined external/internal link.
     type: str
     enabled: bool = True
@@ -648,6 +635,7 @@ class OrgCloudConfig(BaseModel):
 # ============================================================================
 
 class OrganizationConfigBase(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     config_version: str = "1.4"
     general: OrgGeneralConfig
     features: OrgFeatureConfig
@@ -661,6 +649,7 @@ class OrganizationConfigBase(BaseModel):
 # ============================================================================
 
 class OrganizationConfigV2Base(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     config_version: str = "2.0"
     active: bool = True
     plan: str = "free"

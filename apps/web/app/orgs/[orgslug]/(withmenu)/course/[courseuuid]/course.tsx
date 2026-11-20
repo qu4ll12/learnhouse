@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import React, { useEffect, useState, Suspense } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getUriWithOrg } from '@services/config/config'
 import { getCourseMetadata } from '@services/courses/courses'
 import { useTrail } from '@/hooks/queries/useTrail'
@@ -28,7 +28,6 @@ import { prefetchRouteFull } from '@/lib/navigation/prefetchRoute'
 import { activityQueryOptions } from '@/hooks/queries/useActivity'
 import { useTranslation } from 'react-i18next'
 import { ChapterEmoji } from '@components/Objects/Courses/ChapterEmoji/ChapterEmoji'
-import CourseCommunitySection from '@components/Objects/Communities/CourseCommunitySection'
 import CourseShare from '@components/Objects/Courses/CourseShare/CourseShare'
 import { ShareCourseInMessagesButton } from '@components/Messaging/EntryButtons'
 import CourseAccessError from '@components/Objects/Courses/CourseAccessError/CourseAccessError'
@@ -657,9 +656,6 @@ const CourseClient = (props: any) => {
                   </div>
                 </section>
 
-                <Suspense fallback={<div className="animate-pulse h-48 bg-neutral-100 rounded-2xl" />}>
-                  <CourseCommunitySection courseUuid={course.course_uuid} orgslug={orgslug} />
-                </Suspense>
             </div>
           </GeneralWrapperStyled>
 

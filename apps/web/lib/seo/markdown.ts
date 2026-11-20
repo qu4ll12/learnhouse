@@ -201,51 +201,6 @@ export function markdownFor(data: any, ctx: MdContext): string {
       }
       return finish(out)
     }
-    case 'podcast': {
-      const p = data.podcast
-      const out = [head(p.name), `# ${p.name}`, '']
-      if (p.description) out.push(p.description, '')
-      if (p.about) out.push(pmToMarkdown(p.about), '')
-      if (p.episodes?.length) {
-        out.push('## Episodes', '')
-        for (const e of p.episodes) {
-          const mins = e.duration_seconds ? ` (${Math.max(1, Math.round(e.duration_seconds / 60))} min)` : ''
-          out.push(`### ${e.number ? `${e.number}. ` : ''}${e.title}${mins}`, '')
-          if (e.description) out.push(pmToMarkdown(e.description), '')
-        }
-      }
-      return finish(out)
-    }
-    case 'community': {
-      const c = data.community
-      const out = [head(c.name), `# ${c.name}`, '']
-      if (c.description) out.push(c.description, '')
-      if (data.threads?.length) {
-        out.push('## Recent discussions', '')
-        for (const t of data.threads) {
-          out.push(`- [${escapeInline(t.title)}](${ctx.base}/community/${enc(c.key)}/${t.segment}) · ${t.replies} ${t.replies === 1 ? 'reply' : 'replies'}${t.answered ? ' · answered' : ''}`)
-        }
-        out.push('')
-      }
-      return finish(out)
-    }
-    case 'thread': {
-      const c = data.community
-      const t = data.thread
-      const out = [head(t.title, { community: c.name, author: t.author, published: dateOnly(t.published) }), `# ${t.title}`, '']
-      out.push(`Asked in [${escapeInline(c.name)}](${ctx.base}/community/${enc(c.key)})${t.author ? ` by ${t.author}` : ''}${dateOnly(t.published) ? ` on ${dateOnly(t.published)}` : ''} · ${t.upvotes} upvotes`, '')
-      const body = pmToMarkdown(t.content)
-      if (body) out.push(body, '')
-      const comments = t.comments || []
-      const accepted = comments.find((x: any) => x.accepted)
-      if (accepted) out.push('## Accepted answer', '', `**${accepted.author || 'Member'}** (${accepted.upvotes} upvotes):`, '', pmToMarkdown(accepted.content), '')
-      const rest = comments.filter((x: any) => !x.accepted)
-      if (rest.length) {
-        out.push(`## Replies (${rest.length})`, '')
-        for (const r of rest) out.push(`**${r.author || 'Member'}**${dateOnly(r.published) ? ` · ${dateOnly(r.published)}` : ''} · ${r.upvotes} upvotes`, '', pmToMarkdown(r.content), '')
-      }
-      return finish(out)
-    }
     default:
       return ''
   }
@@ -273,7 +228,7 @@ function finish(lines: string[]): string {
 /**
  * `/llms.txt` (llmstxt.org): the org in one paragraph, then sections of links
  * to its public content, each with a one-line description. `full` (for
- * `/llms-full.txt`) adds course outlines, episodes and top threads.
+ * `/llms-full.txt`) adds course outlines.
  */
 export function buildLlmsTxt(data: any, base: string, opts: { full?: boolean; extra?: { title: string; links: { name: string; url: string; note?: string }[] }[] } = {}): string {
   const org = data.org || {}
@@ -305,24 +260,10 @@ export function buildLlmsTxt(data: any, base: string, opts: { full?: boolean; ex
       ...(opts.full ? (p.courses || []).map((c: any) => `  - ${escapeInline(c.name)}${c.required === false ? ' (elective)' : ''}`) : []),
     ]),
   )
-  section(
-    'Podcasts',
-    (data.podcasts || []).flatMap((p: any) => [
-      mdLink(p.name, `${base}/podcast/${enc(p.key)}`, p.description),
-      ...(opts.full ? (p.episodes || []).map((e: any) => `  - ${e.number ? `${e.number}. ` : ''}${escapeInline(e.title)}`) : []),
-    ]),
-  )
-  section(
-    'Communities',
-    (data.communities || []).flatMap((c: any) => [
-      mdLink(c.name, `${base}/community/${enc(c.key)}`, c.description),
-      ...(opts.full ? (c.threads || []).map((t: any) => `  - [${escapeInline(t.title)}](${base}/community/${enc(c.key)}/${t.segment})${t.answered ? ' (answered)' : ''}`) : []),
-    ]),
-  )
   section('Library', (data.folders || []).map((f: any) => mdLink(f.name, `${base}/library/folder/${enc(f.key)}`, f.description)))
   for (const extra of opts.extra || []) section(extra.title, extra.links.map((l) => mdLink(l.name, l.url, l.note)))
   const optional = [`- [Sitemap](${base}/sitemap.xml)`, `- [What's new (RSS)](${base}/feed.xml)`]
-  if (!opts.full) optional.unshift(`- [Full content index](${base}/llms-full.txt): every public lesson, episode and top discussion`)
+  if (!opts.full) optional.unshift(`- [Full content index](${base}/llms-full.txt): every public lesson`)
   section('Optional', optional)
   return `${out.join('\n').replace(/\n{3,}/g, '\n\n').trim()}\n`
 }
@@ -344,12 +285,6 @@ export function canonicalPathFor(data: any): string | null {
       return `/course/${enc(data.course.key)}/activity/${enc(data.activity.key)}`
     case 'path':
       return `/path/${enc(data.path.key)}`
-    case 'podcast':
-      return `/podcast/${enc(data.podcast.key)}`
-    case 'community':
-      return `/community/${enc(data.community.key)}`
-    case 'thread':
-      return `/community/${enc(data.community.key)}/${data.thread.segment}`
     default:
       return null
   }

@@ -7,8 +7,6 @@ import { getUriWithOrg } from '@services/config/config'
 
 export type ResourceKind =
   | 'course'
-  | 'podcast'
-  | 'community'
   | 'board'
   | 'playground'
   | 'media'
@@ -28,10 +26,6 @@ export function buildResourceUrl(
   switch (kind) {
     case 'board':
       return getUriWithOrg(orgslug, `/board/${resourceUuid.replace('board_', '')}`)
-    case 'community':
-      return getUriWithOrg(orgslug, `/community/${resourceUuid.replace('community_', '')}`)
-    case 'podcast':
-      return getUriWithOrg(orgslug, `/podcast/${resourceUuid.replace('podcast_', '')}`)
     case 'playground':
       // Playgrounds use the full prefixed uuid.
       return getUriWithOrg(orgslug, `/playground/${resourceUuid}`)

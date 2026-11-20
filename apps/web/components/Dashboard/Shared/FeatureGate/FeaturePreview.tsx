@@ -47,7 +47,6 @@ type Kind =
   | 'play'
 
 const KIND: Partial<Record<FeatureKey, Kind>> = {
-  communities: 'discussions',
   messaging: 'discussions',
   analytics: 'chart',
   course_analytics: 'chart',
@@ -55,7 +54,6 @@ const KIND: Partial<Record<FeatureKey, Kind>> = {
   paths: 'path',
   required_training: 'path',
   live_sessions: 'calendar',
-  podcasts: 'audio',
   usergroups: 'groups',
   custom_domains: 'domain',
   api_access: 'code',
@@ -104,7 +102,6 @@ const ACCENTS: Record<string, Accent> = {
 }
 
 const FEATURE_ACCENT: Partial<Record<FeatureKey, keyof typeof ACCENTS>> = {
-  communities: 'teal',
   messaging: 'teal',
   analytics: 'sky',
   course_analytics: 'sky',
@@ -112,7 +109,6 @@ const FEATURE_ACCENT: Partial<Record<FeatureKey, keyof typeof ACCENTS>> = {
   paths: 'indigo',
   required_training: 'indigo',
   live_sessions: 'rose',
-  podcasts: 'violet',
   usergroups: 'cyan',
   company_seats: 'cyan',
   custom_domains: 'emerald',

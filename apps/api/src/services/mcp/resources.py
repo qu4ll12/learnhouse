@@ -102,14 +102,6 @@ RESOURCES: dict[str, ResourceDef] = {
             search_kind="path",
         ),
         ResourceDef(
-            kind="community",
-            tool="get_community",
-            arg="community_uuid",
-            title="Community",
-            description="A community's settings and recent discussions.",
-            search_kind="community",
-        ),
-        ResourceDef(
             kind="activity_markdown",
             tool="get_activity_content",
             arg="activity_uuid",
@@ -208,7 +200,7 @@ def complete_static(values: tuple[str, ...], typed: str) -> list[str]:
     return (starts + within)[:MAX_COMPLETIONS]
 
 # Search kind -> list tool giving a first page when nothing is typed yet.
-FIRST_PAGE: dict[str, str] = {"course": "list_courses", "path": "list_paths", "community": "list_communities"}
+FIRST_PAGE: dict[str, str] = {"course": "list_courses", "path": "list_paths"}
 
 MAX_COMPLETIONS = 20
 

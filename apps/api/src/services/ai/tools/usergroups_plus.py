@@ -218,7 +218,7 @@ async def _import(ctx: ToolContext, p: ImportParams):
 
 
 class AccessParams(GroupParams):
-    add: list[str] = Field(default_factory=list, max_length=50, description="Resource uuids: course_, path_ (links its courses), community_, podcast_, livesession_, board_, folder_, media_.")
+    add: list[str] = Field(default_factory=list, max_length=50, description="Resource uuids: course_, path_ (links its courses), podcast_, livesession_, board_, folder_, media_.")
     remove: list[str] = Field(default_factory=list, max_length=50)
     starts_at: str | None = Field(None, max_length=40, description="ISO date the group's access starts.")
     expires_at: str | None = Field(None, max_length=40, description="ISO date the group's access ends.")
@@ -352,7 +352,7 @@ SPECS: list[ToolSpec] = [
           ImportParams, _import, ActionTier.EDIT, approval_if=lambda p: not p.dry_run,
           summarize=lambda p: ("Check" if p.dry_run else "Apply") + " a CSV of group members"),
     _spec("set_usergroup_access", "Set what a group unlocks",
-          "Unlock courses, paths, communities, podcasts, live sessions, boards and library items for a group, optionally "
+          "Unlock courses, paths, podcasts, live sessions, boards and library items for a group, optionally "
           "from a start date and until an end date, or stop unlocking them.",
           AccessParams, _access, ActionTier.EDIT, target_param="usergroup_uuid",
           approval_if=lambda p: bool(p.remove) or _many(p.add),

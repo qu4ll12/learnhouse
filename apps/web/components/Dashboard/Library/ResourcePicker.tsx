@@ -6,7 +6,6 @@ import { apiFetch } from '@services/utils/ts/requests'
 import { addFolderContent, addOrgRootContent } from '@services/folders/folders'
 import {
   Books,
-  MicrophoneStage,
   SquaresFour,
   Lightning,
   MagnifyingGlass,
@@ -14,7 +13,6 @@ import {
   Plus,
   Tray,
   File as FileIcon,
-  Garage,
 } from '@phosphor-icons/react'
 import { Button, Chip, INPUT } from '@components/Dashboard/Shared/DashKit/DashKit'
 import MediaPreview from '@components/Dashboard/Library/MediaPreview'
@@ -24,11 +22,11 @@ import useSWR from 'swr'
 import { useTranslation } from 'react-i18next'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
 
-export type TabKey = 'courses' | 'podcasts' | 'communities' | 'boards' | 'playgrounds' | 'media'
+export type TabKey = 'courses' | 'boards' | 'playgrounds' | 'media'
 
 // Singular resource kind stored on a resource activity's content.resource_type,
 // used by the student renderer to build the correct resource route.
-export type ResourceKind = 'course' | 'podcast' | 'community' | 'board' | 'playground' | 'media'
+export type ResourceKind = 'course' | 'board' | 'playground' | 'media'
 
 export const TAB_META: Record<
   TabKey,
@@ -36,8 +34,6 @@ export const TAB_META: Record<
 > = {
   courses: { feature: 'courses', icon: Books, uuidKey: 'course_uuid', kind: 'course' },
   media: { feature: 'library', icon: FileIcon, uuidKey: 'media_uuid', kind: 'media' },
-  podcasts: { feature: 'podcasts', icon: MicrophoneStage, uuidKey: 'podcast_uuid', kind: 'podcast' },
-  communities: { feature: 'communities', icon: Garage, uuidKey: 'community_uuid', kind: 'community' },
   boards: { feature: 'boards', icon: SquaresFour, uuidKey: 'board_uuid', kind: 'board' },
   playgrounds: { feature: 'playgrounds', icon: Lightning, uuidKey: 'playground_uuid', kind: 'playground' },
 }
@@ -49,10 +45,6 @@ export function endpointFor(tab: TabKey, orgslug: string, org_id: any): string {
       return `${getAPIUrl()}courses/org_slug/${orgslug}/page/1/limit/100?include_unpublished=true`
     case 'media':
       return `${getAPIUrl()}media/org/${org_id}/page/1/limit/100`
-    case 'podcasts':
-      return `${getAPIUrl()}podcasts/org_slug/${orgslug}/page/1/limit/100`
-    case 'communities':
-      return `${getAPIUrl()}communities/org/${org_id}/page/1/limit/100`
     case 'boards':
       return `${getAPIUrl()}boards/org/${org_id}`
     case 'playgrounds':
@@ -308,7 +300,7 @@ function TabButton({
 // The library "add content" flow places existing resources into a folder, and
 // media already lives in the library, so offering it there would just file the
 // same asset twice. Callers that want media (the Library block) opt in.
-const DEFAULT_TABS: TabKey[] = ['courses', 'podcasts', 'communities', 'boards', 'playgrounds']
+const DEFAULT_TABS: TabKey[] = ['courses', 'boards', 'playgrounds']
 
 type ResourcePickerProps = {
   orgslug: string

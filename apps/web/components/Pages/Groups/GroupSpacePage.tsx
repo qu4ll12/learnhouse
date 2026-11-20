@@ -25,8 +25,6 @@ function SectionTitle({ icon, title, count }: { icon: React.ReactNode; title: st
 const PATHS: Record<string, (_id: string) => string> = {
   course: (id) => `/course/${id.replace('course_', '')}`,
   path: (id) => `/path/${id.replace('path_', '')}`,
-  community: (id) => `/community/${id.replace('community_', '')}`,
-  podcast: (id) => `/podcast/${id.replace('podcast_', '')}`,
   live_session: (id) => `/live/${id}`,
   folder: (id) => `/library/folder/${id.replace('folder_', '')}`,
 }

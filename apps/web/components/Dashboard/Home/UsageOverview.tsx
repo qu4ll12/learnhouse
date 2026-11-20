@@ -8,8 +8,6 @@ import {
   Users,
   ShieldCheck,
   Chalkboard,
-  ChatCircle,
-  Microphone,
   CaretRight,
 } from '@phosphor-icons/react'
 import { AIMark } from '@components/Objects/AI/AIBrand'
@@ -242,22 +240,6 @@ export function FeaturesCard() {
       enabled: orgFeatures?.courses?.enabled !== false,
       upgradePlan: null,
       href: '/dash/courses',
-    },
-    {
-      key: 'communities',
-      label: t('dashboard.home.communities'),
-      icon: ChatCircle,
-      enabled: orgFeatures?.communities?.enabled !== false,
-      upgradePlan: getOptionalFeatureState(orgFeatures?.communities).upgradePlan,
-      href: '/dash/communities',
-    },
-    {
-      key: 'podcasts',
-      label: t('dashboard.home.podcasts'),
-      icon: Microphone,
-      enabled: orgFeatures?.podcasts?.enabled === true,
-      upgradePlan: getOptionalFeatureState(orgFeatures?.podcasts).upgradePlan,
-      href: '/dash/podcasts',
     },
     {
       key: 'boards',

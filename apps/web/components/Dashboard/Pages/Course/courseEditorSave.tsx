@@ -133,7 +133,7 @@ export function CourseEditorSaveProvider({ children }: { children: React.ReactNo
 }
 
 // Editor-wide view of the drafts, for the header Save and the tab bar.
-// Safe outside the provider (the community editor reuses SaveState): it then
+// Safe outside the provider: it then
 // reports no drafts.
 export function useEditorDrafts() {
   const ctx = useContext(CourseEditorSaveContext)

@@ -7,10 +7,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import {
   BookOpen,
   User as UserIcon,
-  ChatCircle,
   Lightning,
-  Microphone,
-  Garage,
   GlobeStand,
   Moon,
   Sun,
@@ -37,28 +34,19 @@ import { isWhiteLabelPlan } from '@components/Hooks/useLearnHouseBranding'
 const CONTENT_TYPE_ICON: Record<ContentResultType, SearchMeta['icon']> = {
   course: BookOpen,
   user: UserIcon,
-  community: Garage,
-  discussion: ChatCircle,
   playground: Lightning,
-  podcast: Microphone,
 }
 
 const CONTENT_TYPE_GROUP_KEY: Record<ContentResultType, string> = {
   course: 'dashboard.search.groups.courses',
   user: 'dashboard.search.groups.users',
-  community: 'dashboard.search.groups.communities',
-  discussion: 'dashboard.search.groups.discussions',
   playground: 'dashboard.search.groups.playgrounds',
-  podcast: 'dashboard.search.groups.podcasts',
 }
 
 const CONTENT_TYPE_ORDER: ContentResultType[] = [
   'course',
   'user',
-  'community',
-  'discussion',
   'playground',
-  'podcast',
 ]
 
 function usePagesFiltered(): SearchMeta[] {
@@ -81,10 +69,7 @@ function groupContentResults(results: ContentResult[]): Record<ContentResultType
   const groups: Record<ContentResultType, ContentResult[]> = {
     course: [],
     user: [],
-    community: [],
-    discussion: [],
     playground: [],
-    podcast: [],
   }
   for (const r of results) groups[r.type].push(r)
   return groups

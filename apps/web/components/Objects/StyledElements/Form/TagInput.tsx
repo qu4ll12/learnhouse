@@ -14,7 +14,7 @@ interface FormTagInputProps {
 const toTags = (value: unknown): Tag[] =>
   parseTags(value).map((text, i) => ({ id: `${i}-${text}`, text }))
 
-// Tag field for course and podcast tags. Reads both "a|b" and the older
+// Tag field for course tags. Reads both "a|b" and the older
 // "a,b" form and always writes "a|b", so a comma list stored by an import no
 // longer shows up as one long chip.
 const FormTagInput = ({ value, onChange, error, placeholder }: FormTagInputProps) => {

@@ -8,7 +8,6 @@ import pytest
 from fastapi import HTTPException
 from starlette.requests import Request
 
-from src.db.communities.communities import Community
 from src.db.courses.certifications import CertificateUser, Certifications
 from src.db.organization_config import OrganizationConfig
 from src.db.usergroups import UserGroup
@@ -17,7 +16,6 @@ from src.security.features_utils.plan_check import (
     get_org_plan,
     require_plan,
     require_plan_for_certifications,
-    require_plan_for_community,
     require_plan_for_usergroups,
 )
 
@@ -25,7 +23,6 @@ PLAN_DEPENDENCIES = [
     ("Analytics", require_plan("pro", "Analytics")),
     ("Usergroups", require_plan_for_usergroups("pro", "Usergroups")),
     ("Certificates", require_plan_for_certifications("pro", "Certificates")),
-    ("Communities", require_plan_for_community("standard", "Communities")),
 ]
 
 
@@ -171,8 +168,6 @@ class TestPlanCheck:
             ("Usergroups", require_plan_for_usergroups("pro", "Usergroups"), {"query_params": {"org_id": "abc"}}, 200),
             ("Certificates", require_plan_for_certifications("pro", "Certificates"), {"path_params": {"org_id": "abc"}}, 200),
             ("Certificates", require_plan_for_certifications("pro", "Certificates"), {"query_params": {"org_id": "abc"}}, 200),
-            ("Communities", require_plan_for_community("standard", "Communities"), {"path_params": {"org_id": "abc"}}, 200),
-            ("Communities", require_plan_for_community("standard", "Communities"), {"query_params": {"org_id": "abc"}}, 200),
         ],
     )
     async def test_require_plan_invalid_ids(self, db, feature_name, dependency, request_kwargs, expected_status):
@@ -287,54 +282,3 @@ class TestPlanCheck:
                 await dependency(_request(path_params={"certification_uuid": cert.certification_uuid}), db)
 
         assert exc.value.status_code == 403
-
-    @pytest.mark.asyncio
-    async def test_require_plan_for_community(self, db, org):
-        await _make_org_config(db, org, {"config_version": "2.0", "plan": "standard"})
-        community = Community(
-            org_id=org.id,
-            name="Community",
-            description="Desc",
-            public=True,
-            community_uuid="community_plan",
-            moderation_words=[],
-            creation_date=str(datetime.now()),
-            update_date=str(datetime.now()),
-        )
-        db.add(community)
-        await db.commit()
-
-        community_dependency = require_plan_for_community("free", "Communities")
-
-        with patch(
-            "src.security.features_utils.plan_check.get_deployment_mode",
-            return_value="saas",
-        ), patch(
-            "src.security.features_utils.plan_check.plan_meets_requirement",
-            return_value=True,
-        ):
-            # No discriminator → fall through (handler RBAC still runs).
-            assert await community_dependency(_request(), db) is True
-
-            assert (
-                await community_dependency(
-                    _request(path_params={"community_uuid": community.community_uuid}),
-                    db,
-                )
-                is True
-            )
-
-        with patch(
-            "src.security.features_utils.plan_check.get_deployment_mode",
-            return_value="saas",
-        ), patch(
-            "src.security.features_utils.plan_check.plan_meets_requirement",
-            return_value=False,
-        ):
-            with pytest.raises(HTTPException) as community_exc:
-                await community_dependency(
-                    _request(path_params={"community_uuid": community.community_uuid}),
-                    db,
-                )
-
-        assert community_exc.value.status_code == 403

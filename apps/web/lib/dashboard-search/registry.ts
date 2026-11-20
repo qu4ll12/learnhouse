@@ -4,9 +4,7 @@ import { searchMeta as home } from '@/app/orgs/[orgslug]/dash/page.search'
 import { searchMeta as courses } from '@/app/orgs/[orgslug]/dash/courses/page.search'
 import { searchMeta as coursesMigrate } from '@/app/orgs/[orgslug]/dash/courses/migrate/page.search'
 import { searchMeta as assignments } from '@/app/orgs/[orgslug]/dash/assignments/page.search'
-import { searchMeta as communities } from '@/app/orgs/[orgslug]/dash/communities/page.search'
 import { searchMeta as paths } from '@/app/orgs/[orgslug]/dash/paths/page.search'
-import { searchMeta as podcasts } from '@/app/orgs/[orgslug]/dash/podcasts/page.search'
 import { searchMeta as liveSessions } from '@/app/orgs/[orgslug]/dash/live-sessions/page.search'
 import { searchMeta as newsletter } from '@/app/orgs/[orgslug]/dash/newsletter/page.search'
 import { searchMeta as boards } from '@/app/orgs/[orgslug]/dash/boards/page.search'
@@ -23,9 +21,7 @@ export const dashboardPages: SearchMeta[] = [
   courses,
   coursesMigrate,
   assignments,
-  communities,
   paths,
-  podcasts,
   liveSessions,
   newsletter,
   boards,

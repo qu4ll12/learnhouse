@@ -81,7 +81,7 @@ describe("General form model", () => {
       org({
         resolved_features: rf({
           boards: { enabled: false, available: false, upgrade_plan: "pro" },
-          podcasts: { enabled: false, disabled_by: "org" },
+          folders: { enabled: false, disabled_by: "org" },
           payments: { enabled: false, disabled_by: "platform" },
         }),
         features: { collaboration: { live_editing: false } },
@@ -94,7 +94,7 @@ describe("General form model", () => {
     // Locked and platform-blocked features have no switch in the draft.
     expect("boards" in d.features).toBe(false);
     expect("payments" in d.features).toBe(false);
-    expect(d.features.podcasts).toBe(false);
+    expect(d.features.folders).toBe(false);
     expect(d.features.paths).toBe(true);
     expect(d.liveEditing).toBe(false);
   });
@@ -135,7 +135,7 @@ describe("General form model", () => {
       ...saved,
       email: " new@acme.test ",
       footerText: "Bye",
-      features: { ...saved.features, podcasts: false },
+      features: { ...saved.features, folders: false },
       liveEditing: false,
     };
     expect(SECTIONS.filter((s) => sectionDirty(s, draft, saved))).toEqual(["contact", "features", "footer"]);
@@ -145,7 +145,7 @@ describe("General form model", () => {
       footer: true,
       senderName: false,
       language: false,
-      features: [{ key: "podcasts", enabled: false }],
+      features: [{ key: "folders", enabled: false }],
       liveEditing: true,
     });
     expect(diffGeneral(saved, saved)).toEqual({

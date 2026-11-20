@@ -155,7 +155,6 @@ class TestPolicy:
         assert imp.request_policy(method, "/api/v1/blocks/image", self.ro) == expected
 
     def test_read_only_allows_read_posts_and_own_controls(self):
-        assert imp.request_policy("POST", "/api/v1/discussions/votes/batch", self.ro) is None
         assert imp.request_policy("POST", "/api/v1/auth/impersonation/end", self.ro) is None
         assert imp.request_policy("POST", "/api/v1/auth/impersonation/switch", self.ro) is None
         assert imp.request_policy("GET", "/api/v1/auth/impersonation/targets", self.ro) is None
@@ -211,8 +210,6 @@ class TestPolicy:
 
     @pytest.mark.parametrize("path", [
         "/api/v1/messaging/conversations",
-        "/api/v1/communities/c_1/discussions",
-        "/api/v1/discussions/d_1/upvote",
         "/api/v1/activities/a_1/comments",
         "/api/v1/newsletter/campaigns",
         "/api/v1/usergroups/g_1/email",

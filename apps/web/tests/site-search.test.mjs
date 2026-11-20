@@ -3,7 +3,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { highlightParts, normalizeForMatch, queryTerms, rankPages, scorePage } from '../lib/site-search/match.ts'
-import { extractPreviewText } from '../lib/site-search/preview.ts'
 
 const webRoot = path.resolve(import.meta.dirname, '..')
 const read = (p) => fs.readFileSync(path.join(webRoot, p), 'utf8')
@@ -55,21 +54,6 @@ describe('page matching', () => {
       { id: 'b', title: 'Beta', keywords: 'shared' },
     ]
     expect(rankPages(tied, 'shared').map((p) => p.id)).toEqual(['a', 'b'])
-  })
-})
-
-describe('discussion preview', () => {
-  test('flattens a tiptap document', () => {
-    const doc = JSON.stringify({
-      type: 'doc',
-      content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Hello' }, { type: 'text', text: 'world' }] }],
-    })
-    expect(extractPreviewText(doc)).toBe('Hello world')
-  })
-
-  test('passes plain strings through', () => {
-    expect(extractPreviewText('  plain  ')).toBe('plain')
-    expect(extractPreviewText(null)).toBe('')
   })
 })
 

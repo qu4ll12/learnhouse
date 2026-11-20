@@ -17,9 +17,6 @@ from pydantic import BaseModel, Field
 from sqlmodel import func, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.db.communities.communities import Community
-from src.db.communities.discussion_comments import DiscussionComment
-from src.db.communities.discussions import Discussion
 from src.db.courses.activities import Activity
 from src.db.courses.assignments import Assignment, AssignmentUserSubmission, AssignmentUserSubmissionStatus
 from src.db.courses.certifications import CertificateUser, Certifications
@@ -223,24 +220,6 @@ async def _learner_contexts(
             submitted[user_id].add(assignment_uuid)
         if status == AssignmentUserSubmissionStatus.GRADED and grade is not None:
             grades[user_id].append(grade)
-    # Posts in the org's communities: discussions started and comments written.
-    posts: dict[int, int] = defaultdict(int)
-    active: dict[int, set[str]] = defaultdict(set)
-    for user_id, community_uuid in (await db_session.execute(
-        select(Discussion.author_id, Community.community_uuid)
-        .join(Community, Discussion.community_id == Community.id)  # type: ignore[arg-type]
-        .where(Discussion.author_id.in_(user_ids), Community.org_id == course.org_id)  # type: ignore[attr-defined]
-    )).all():
-        posts[user_id] += 1
-        active[user_id].add(community_uuid)
-    for user_id, community_uuid in (await db_session.execute(
-        select(DiscussionComment.author_id, Community.community_uuid)
-        .join(Discussion, DiscussionComment.discussion_id == Discussion.id)  # type: ignore[arg-type]
-        .join(Community, Discussion.community_id == Community.id)  # type: ignore[arg-type]
-        .where(DiscussionComment.author_id.in_(user_ids), Community.org_id == course.org_id)  # type: ignore[attr-defined]
-    )).all():
-        posts[user_id] += 1
-        active[user_id].add(community_uuid)
 
     contexts = {}
     for user in users:
@@ -270,8 +249,8 @@ async def _learner_contexts(
             certified_on=certified.get(user.id),
             assignments_submitted=frozenset(submitted[user.id]),
             assignment_average=sum(grades[user.id]) / len(grades[user.id]) if grades[user.id] else None,
-            community_posts=posts[user.id],
-            communities_active=frozenset(active[user.id]),
+            community_posts=0,
+            communities_active=frozenset(),
         )
     return contexts
 

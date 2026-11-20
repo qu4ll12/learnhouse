@@ -8,12 +8,10 @@ import {
   ChalkboardSimple,
   Lightning,
   FolderSimple,
-  Headphones,
   VideoCamera,
   ChartBar,
   Code,
   Circuitry,
-  Garage,
   Newspaper,
 } from '@phosphor-icons/react'
 import { isOrgAnalyticsAvailable } from '@ee/components/Analytics/availability'
@@ -63,20 +61,6 @@ export const DASHBOARD_MENU_ITEMS: DashboardMenuItem[] = [
     icon: FolderSimple,
     labelKey: 'library.library',
     featureKey: 'folders',
-  },
-  {
-    id: 'communities',
-    href: '/dash/communities',
-    icon: Garage,
-    labelKey: 'communities.title',
-    featureKey: 'communities',
-  },
-  {
-    id: 'podcasts',
-    href: '/dash/podcasts',
-    icon: Headphones,
-    labelKey: 'podcasts.podcasts',
-    featureKey: 'podcasts',
   },
   {
     id: 'live_sessions',

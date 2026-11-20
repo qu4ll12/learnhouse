@@ -27,7 +27,6 @@ import {
   ListChecks,
   VideoCamera,
   LockKey,
-  Microphone,
   Newspaper,
   Path,
   PlugsConnected,
@@ -46,8 +45,6 @@ import { PlanLevel } from '@services/plans/plans'
 export type FeatureKey =
   | 'boards'
   | 'playgrounds'
-  | 'communities'
-  | 'podcasts'
   | 'live_sessions'
   | 'ai'
   | 'analytics'
@@ -106,18 +103,6 @@ export const FEATURE_METADATA: Record<FeatureKey, FeatureMeta> = {
     Icon: Lightning,
     // Plays are EE and need Pro (FEATURE_PLAN_REQUIREMENTS in the API).
     upsellPlan: 'pro',
-  },
-  communities: {
-    titleKey: 'common.plans.feature_restricted.communities.title',
-    descriptionKey: 'common.plans.feature_restricted.communities.description',
-    Icon: ChatsCircle,
-    upsellPlan: 'standard',
-  },
-  podcasts: {
-    titleKey: 'common.plans.feature_restricted.podcasts.title',
-    descriptionKey: 'common.plans.feature_restricted.podcasts.description',
-    Icon: Microphone,
-    upsellPlan: 'standard',
   },
   company_seats: {
     titleKey: 'common.plans.feature_restricted.company_seats.title',

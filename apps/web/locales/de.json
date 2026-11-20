@@ -93,10 +93,6 @@
           "title": "Standard-Funktion",
           "description": "Communities ist eine Premium-Funktion, die nur für Organisationen in unserem Standard-Plan oder höher verfügbar ist. Upgraden Sie, um Diskussions-Communities für Ihre Mitglieder freizuschalten."
         },
-        "podcasts": {
-          "title": "Standard-Funktion",
-          "description": "Podcasts sind eine Premium-Funktion, die nur für Organisationen mit Standard-Plan oder höher verfügbar ist. Upgrade, um Podcasts zu erstellen und mit Ihren Mitgliedern zu teilen."
-        },
         "audit_logs": {
           "title": "Enterprise-Funktion",
           "description": "Audit-Protokolle sind eine Premium-Funktion, die nur für Organisationen mit unserem Enterprise-Plan verfügbar ist. Führen Sie ein Upgrade durch, um vollständige Einblicke in die Aktivitäten Ihrer Organisation zu erhalten."
@@ -247,12 +243,6 @@
           "b2": "Erinnerungen werden automatisch verschickt",
           "b3": "Aufzeichnungen bleiben direkt beim Kurs"
         },
-        "podcasts": {
-          "title": "Lernende auch unterwegs erreichen",
-          "b1": "Audio-Episoden neben Ihren Kursen veröffentlichen",
-          "b2": "Ein Player, der sich merkt, wo jede Person aufgehört hat",
-          "b3": "Lektionen mit KI in Episoden verwandeln"
-        },
         "usergroups": {
           "title": "Lernende in Gruppen organisieren",
           "b1": "Einer Gruppe Zugang zu den Kursen geben, die für sie gedacht sind",
@@ -393,7 +383,6 @@
           "library": "Bibliothek",
           "folders": "Bibliothek",
           "communities": "Communities",
-          "podcasts": "Podcasts",
           "payments": "Zahlungen",
           "trail": "Fortschrittsverfolgung",
           "boards": "Boards",
@@ -3041,311 +3030,12 @@
       "hand_place": "Deine Hand ist oben · #{{place}} in der Reihe"
     }
   },
-  "podcasts": {
-    "podcasts": "Podcasts",
-    "browse_description": "Hören Sie Podcasts dieser Organisation",
-    "new_podcast": "Neuer Podcast",
-    "search_placeholder": "Podcasts suchen...",
-    "no_podcasts": "Noch keine Podcasts",
-    "no_podcasts_description": "Es sind derzeit keine Podcasts verfügbar",
-    "create_podcasts_placeholder": "Erstellen Sie Podcasts, um Audioinhalte mit Ihrem Publikum zu teilen",
-    "no_search_results": "Keine Podcasts gefunden",
-    "try_different_search": "Versuchen Sie einen anderen Suchbegriff",
-    "search_results_one": "{{count}} Podcast für „{{query}}“ gefunden",
-    "search_results_other": "{{count}} Podcasts für „{{query}}“ gefunden",
-    "podcast_name": "Podcast-Name",
-    "podcast_name_required": "Podcast-Name ist erforderlich",
-    "podcast_thumbnail": "Podcast-Miniaturansicht",
-    "podcast_tags": "Tags",
-    "podcast_visibility": "Sichtbarkeit",
-    "create_podcast": "Podcast erstellen",
-    "create_new_podcast": "Neuen Podcast für Ihre Organisation erstellen",
-    "create_podcast_btn": "Podcast erstellen",
-    "creating_podcast": "Podcast wird erstellt...",
-    "podcast_created_success": "Podcast erfolgreich erstellt",
-    "failed_to_create_podcast": "Podcast konnte nicht erstellt werden",
-    "episodes": "Episoden",
-    "no_episodes": "Noch keine Episoden",
-    "hosted_by": "Moderiert von",
-    "tags": "Tags",
-    "manage_podcast": "Podcast verwalten",
-    "published": "Veröffentlicht",
-    "unpublished": "Unveröffentlicht",
-    "public": "Öffentlich",
-    "private": "Privat",
-    "listen_now": "Jetzt anhören",
-    "delete_podcast": "Podcast löschen",
-    "delete_podcast_title": "Podcast löschen?",
-    "delete_podcast_confirm": "Möchten Sie diesen Podcast wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden und alle Episoden werden gelöscht.",
-    "deleting_podcast": "Podcast wird gelöscht...",
-    "podcast_deleted_success": "Podcast erfolgreich gelöscht",
-    "podcast_deleted_error": "Podcast konnte nicht gelöscht werden",
-    "edit_content": "Inhalt bearbeiten",
-    "form": {
-      "name_required": "Podcast-Name ist erforderlich",
-      "name_min_length": "Name muss mindestens 3 Zeichen haben",
-      "name_max_length": "Name muss 100 Zeichen oder weniger sein",
-      "description_max_length": "Beschreibung muss 500 Zeichen oder weniger sein"
-    },
-    "modals": {
-      "create": {
-        "title": "Neuen Podcast erstellen",
-        "description": "Details ausfüllen, um einen neuen Podcast zu erstellen",
-        "form": {
-          "name_label": "Podcast-Name",
-          "name_placeholder": "Podcast-Namen eingeben",
-          "description_label": "Beschreibung",
-          "description_placeholder": "Podcast-Beschreibung eingeben",
-          "public_label": "Diesen Podcast öffentlich machen"
-        },
-        "cancel": "Abbrechen",
-        "submit": "Podcast erstellen",
-        "generated_image_failed": "Das generierte Bild konnte nicht geladen werden",
-        "draft_hint": "Neue Podcasts starten als Entwurf. Veröffentliche, sobald deine erste Episode bereit ist."
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "Allgemein",
-        "episodes": "Episoden",
-        "distribution": "Verbreitung"
-      },
-      "view_podcast": "Podcast anzeigen",
-      "saving": "Wird gespeichert...",
-      "saved": "Änderungen gespeichert",
-      "save_error": "Änderungen konnten nicht gespeichert werden",
-      "save_changes": "Änderungen speichern",
-      "form": {
-        "thumbnail": "Miniaturansicht",
-        "upload_thumbnail": "Miniaturansicht hochladen",
-        "thumbnail_hint": "Empfohlene Größe: 1400x1400px. JPG oder PNG.",
-        "about": "Über",
-        "about_placeholder": "Erzählen Sie den Hörern mehr über diesen Podcast...",
-        "about_max_length": "Über muss 2000 Zeichen oder weniger sein",
-        "tags_placeholder": "musik, bildung, technik",
-        "tags_hint": "Tags durch Kommas trennen",
-        "visibility": "Sichtbarkeitseinstellungen",
-        "public_hint": "Jeder kann diesen Podcast finden und anhören",
-        "published_hint": "Diesen Podcast auf Ihrer Organisationsseite sichtbar machen",
-        "private_hint": "Nur angemeldete Mitglieder deiner Organisation können zuhören"
-      },
-      "episodes": {
-        "new_episode": "Neue Episode",
-        "new_episode_description": "Neue Episode zu diesem Podcast hinzufügen",
-        "no_episodes_description": "Beginnen Sie mit dem Hinzufügen Ihrer ersten Episode",
-        "create_first": "Erste Episode erstellen",
-        "creating": "Episode wird erstellt...",
-        "created": "Episode erstellt",
-        "create_error": "Episode konnte nicht erstellt werden",
-        "create": "Episode erstellen",
-        "deleting": "Episode wird gelöscht...",
-        "deleted": "Episode gelöscht",
-        "delete_error": "Episode konnte nicht gelöscht werden",
-        "delete": "Löschen",
-        "delete_title": "Episode löschen?",
-        "delete_confirm": "Sind Sie sicher, dass Sie diese Episode löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
-        "updating": "Episode wird aktualisiert...",
-        "updated": "Episode aktualisiert",
-        "update_error": "Episode konnte nicht aktualisiert werden",
-        "edit": "Bearbeiten",
-        "edit_episode": "Episode bearbeiten",
-        "edit_episode_description": "Episodendetails aktualisieren",
-        "save": "Änderungen speichern",
-        "publish": "Veröffentlichen",
-        "unpublish": "Zurückziehen",
-        "no_audio": "Keine Audiodatei",
-        "title_label": "Titel",
-        "title_placeholder": "Episodentitel eingeben",
-        "description_label": "Beschreibung",
-        "description_placeholder": "Episodenbeschreibung eingeben",
-        "audio_label": "Audiodatei",
-        "upload_audio": "Audiodatei hochladen",
-        "replace_audio": "Audiodatei ersetzen",
-        "audio_hint": "MP3-, WAV- oder M4A-Dateien werden unterstützt",
-        "actions": "Episodenaktionen",
-        "cover_drop_hint": "Quadratisches Bild, JPG oder PNG. Falls leer, wird das Podcast-Cover verwendet.",
-        "cover_hint": "Optional",
-        "cover_label": "Episoden-Cover",
-        "drag_to_reorder": "Zum Neuordnen ziehen",
-        "drop_hint": "Datei hier ablegen oder zum Durchsuchen klicken",
-        "move_down": "Nach unten",
-        "move_up": "Nach oben",
-        "pause": "Pause",
-        "play": "Abspielen",
-        "publish_hint": "Veröffentlichte Episoden erscheinen für Hörer und im RSS-Feed.",
-        "publish_now": "Sofort veröffentlichen",
-        "remove_file": "Datei entfernen",
-        "reorder_error": "Neue Reihenfolge konnte nicht gespeichert werden",
-        "reorder_hint": "Ziehe den Griff, um die Reihenfolge zu ändern, oder nutze Nach oben / Nach unten im Menü.",
-        "replace_cover": "Cover ersetzen",
-        "section_description": "Füge Audio-Episoden hinzu. Hörer hören sie in dieser Reihenfolge.",
-        "summary_one": "{{count}} Episode · {{published}} veröffentlicht · {{duration}} insgesamt",
-        "summary_other": "{{count}} Episoden · {{published}} veröffentlicht · {{duration}} insgesamt",
-        "upload_cover": "Cover hochladen",
-        "wrong_file_type": "Dieser Dateityp wird hier nicht unterstützt"
-      },
-      "back_to_podcasts": "Zurück zu den Podcasts",
-      "general": {
-        "cover_drop": "Bild hier ablegen oder zum Durchsuchen klicken",
-        "details_description": "Name, Zusammenfassung und Tags, die Hörer sehen.",
-        "details_title": "Details",
-        "discard_cover": "Neues Cover verwerfen",
-        "replace_cover": "Cover ersetzen",
-        "visibility_description": "Diese Schalter werden gespeichert, sobald du sie umlegst."
-      },
-      "list": {
-        "clear_filters": "Filter zurücksetzen",
-        "columns": {
-          "authors": "Autoren",
-          "podcast": "Podcast",
-          "updated": "Aktualisiert",
-          "visibility": "Sichtbarkeit"
-        },
-        "copy_failed": "Link konnte nicht kopiert werden",
-        "copy_link": "Link kopieren",
-        "draft": "Entwurf",
-        "edit_episodes": "Episoden bearbeiten",
-        "episodes_count_one": "{{count}} Episode",
-        "episodes_count_other": "{{count}} Episoden",
-        "episodes_short": "Episoden",
-        "filters": {
-          "all": "Alle",
-          "drafts": "Entwürfe",
-          "published": "Veröffentlicht"
-        },
-        "make_private": "Privat machen",
-        "make_public": "Öffentlich machen",
-        "no_description": "Noch keine Beschreibung",
-        "published_toast": "Podcast veröffentlicht",
-        "showing_count": "{{shown}} von {{total}} angezeigt",
-        "sort": {
-          "episodes": "Meiste Episoden",
-          "name": "Name",
-          "newest": "Neueste",
-          "updated": "Zuletzt aktualisiert"
-        },
-        "sort_label": "Podcasts sortieren",
-        "stats": {
-          "drafts": "Entwürfe",
-          "episodes": "Episoden",
-          "published": "Veröffentlicht",
-          "total": "Alle Podcasts"
-        },
-        "status_filter": "Nach Status filtern",
-        "subtitle": "Veröffentliche Audioserien und verwalte ihre Episoden.",
-        "unpublished_toast": "Podcast zurückgezogen"
-      }
-    },
-    "distribution": {
-      "copied": "In die Zwischenablage kopiert",
-      "rss_title": "RSS-Feed",
-      "rss_description": "Der RSS-Feed Ihres Podcasts wird automatisch generiert. Verwenden Sie diese URL, um Ihren Podcast bei Verzeichnissen einzureichen.",
-      "copy": "Kopieren",
-      "preview": "Vorschau",
-      "unpublished_warning": "Ihr Podcast ist derzeit nicht veröffentlicht. Veröffentlichen Sie ihn zuerst, bevor Sie ihn bei Verzeichnissen einreichen.",
-      "directories_title": "Bei Podcast-Verzeichnissen einreichen",
-      "directories_description": "Folgen Sie diesen Schritten, um Ihren Podcast auf den wichtigsten Plattformen listen zu lassen. Jede Plattform verlangt die URL Ihres RSS-Feeds.",
-      "apple": {
-        "subtitle": "Wird auch bei Apple Music verbreitet",
-        "step1": "Rufen Sie <link>podcastsconnect.apple.com</link> auf und melden Sie sich mit Ihrer Apple-ID an",
-        "step2": "Klicken Sie auf die Schaltfläche <strong>+</strong> und wählen Sie „New Show“",
-        "step3": "Wählen Sie „Add a show with an RSS feed“ und fügen Sie die URL Ihres RSS-Feeds ein",
-        "step4": "Apple prüft Ihren Feed; die Prüfung dauert in der Regel 1–5 Werktage"
-      },
-      "spotify": {
-        "subtitle": "Größte Plattform zum Podcast-Hören",
-        "step1": "Rufen Sie <link>podcasters.spotify.com</link> auf und melden Sie sich an oder erstellen Sie ein Konto",
-        "step2": "Klicken Sie auf „Get started“ und wählen Sie „I have a podcast with a hosting provider“",
-        "step3": "Fügen Sie die URL Ihres RSS-Feeds ein und klicken Sie auf „Next“",
-        "step4": "Bestätigen Sie die Inhaberschaft, füllen Sie die Details aus und reichen Sie ein (in der Regel innerhalb weniger Stunden live)"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts ist zu YouTube Music migriert",
-        "step1": "Rufen Sie <link>podcasts.google.com/publish</link> auf",
-        "step2": "Melden Sie sich mit Ihrem Google-Konto an und klicken Sie auf „Add a podcast“",
-        "step3": "Fügen Sie die URL Ihres RSS-Feeds ein und bestätigen Sie die Inhaberschaft per E-Mail",
-        "step4": "Ihr Podcast erscheint in YouTube Music und in den Google-Suchergebnissen"
-      },
-      "amazon": {
-        "subtitle": "Auch auf Alexa-Geräten verfügbar",
-        "step1": "Rufen Sie <link>podcasters.amazon.com</link> auf und melden Sie sich mit Ihrem Amazon-Konto an",
-        "step2": "Klicken Sie auf „Add your podcast“ und fügen Sie die URL Ihres RSS-Feeds ein",
-        "step3": "Prüfen Sie die Details Ihres Podcasts und reichen Sie ihn zur Prüfung ein"
-      },
-      "tips_title": "Tipps für eine erfolgreiche Verbreitung",
-      "tip_thumbnail": "Stellen Sie sicher, dass Ihr Podcast ein <strong>Vorschaubild</strong> hat (für Apple Podcasts mindestens 1400 x 1400)",
-      "tip_episode": "Veröffentlichen Sie vor dem Einreichen mindestens <strong>eine Folge</strong>",
-      "tip_description": "Schreiben Sie eine aussagekräftige <strong>Podcast-Beschreibung</strong>; das verbessert die Auffindbarkeit",
-      "tip_auto": "Neue Folgen erscheinen automatisch auf allen Plattformen, sobald Ihr Feed eingereicht wurde",
-      "tip_propagate": "Aktualisierungen können einige Stunden brauchen, bis sie auf allen Plattformen ankommen",
-      "check_cover": "Podcast hat ein Coverbild",
-      "check_description": "Podcast hat eine Beschreibung",
-      "check_episode": "Mindestens eine veröffentlichte Episode",
-      "check_published": "Podcast ist veröffentlicht",
-      "checklist_description": "Was die Verzeichnisse prüfen, bevor sie einen Feed akzeptieren.",
-      "checklist_title": "Bereit zum Einreichen?",
-      "tips_description": "Kleine Dinge, die helfen, dass deine Sendung akzeptiert und gefunden wird."
-    },
-    "player": {
-      "minimize": "Minimieren"
-    },
-    "actions": "Podcast-Aktionen",
-    "load_failed": "Podcast konnte nicht geladen werden",
-    "failed_to_load": "Podcast konnte nicht geladen werden",
-    "listen": {
-      "about": "Info",
-      "all_podcasts": "Alle Podcasts",
-      "by": "Von {{names}}",
-      "close_player": "Player schließen",
-      "continue_listening": "Weiterhören",
-      "episode_count_one": "{{count}} Episode",
-      "episode_count_other": "{{count}} Episoden",
-      "eyebrow": "Podcast",
-      "feed_hint": "Folge ihm in jeder Podcast-App mit diesem RSS-Feed",
-      "latest": "Neueste",
-      "latest_on": "Neueste {{date}}",
-      "length_hr_min": "{{h}} Std. {{m}} Min.",
-      "length_min_one": "{{count}} Min.",
-      "length_min_other": "{{count}} Min.",
-      "length_sec_one": "{{count}} Sek.",
-      "length_sec_other": "{{count}} Sek.",
-      "link_copied": "Link kopiert",
-      "mute": "Stummschalten",
-      "new": "Neu",
-      "no_episodes_description": "Neue Episoden erscheinen hier, sobald sie veröffentlicht sind.",
-      "now_playing": "Wird abgespielt",
-      "open_player": "Player öffnen",
-      "pause": "Pause",
-      "pause_episode": "{{title}} pausieren",
-      "play": "Abspielen",
-      "play_episode": "{{title}} abspielen",
-      "play_error": "Diese Episode konnte nicht abgespielt werden. Versuche es später erneut.",
-      "play_latest": "Neueste abspielen",
-      "play_latest_of": "Neueste Episode von {{name}} abspielen",
-      "played": "Gehört",
-      "player": "Podcast-Player",
-      "resume": "Fortsetzen",
-      "seek": "Suchen",
-      "share": "Teilen",
-      "sort_label": "Reihenfolge der Episoden",
-      "sort_newest": "Neueste",
-      "sort_order": "Der Reihe nach",
-      "speed": "Wiedergabegeschwindigkeit",
-      "time_left": "Noch {{time}}",
-      "total_length": "Gesamtdauer",
-      "unmute": "Stummschaltung aufheben",
-      "up_next": "Als Nächstes",
-      "updated": "Aktualisiert",
-      "volume": "Lautstärke"
-    }
-  },
   "library": {
     "library": "Bibliothek",
     "my_library": "Meine Bibliothek",
     "new_folder": "Neuer Ordner",
     "tabs": {
       "courses": "Kurse",
-      "podcasts": "Podcasts",
       "communities": "Communities",
       "boards": "Boards",
       "playgrounds": "Plays",
@@ -3693,7 +3383,6 @@
       "no_resource": "Keine Ressource konfiguriert",
       "open": "Öffnen",
       "kind_course": "Kurs",
-      "kind_podcast": "Podcast",
       "kind_community": "Community",
       "kind_board": "Board",
       "kind_playground": "Play"
@@ -4017,7 +3706,6 @@
       "communities": "Communities",
       "discussions": "Diskussionen",
       "playgrounds": "Plays",
-      "podcasts": "Podcasts",
       "activities": "Lektionen",
       "folders": "Ordner"
     },
@@ -4042,7 +3730,6 @@
         "communities": "Communities",
         "discussions": "Diskussionen",
         "playgrounds": "Plays",
-        "podcasts": "Podcasts",
         "users": "Mitglieder"
       },
       "keys": {
@@ -4063,10 +3750,6 @@
         "library": {
           "description": "Ordner mit gruppierten Inhalten",
           "keywords": "bibliothek, ordner, sammlungen, bündel, pfade"
-        },
-        "podcasts": {
-          "description": "Folgen anhören",
-          "keywords": "podcasts, audio, folgen, sendungen, anhören"
         },
         "communities": {
           "description": "Diskussionen mit anderen Mitgliedern",
@@ -4170,7 +3853,6 @@
         "folder": "Ordner",
         "page": "Seite",
         "playground": "Play",
-        "podcast": "Podcast",
         "user": "Mitglied"
       },
       "updated": "Aktualisiert",
@@ -4942,7 +4624,6 @@
       "settings": "Einstellungen",
       "courses": "Kurse",
       "communities": "Communities",
-      "podcasts": "Podcasts",
       "boards": "Boards",
       "published": "veröffentlicht",
       "draft": "Entwurf",
@@ -7133,10 +6814,6 @@
             "title": "Zahlungen",
             "description": "Zahlungsabwicklung für Kurse und Abonnements aktivieren"
           },
-          "podcasts": {
-            "title": "Podcasts",
-            "description": "Podcast-Erstellung und Audioinhalte für Ihre Organisation aktivieren"
-          },
           "boards": {
             "title": "Boards",
             "description": "Erstellen Sie kollaborative Boards mit Listen und Karten für das Projektmanagement"
@@ -7955,7 +7632,6 @@
             "assignments": "Aufgaben",
             "folders": "Ordner",
             "paths": "Lernpfade",
-            "podcasts": "Podcasts",
             "boards": "Boards",
             "playgrounds": "Plays",
             "versioning": "Versionsverlauf",
@@ -9272,7 +8948,6 @@
             "usergroups": "Gruppen",
             "communities": "Communities",
             "boards": "Boards",
-            "podcasts": "Podcasts",
             "roles": "Rollen",
             "organizations": "Organisation"
           },
@@ -10427,8 +10102,7 @@
         "users": "Benutzer",
         "communities": "Communitys",
         "discussions": "Diskussionen",
-        "playgrounds": "Plays",
-        "podcasts": "Podcasts"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10446,10 +10120,6 @@
         "communities": {
           "description": "Communitys verwalten",
           "keywords": "foren, diskussionen, mitglieder, beiträge"
-        },
-        "podcasts": {
-          "description": "Podcasts verwalten",
-          "keywords": "audio, episoden, sendungen"
         },
         "boards": {
           "description": "Boards verwalten",
@@ -12932,10 +12602,7 @@
         "topic_required": "Fügen Sie ein Thema oder etwas Text hinzu, aus dem ein Skript generiert werden soll.",
         "script_ready": "Skript fertig. Prüfen Sie es und generieren Sie dann das Audio",
         "script_failed": "Skript konnte nicht generiert werden. Bitte versuchen Sie es erneut.",
-        "loading_playlist": "Playlist wird geladen...",
         "tab_generate": "Generieren",
-        "tab_episode": "Folge",
-        "tab_playlist": "Playlist",
         "uploading_progress": "Wird hochgeladen... {{progress}}%",
         "drop_or_browse": "Audiodatei hierher ziehen oder zum Durchsuchen klicken",
         "supported_formats": "Unterstützt MP3, WAV, OGG, M4A",
@@ -12958,10 +12625,7 @@
         "generating": "Wird generiert…",
         "generate_audio": "Audio generieren",
         "credits_with_script": "Skript {{scriptCost}} Credit · Audio {{audioCost}} Credits · Powered by Gemini",
-        "credits_audio_only": "Verbraucht {{cost}} KI-Credits · Powered by Gemini",
-        "no_podcasts": "Keine Podcasts gefunden",
-        "back_to_podcasts": "Zurück zu den Podcasts",
-        "no_episodes": "Keine Folgen gefunden"
+        "credits_audio_only": "Verbraucht {{cost}} KI-Credits · Powered by Gemini"
       },
       "callout_block": {
         "change_type": "Hinweistyp ändern",
@@ -15813,8 +15477,6 @@
           "payments_desc": "Verkaufen Sie Kurse und bieten Sie Abos an.",
           "communities": "Community-Diskussionen",
           "communities_desc": "Lassen Sie Lernende sich vernetzen und Ideen austauschen.",
-          "podcasts": "Podcasts erstellen",
-          "podcasts_desc": "Liefern Sie Audioinhalte und erreichen Sie Lernende unterwegs.",
           "playgrounds": "Interaktive Plays",
           "playgrounds_desc": "Lass deine Lernenden mit interaktiven Schritt-für-Schritt-Aktivitäten üben und Badges verdienen.",
           "ai": "1.000 AI-Credits",
@@ -24059,7 +23721,6 @@
       "types": {
         "course": "Kurs",
         "path": "Pfad",
-        "podcast": "Podcast",
         "community": "Community",
         "folder": "Ordner"
       },
@@ -24069,7 +23730,6 @@
         "courses": "Kurse",
         "activities": "Kostenlose Lektionen",
         "paths": "Lernpfade",
-        "podcasts": "Podcasts",
         "communities": "Communitys",
         "library": "Bibliothek",
         "live": "Live-Sitzungen",
@@ -26243,7 +25903,6 @@
       "course": "Hervorgehobener Kurs",
       "paths": "Lernpfade",
       "communities": "Communities",
-      "podcasts": "Podcasts",
       "live_sessions": "Live-Sessions",
       "instructors": "Personen",
       "testimonials": "Erfahrungsberichte",
@@ -26290,7 +25949,6 @@
       "course": "Hervorgehobener Kurs",
       "paths": "Lernpfade",
       "communities": "Communities",
-      "podcasts": "Podcasts",
       "live_sessions": "Live-Sessions",
       "pricing": "Preise",
       "form": "Kontaktformular",
@@ -26316,7 +25974,6 @@
       "featured_course": "Hervorgehobener Kurs",
       "paths": "Lernpfade",
       "communities": "Communities",
-      "podcasts": "Podcasts",
       "live_sessions": "Live-Sessions",
       "instructors": "Kursleitende",
       "testimonials": "Erfahrungsberichte",
@@ -28381,7 +28038,6 @@
         "course": "Kurs",
         "path": "Lernpfad",
         "community": "Community",
-        "podcast": "Podcast",
         "live_session": "Live-Session",
         "board": "Board",
         "folder": "Bibliotheksordner",

@@ -65,16 +65,6 @@ KINDS: dict[str, Kind] = {
         ),
         Kind("usergroup", "usergroup_", "src.db.usergroups.UserGroup", "usergroup_uuid", "name"),
         Kind("role", "role_", "src.db.roles.Role", "role_uuid", "name"),
-        Kind("community", "community_", "src.db.communities.communities.Community", "community_uuid", "name"),
-        Kind("discussion", "discussion_", "src.db.communities.discussions.Discussion", "discussion_uuid", "title"),
-        Kind(
-            "comment",
-            "comment_",
-            "src.db.communities.discussion_comments.DiscussionComment",
-            "comment_uuid",
-            "content",
-            org_scoped=False,
-        ),
         Kind("folder", "folder_", "src.db.folders.folders.Folder", "folder_uuid", "name"),
         Kind("media", "media_", "src.db.media.media.Media", "media_uuid", "name"),
         Kind("board", "board_", "ee.db.boards.Board", "board_uuid", "name"),
@@ -155,11 +145,6 @@ async def _in_org(ctx: ToolContext, kind: str, row: Any) -> bool:
         if kind == "role" and org_id is None:
             return True
         return org_id == ctx.org.id
-    if kind == "comment":
-        from src.db.communities.discussions import Discussion
-
-        discussion = await ctx.db_session.get(Discussion, row.discussion_id)
-        return discussion is not None and discussion.org_id == ctx.org.id
     if kind == "user":
         return await is_member(ctx, row.id)
     return False
@@ -271,8 +256,6 @@ def _configured_frontend() -> str:
 _PATHS = {
     "course": "/course/{course}",
     "activity": "/course/{course}/activity/{activity}",
-    "community": "/community/{community}",
-    "discussion": "/community/{community}/discussion/{discussion}",
     "folder": "/library/folder/{folder}",
     "playground": "/playground/{playground}",
     "board": "/dash/boards/{board}/general",

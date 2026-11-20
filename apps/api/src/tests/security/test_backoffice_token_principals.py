@@ -15,6 +15,7 @@ from unittest.mock import Mock
 import pytest
 from fastapi import HTTPException, Request
 
+from src.db.backoffice_api_tokens import BackofficeAPIToken
 from src.db.users import APITokenUser, BackofficeAPITokenUser, User
 from src.security.auth import get_current_user
 from src.security.org_auth import org_owns_account

@@ -22,9 +22,6 @@ _ORDER = (
     "assignment_task_uuid",
     "assignment_uuid",
     "chapter_uuid",
-    "comment_uuid",
-    "discussion_uuid",
-    "community_uuid",
     "board_uuid",
     "playground_uuid",
     "folder_uuid",
@@ -83,14 +80,6 @@ async def _lookup(kind: str, value: Any, org_id: int, db: AsyncSession) -> str |
         row = (await db.execute(query)).scalars().first()
         if row is None:
             return None
-        if kind == "comment":
-            from src.db.communities.discussions import Discussion
-
-            discussion = await db.get(Discussion, row.discussion_id)
-            if discussion is None or discussion.org_id != org_id:
-                return None
-            text = row.content or ""
-            return text[:60] + ("..." if len(text) > 60 else "")
         return getattr(row, spec.label_field, None)
     except Exception:  # display only: never fail a proposal on a lookup
         return None

@@ -16,7 +16,6 @@ from starlette.requests import Request
 
 from src.db.courses.courses import Course
 from src.db.custom_domains import CustomDomain, CustomDomainCreate
-from src.db.podcasts.podcasts import Podcast
 from src.db.resource_authors import (
     ResourceAuthor,
     ResourceAuthorshipEnum,
@@ -110,17 +109,6 @@ async def draft_course(db, org):
     return c
 
 
-@pytest.fixture
-async def draft_podcast(db, org):
-    p = Podcast(
-        id=50, name="Draft", description="d", public=True, published=False,
-        org_id=org.id, podcast_uuid="podcast_draft", creation_date=NOW, update_date=NOW,
-    )
-    db.add(p)
-    await db.commit()
-    return p
-
-
 # ---------------------------------------------------------------------------
 # Drafts are not readable through the member role's read right
 # ---------------------------------------------------------------------------
@@ -128,11 +116,10 @@ async def draft_podcast(db, org):
 
 class TestDraftReadAccess:
     @pytest.mark.asyncio
-    async def test_member_cannot_read_draft_course_or_podcast(
-        self, db, regular_user, draft_course, draft_podcast
+    async def test_member_cannot_read_draft_course(
+        self, db, regular_user, draft_course
     ):
         assert not await _read(db, regular_user, draft_course.course_uuid)
-        assert not await _read(db, regular_user, draft_podcast.podcast_uuid)
 
     @pytest.mark.asyncio
     async def test_member_still_reads_published_course(self, db, regular_user, course):
@@ -275,12 +262,12 @@ class TestRoleRightsValidation:
              "Permission 'action_update' for 'podcasts' must be a boolean"),
             # A payload that fits the Rights model is coerced into it (extras
             # dropped); the raw-dict path is the one that needs the checks.
-            (lambda r: (r.pop("discussions"), r.__setitem__("houses", {"action_read": True})),
+            (lambda r: (r["boards"].pop("action_read"), r.__setitem__("houses", {"action_read": True})),
              "Unknown right: houses"),
-            (lambda r: (r.pop("discussions"), r["boards"].__setitem__("action_admin", True)),
+            (lambda r: (r["boards"].pop("action_read"), r["boards"].__setitem__("action_admin", True)),
              "Unknown permission 'action_admin' for 'boards'"),
-            (lambda r: r["communities"].pop("action_read"),
-             "Missing required permission 'action_read' for 'communities'"),
+            (lambda r: r["boards"].pop("action_read"),
+             "Missing required permission 'action_read' for 'boards'"),
         ],
     )
     async def test_create_rejects_malformed_buckets(

@@ -28,7 +28,7 @@ import { PanelBlocks } from '../slots'
 import MemberGroupsList from '@components/Dashboard/Pages/Users/OrgUserGroups/MemberGroupsList'
 
 type Level = 'manage' | 'edit' | 'own' | 'view' | 'none'
-const AREAS = ['courses', 'assignments', 'users', 'usergroups', 'communities', 'boards', 'podcasts', 'roles', 'organizations'] as const
+const AREAS = ['courses', 'assignments', 'users', 'usergroups', 'boards', 'roles', 'organizations'] as const
 
 function levelOf(perms: Record<string, boolean> | undefined): Level {
   if (!perms) return 'none'

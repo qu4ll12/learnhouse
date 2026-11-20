@@ -18,8 +18,8 @@ from src.security.features_utils.plans import (
 
 # Features an org admin can turn on/off from its Features settings.
 ORG_TOGGLEABLE_FEATURES = {
-    "boards", "communities", "folders", "live_sessions", "paths", "payments",
-    "playgrounds", "podcasts", "newsletter",
+    "boards", "folders", "live_sessions", "paths", "payments",
+    "playgrounds", "newsletter",
 }
 
 # Features that are always on (no admin toggle, cannot be disabled).
@@ -36,8 +36,8 @@ ALWAYS_ON_WITH_LIMITS = {"courses", "assignments"}
 # All known features
 ALL_FEATURES = [
     "ai", "analytics", "api", "assignments", "audit_logs", "boards", "collaboration",
-    "folders", "communities", "courses", "live_sessions",
-    "lti", "members", "messaging", "paths", "payments", "playgrounds", "podcasts", "roles", "scorm",
+    "folders", "courses", "live_sessions",
+    "lti", "members", "messaging", "paths", "payments", "playgrounds", "roles", "scorm",
     "sso", "usergroups", "versioning", "scim", "required_training", "company_seats", "newsletter",
     "crm", "crm_salesforce",
 ]

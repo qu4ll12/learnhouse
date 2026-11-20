@@ -37,15 +37,11 @@ from src.routers.paths import paths as paths_router_module
 from src.routers.messaging import messaging as messaging_router_module
 from src.routers.media import media as media_router_module
 from src.routers.courses import migration as migration_router_module
-from src.routers.communities import communities as communities_router_module
-from src.routers.communities import discussions as discussions_router_module
 from src.routers.courses.activities import activities, blocks
 from src.routers.courses.activities import collab as activity_collab_router_module
 from src.routers.courses.activities import comments as activity_comments_router_module
 from src.routers import learner_notes as learner_notes_router_module
 from src.routers.courses import translations as course_translations_router_module
-from src.routers.podcasts import podcasts as podcasts_router_module
-from src.routers.podcasts import episodes as episodes_router_module
 from src.core.ee_hooks import register_ee_routers
 from src.core.deployment_mode import get_deployment_mode
 from src.services.dev.dev import isDevModeEnabledOrRaise
@@ -56,7 +52,7 @@ from src.security.api_token_utils import (
     require_authenticated_user_or_api_token,
     require_non_api_token_user,
 )
-from src.security.features_utils.plan_check import require_plan, require_plan_for_certifications, require_plan_for_community, require_plan_for_usergroups, require_plan_for_paths
+from src.security.features_utils.plan_check import require_plan, require_plan_for_certifications, require_plan_for_usergroups, require_plan_for_paths
 
 
 v1_router = APIRouter(prefix="/api/v1")
@@ -335,27 +331,6 @@ v1_router.include_router(
 # Personal data only: every route needs a real session.
 v1_router.include_router(
     notifications_router_module.router, prefix="/notifications", tags=["notifications"]
-)
-v1_router.include_router(
-    communities_router_module.router,
-    prefix="/communities",
-    tags=["communities"],
-    dependencies=[Depends(require_plan_for_community("standard", "Communities"))]
-)
-v1_router.include_router(
-    discussions_router_module.router,
-    tags=["discussions"],
-    dependencies=[Depends(require_plan_for_community("standard", "Communities"))]
-)
-v1_router.include_router(
-    podcasts_router_module.router,
-    prefix="/podcasts",
-    tags=["podcasts"]
-)
-v1_router.include_router(
-    episodes_router_module.router,
-    prefix="/podcasts",
-    tags=["podcasts", "episodes"]
 )
 v1_router.include_router(
     certifications.router,

@@ -52,7 +52,7 @@ def el(type_: str, props: Optional[dict] = None, style: Optional[dict] = None, c
 
 Background = Literal["default", "surface", "primary", "dark", "image", "gradient"]
 SectionKind = Literal[
-    "hero", "features", "courses", "featured_course", "paths", "communities", "podcasts", "live_sessions",
+    "hero", "features", "courses", "featured_course", "paths", "podcasts", "live_sessions",
     "instructors", "testimonials", "pricing", "faq", "stats", "logos", "steps", "cta", "text_image",
     "gallery", "video", "newsletter", "contact", "rich_text", "navbar", "footer", "countdown",
 ]
@@ -448,7 +448,6 @@ RECIPES = {
     "courses": _courses,
     "featured_course": _featured_course,
     "paths": _collection("paths", "Learning paths"),
-    "communities": _collection("communities", "Join the community"),
     "podcasts": _collection("podcasts", "Listen"),
     "live_sessions": _collection("live_sessions", "Upcoming live sessions"),
     "instructors": _instructors,
@@ -625,21 +624,6 @@ TEMPLATES: list[dict] = [
             {"kind": "faq"},
         ],
     },
-    {
-        "id": "community",
-        "name": "Community hub",
-        "description": "Lead with people: communities, live sessions, podcasts and courses.",
-        "audience": "schools",
-        "preset": "fresh",
-        "sections": [
-            {"kind": "hero", "variant": "centered", "eyebrow": "Learn together", "heading": "A place to learn with others", "subheading": "Courses, live sessions and discussions with people on the same path."},
-            {"kind": "communities"},
-            {"kind": "live_sessions"},
-            {"kind": "courses"},
-            {"kind": "podcasts"},
-            {"kind": "cta"},
-        ],
-    },
 ]
 
 
@@ -700,7 +684,7 @@ def section_library(ctx: Optional[dict] = None) -> list[dict]:
     """Ready-made sections for the builder's library (one per kind/variant)."""
     entries = [
         ("hero", "centered"), ("hero", "split"), ("hero", "image"), ("features", "cards"), ("features", "list"),
-        ("courses", "grid"), ("courses", "carousel"), ("featured_course", ""), ("paths", ""), ("communities", ""),
+        ("courses", "grid"), ("courses", "carousel"), ("featured_course", ""), ("paths", ""),
         ("podcasts", ""), ("live_sessions", ""), ("instructors", ""), ("testimonials", "grid"), ("testimonials", "single"),
         ("pricing", ""), ("faq", ""), ("stats", ""), ("logos", ""), ("steps", ""), ("cta", ""), ("text_image", ""),
         ("text_image", "image-left"), ("video", ""), ("gallery", ""), ("newsletter", ""), ("contact", ""), ("rich_text", ""),

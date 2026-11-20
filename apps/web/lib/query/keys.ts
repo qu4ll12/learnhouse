@@ -44,18 +44,6 @@ export const queryKeys = {
     list: (orgId: number) => ['media', orgId] as const,
     detail: (uuid: string) => ['media', uuid] as const,
   },
-  community: {
-    list: (orgId: number, page?: number) => ['communities', orgId, page] as const,
-    detail: (uuid: string) => ['community', uuid] as const,
-    rights: (uuid: string) => ['community', uuid, 'rights'] as const,
-    discussions: (uuid: string, sort: string, page: number) => ['community', uuid, 'discussions', sort, page] as const,
-    byCourse: (courseUuid: string) => ['community', 'byCourse', courseUuid] as const,
-  },
-  discussion: {
-    detail: (uuid: string) => ['discussion', uuid] as const,
-    comments: (uuid: string, page: number) => ['discussion', uuid, 'comments', page] as const,
-    reactions: (uuid: string) => ['discussion', uuid, 'reactions'] as const,
-  },
   assignments: {
     list: (orgSlug: string) => ['assignments', orgSlug] as const,
     // The signed-in learner's assignments across their courses (Progress page).
@@ -92,14 +80,6 @@ export const queryKeys = {
     list: (orgSlug: string | number) => ['boards', orgSlug] as const,
     detail: (uuid: string) => ['board', uuid] as const,
     members: (uuid: string) => ['board', uuid, 'members'] as const,
-  },
-  podcasts: {
-    list: (orgSlug: string) => ['podcasts', orgSlug] as const,
-    // Every podcast incl. drafts, as the dashboard lists them.
-    dashList: (orgSlug: string) => ['podcasts', orgSlug, 'dash'] as const,
-    detail: (uuid: string) => ['podcast', uuid] as const,
-    meta: (uuid: string) => ['podcast', uuid, 'meta'] as const,
-    episodes: (uuid: string) => ['podcast', uuid, 'episodes'] as const,
   },
   paths: {
     list: (orgId: number) => ['paths', orgId] as const,

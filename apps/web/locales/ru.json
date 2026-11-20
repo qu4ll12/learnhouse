@@ -93,10 +93,6 @@
           "title": "Функция Standard",
           "description": "Сообщества: премиум-функция, доступная только для организаций с планом Standard или выше. Обновитесь, чтобы разблокировать дискуссионные сообщества для ваших участников."
         },
-        "podcasts": {
-          "title": "Функция Standard",
-          "description": "Подкасты: премиум-функция, доступная для планов Standard и выше. Обновите для создания и распространения подкастов."
-        },
         "audit_logs": {
           "title": "Функция Enterprise",
           "description": "Журналы аудита: премиум-функция, доступная только для организаций на тарифе Enterprise. Обновитесь, чтобы получить полную видимость действий вашей организации."
@@ -249,12 +245,6 @@
           "b2": "Напоминания отправляются автоматически",
           "b3": "Записи хранятся рядом с курсом"
         },
-        "podcasts": {
-          "title": "Будьте с учащимися и в дороге",
-          "b1": "Публикуйте аудиовыпуски рядом с курсами",
-          "b2": "Плеер запоминает, где остановился каждый слушатель",
-          "b3": "Превращайте уроки в выпуски с помощью ИИ"
-        },
         "usergroups": {
           "title": "Объединяйте учащихся в группы",
           "b1": "Открывайте группе доступ к курсам, предназначенным для неё",
@@ -395,7 +385,6 @@
           "library": "Библиотека",
           "folders": "Библиотека",
           "communities": "Сообщества",
-          "podcasts": "Подкасты",
           "payments": "Платежи",
           "trail": "Отслеживание прогресса",
           "boards": "Доски",
@@ -3161,323 +3150,12 @@
       "hand_place": "Ваша рука поднята · #{{place}} в очереди"
     }
   },
-  "podcasts": {
-    "podcasts": "Подкасты",
-    "browse_description": "Слушайте подкасты этой организации",
-    "new_podcast": "Новый подкаст",
-    "search_placeholder": "Поиск подкастов...",
-    "no_podcasts": "Подкастов пока нет",
-    "no_podcasts_description": "В настоящее время нет доступных подкастов",
-    "create_podcasts_placeholder": "Создайте подкасты для распространения аудиоконтента",
-    "no_search_results": "Подкасты не найдены",
-    "try_different_search": "Попробуйте другой поисковый запрос",
-    "search_results_one": "Найден {{count}} подкаст по запросу «{{query}}»",
-    "search_results_few": "Найдено {{count}} подкаста по запросу «{{query}}»",
-    "search_results_many": "Найдено {{count}} подкастов по запросу «{{query}}»",
-    "search_results_other": "Найдено {{count}} подкаста по запросу «{{query}}»",
-    "podcast_name": "Название подкаста",
-    "podcast_name_required": "Название подкаста обязательно",
-    "podcast_thumbnail": "Миниатюра подкаста",
-    "podcast_tags": "Теги",
-    "podcast_visibility": "Видимость",
-    "create_podcast": "Создать подкаст",
-    "create_new_podcast": "Создать новый подкаст для организации",
-    "create_podcast_btn": "Создать подкаст",
-    "creating_podcast": "Создание подкаста...",
-    "podcast_created_success": "Подкаст успешно создан",
-    "failed_to_create_podcast": "Не удалось создать подкаст",
-    "episodes": "Эпизоды",
-    "no_episodes": "Эпизодов пока нет",
-    "hosted_by": "Ведущий",
-    "tags": "Теги",
-    "manage_podcast": "Управление подкастом",
-    "published": "Опубликовано",
-    "unpublished": "Не опубликовано",
-    "public": "Публичный",
-    "private": "Приватный",
-    "listen_now": "Слушать сейчас",
-    "delete_podcast": "Удалить подкаст",
-    "delete_podcast_title": "Удалить подкаст?",
-    "delete_podcast_confirm": "Вы уверены, что хотите удалить этот подкаст? Это действие нельзя отменить, и все эпизоды будут удалены.",
-    "deleting_podcast": "Удаление подкаста...",
-    "podcast_deleted_success": "Подкаст успешно удалён",
-    "podcast_deleted_error": "Не удалось удалить подкаст",
-    "edit_content": "Редактировать контент",
-    "form": {
-      "name_required": "Название подкаста обязательно",
-      "name_min_length": "Название минимум 3 символа",
-      "name_max_length": "Название не более 100 символов",
-      "description_max_length": "Описание не более 500 символов"
-    },
-    "modals": {
-      "create": {
-        "title": "Создать новый подкаст",
-        "description": "Заполните детали для создания нового подкаста",
-        "form": {
-          "name_label": "Название подкаста",
-          "name_placeholder": "Введите название подкаста",
-          "description_label": "Описание",
-          "description_placeholder": "Введите описание подкаста",
-          "public_label": "Сделать подкаст публичным"
-        },
-        "cancel": "Отмена",
-        "submit": "Создать подкаст",
-        "generated_image_failed": "Не удалось загрузить сгенерированное изображение",
-        "draft_hint": "Новые подкасты создаются как черновики. Опубликуйте, когда будет готов первый эпизод."
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "Общие",
-        "episodes": "Эпизоды",
-        "distribution": "Распространение"
-      },
-      "view_podcast": "Просмотреть подкаст",
-      "saving": "Сохранение...",
-      "saved": "Изменения сохранены",
-      "save_error": "Не удалось сохранить",
-      "save_changes": "Сохранить изменения",
-      "form": {
-        "thumbnail": "Миниатюра",
-        "upload_thumbnail": "Загрузить миниатюру",
-        "thumbnail_hint": "Рекомендуемый размер: 1400x1400px. JPG или PNG.",
-        "about": "О подкасте",
-        "about_placeholder": "Расскажите слушателям о подкасте...",
-        "about_max_length": "Описание не более 2000 символов",
-        "tags_placeholder": "музыка, образование, технологии",
-        "tags_hint": "Разделяйте теги запятыми",
-        "visibility": "Настройки видимости",
-        "public_hint": "Любой может найти и прослушать этот подкаст",
-        "published_hint": "Показать подкаст на странице организации",
-        "private_hint": "Слушать могут только вошедшие участники вашей организации"
-      },
-      "episodes": {
-        "new_episode": "Новый эпизод",
-        "new_episode_description": "Добавить новый эпизод к подкасту",
-        "no_episodes_description": "Начните с добавления первого эпизода",
-        "create_first": "Создать первый эпизод",
-        "creating": "Создание эпизода...",
-        "created": "Эпизод создан",
-        "create_error": "Не удалось создать эпизод",
-        "create": "Создать эпизод",
-        "deleting": "Удаление эпизода...",
-        "deleted": "Эпизод удалён",
-        "delete_error": "Не удалось удалить эпизод",
-        "delete": "Удалить",
-        "delete_title": "Удалить эпизод?",
-        "delete_confirm": "Удалить этот эпизод? Это действие необратимо.",
-        "updating": "Обновление эпизода...",
-        "updated": "Эпизод обновлён",
-        "update_error": "Не удалось обновить эпизод",
-        "edit": "Редактировать",
-        "edit_episode": "Редактировать эпизод",
-        "edit_episode_description": "Обновить детали эпизода",
-        "save": "Сохранить изменения",
-        "publish": "Опубликовать",
-        "unpublish": "Снять с публикации",
-        "no_audio": "Нет аудиофайла",
-        "title_label": "Название",
-        "title_placeholder": "Введите название эпизода",
-        "description_label": "Описание",
-        "description_placeholder": "Введите описание эпизода",
-        "audio_label": "Аудиофайл",
-        "upload_audio": "Загрузить аудиофайл",
-        "replace_audio": "Заменить аудиофайл",
-        "audio_hint": "Поддерживаются файлы MP3, WAV или M4A",
-        "actions": "Действия с эпизодом",
-        "cover_drop_hint": "Квадратное изображение, JPG или PNG. Если пусто, используется обложка подкаста.",
-        "cover_hint": "Необязательно",
-        "cover_label": "Обложка эпизода",
-        "drag_to_reorder": "Перетащите, чтобы изменить порядок",
-        "drop_hint": "Перетащите файл сюда или нажмите для выбора",
-        "move_down": "Переместить вниз",
-        "move_up": "Переместить вверх",
-        "pause": "Пауза",
-        "play": "Воспроизвести",
-        "publish_hint": "Опубликованные эпизоды видны слушателям и попадают в RSS-ленту.",
-        "publish_now": "Опубликовать сразу",
-        "remove_file": "Удалить файл",
-        "reorder_error": "Не удалось сохранить новый порядок",
-        "reorder_hint": "Перетащите ручку, чтобы изменить порядок, или используйте «Переместить вверх / вниз» в меню.",
-        "replace_cover": "Заменить обложку",
-        "section_description": "Добавляйте аудиоэпизоды. Слушатели услышат их в этом порядке.",
-        "summary_one": "{{count}} эпизод · опубликовано {{published}} · всего {{duration}}",
-        "summary_few": "{{count}} эпизода · опубликовано {{published}} · всего {{duration}}",
-        "summary_many": "{{count}} эпизодов · опубликовано {{published}} · всего {{duration}}",
-        "summary_other": "{{count}} эпизода · опубликовано {{published}} · всего {{duration}}",
-        "upload_cover": "Загрузить обложку",
-        "wrong_file_type": "Этот тип файла здесь не поддерживается"
-      },
-      "back_to_podcasts": "Назад к подкастам",
-      "general": {
-        "cover_drop": "Перетащите изображение сюда или нажмите для выбора",
-        "details_description": "Название, описание и теги, которые видят слушатели.",
-        "details_title": "Подробности",
-        "discard_cover": "Отменить новую обложку",
-        "replace_cover": "Заменить обложку",
-        "visibility_description": "Эти переключатели сохраняются сразу после переключения."
-      },
-      "list": {
-        "clear_filters": "Сбросить фильтры",
-        "columns": {
-          "authors": "Авторы",
-          "podcast": "Подкаст",
-          "updated": "Обновлено",
-          "visibility": "Видимость"
-        },
-        "copy_failed": "Не удалось скопировать ссылку",
-        "copy_link": "Копировать ссылку",
-        "draft": "Черновик",
-        "edit_episodes": "Изменить эпизоды",
-        "episodes_count_one": "{{count}} эпизод",
-        "episodes_count_few": "{{count}} эпизода",
-        "episodes_count_many": "{{count}} эпизодов",
-        "episodes_count_other": "{{count}} эпизода",
-        "episodes_short": "Эпизоды",
-        "filters": {
-          "all": "Все",
-          "drafts": "Черновики",
-          "published": "Опубликованные"
-        },
-        "make_private": "Сделать закрытым",
-        "make_public": "Сделать публичным",
-        "no_description": "Описания пока нет",
-        "published_toast": "Подкаст опубликован",
-        "showing_count": "Показано {{shown}} из {{total}}",
-        "sort": {
-          "episodes": "Больше всего эпизодов",
-          "name": "Название",
-          "newest": "Сначала новые",
-          "updated": "Недавно обновлённые"
-        },
-        "sort_label": "Сортировка подкастов",
-        "stats": {
-          "drafts": "Черновики",
-          "episodes": "Эпизоды",
-          "published": "Опубликованные",
-          "total": "Все подкасты"
-        },
-        "status_filter": "Фильтр по статусу",
-        "subtitle": "Публикуйте аудиосерии и управляйте их эпизодами.",
-        "unpublished_toast": "Подкаст снят с публикации"
-      }
-    },
-    "distribution": {
-      "copied": "Скопировано в буфер обмена",
-      "rss_title": "RSS-лента",
-      "rss_description": "RSS-лента вашего подкаста создаётся автоматически. Используйте этот URL, чтобы отправить подкаст в каталоги.",
-      "copy": "Копировать",
-      "preview": "Предпросмотр",
-      "unpublished_warning": "Ваш подкаст сейчас не опубликован. Сначала опубликуйте его, а затем отправляйте в каталоги.",
-      "directories_title": "Отправка в каталоги подкастов",
-      "directories_description": "Следуйте этим шагам, чтобы добавить подкаст на крупные платформы. На каждой платформе нужно указать URL вашей RSS-ленты.",
-      "apple": {
-        "subtitle": "Также распространяется в Apple Music",
-        "step1": "Откройте <link>podcastsconnect.apple.com</link> и войдите с помощью Apple ID",
-        "step2": "Нажмите кнопку <strong>+</strong> и выберите «New Show»",
-        "step3": "Выберите «Add a show with an RSS feed» и вставьте URL вашей RSS-ленты",
-        "step4": "Apple проверит вашу ленту; проверка обычно занимает 1–5 рабочих дней"
-      },
-      "spotify": {
-        "subtitle": "Крупнейшая платформа для прослушивания подкастов",
-        "step1": "Откройте <link>podcasters.spotify.com</link> и войдите или создайте аккаунт",
-        "step2": "Нажмите «Get started», затем выберите «I have a podcast with a hosting provider»",
-        "step3": "Вставьте URL вашей RSS-ленты и нажмите «Next»",
-        "step4": "Подтвердите право собственности, заполните данные и отправьте (обычно подкаст появляется в течение нескольких часов)"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts перенесён в YouTube Music",
-        "step1": "Откройте <link>podcasts.google.com/publish</link>",
-        "step2": "Войдите в аккаунт Google и нажмите «Add a podcast»",
-        "step3": "Вставьте URL вашей RSS-ленты и подтвердите право собственности по электронной почте",
-        "step4": "Ваш подкаст появится в YouTube Music и результатах поиска Google"
-      },
-      "amazon": {
-        "subtitle": "Также доступен на устройствах Alexa",
-        "step1": "Откройте <link>podcasters.amazon.com</link> и войдите в аккаунт Amazon",
-        "step2": "Нажмите «Add your podcast» и вставьте URL вашей RSS-ленты",
-        "step3": "Проверьте данные подкаста и отправьте на модерацию"
-      },
-      "tips_title": "Советы по успешному распространению",
-      "tip_thumbnail": "Убедитесь, что у подкаста есть <strong>миниатюра</strong> (не менее 1400x1400 для Apple Podcasts)",
-      "tip_episode": "Перед отправкой должен быть <strong>хотя бы один опубликованный выпуск</strong>",
-      "tip_description": "Заполните содержательное <strong>описание подкаста</strong>: это помогает его находить",
-      "tip_auto": "Новые выпуски будут автоматически появляться на всех платформах после отправки ленты",
-      "tip_propagate": "Обновления могут распространяться по платформам несколько часов",
-      "check_cover": "У подкаста есть обложка",
-      "check_description": "У подкаста есть описание",
-      "check_episode": "Хотя бы один опубликованный эпизод",
-      "check_published": "Подкаст опубликован",
-      "checklist_description": "Что каталоги проверяют перед принятием ленты.",
-      "checklist_title": "Готово к отправке?",
-      "tips_description": "Мелочи, которые помогут принять и найти ваше шоу."
-    },
-    "player": {
-      "minimize": "Свернуть"
-    },
-    "actions": "Действия с подкастом",
-    "load_failed": "Не удалось загрузить подкаст",
-    "failed_to_load": "Не удалось загрузить подкаст",
-    "listen": {
-      "about": "О подкасте",
-      "all_podcasts": "Все подкасты",
-      "by": "Автор: {{names}}",
-      "close_player": "Закрыть плеер",
-      "continue_listening": "Продолжить прослушивание",
-      "episode_count_one": "{{count}} эпизод",
-      "episode_count_few": "{{count}} эпизода",
-      "episode_count_many": "{{count}} эпизодов",
-      "episode_count_other": "{{count}} эпизода",
-      "eyebrow": "Подкаст",
-      "feed_hint": "Подписывайтесь в любом приложении для подкастов через эту RSS-ленту",
-      "latest": "Новые",
-      "latest_on": "Последний выпуск {{date}}",
-      "length_hr_min": "{{h}} ч {{m}} мин",
-      "length_min_one": "{{count}} мин",
-      "length_min_few": "{{count}} мин",
-      "length_min_many": "{{count}} мин",
-      "length_min_other": "{{count}} мин",
-      "length_sec_one": "{{count}} с",
-      "length_sec_few": "{{count}} с",
-      "length_sec_many": "{{count}} с",
-      "length_sec_other": "{{count}} с",
-      "link_copied": "Ссылка скопирована",
-      "mute": "Отключить звук",
-      "new": "Новое",
-      "no_episodes_description": "Новые эпизоды появятся здесь, как только будут опубликованы.",
-      "now_playing": "Сейчас играет",
-      "open_player": "Открыть плеер",
-      "pause": "Пауза",
-      "pause_episode": "Пауза: {{title}}",
-      "play": "Воспроизвести",
-      "play_episode": "Воспроизвести: {{title}}",
-      "play_error": "Не удалось воспроизвести этот эпизод. Повторите попытку позже.",
-      "play_latest": "Включить последний",
-      "play_latest_of": "Включить последний эпизод подкаста «{{name}}»",
-      "played": "Прослушано",
-      "player": "Плеер подкастов",
-      "resume": "Продолжить",
-      "seek": "Перемотка",
-      "share": "Поделиться",
-      "sort_label": "Порядок эпизодов",
-      "sort_newest": "Сначала новые",
-      "sort_order": "По порядку",
-      "speed": "Скорость воспроизведения",
-      "time_left": "Осталось {{time}}",
-      "total_length": "Общая длительность",
-      "unmute": "Включить звук",
-      "up_next": "Далее",
-      "updated": "Обновлено",
-      "volume": "Громкость"
-    }
-  },
   "library": {
     "library": "Библиотека",
     "my_library": "Моя библиотека",
     "new_folder": "Новая папка",
     "tabs": {
       "courses": "Курсы",
-      "podcasts": "Подкасты",
       "communities": "Сообщества",
       "boards": "Доски",
       "playgrounds": "Plays",
@@ -3831,7 +3509,6 @@
       "no_resource": "Ресурс не настроен",
       "open": "Открыть",
       "kind_course": "Курс",
-      "kind_podcast": "Подкаст",
       "kind_community": "Сообщество",
       "kind_board": "Доска",
       "kind_playground": "Play"
@@ -4161,7 +3838,6 @@
       "communities": "Сообщества",
       "discussions": "Обсуждения",
       "playgrounds": "Plays",
-      "podcasts": "Подкасты",
       "activities": "Занятия",
       "folders": "Папки"
     },
@@ -4188,7 +3864,6 @@
         "communities": "Сообщества",
         "discussions": "Обсуждения",
         "playgrounds": "Plays",
-        "podcasts": "Подкасты",
         "users": "Участники"
       },
       "keys": {
@@ -4209,10 +3884,6 @@
         "library": {
           "description": "Папки со сгруппированным контентом",
           "keywords": "библиотека, папки, коллекции, наборы, треки"
-        },
-        "podcasts": {
-          "description": "Слушать выпуски",
-          "keywords": "подкасты, аудио, выпуски, шоу, слушать"
         },
         "communities": {
           "description": "Обсуждения с другими участниками",
@@ -4320,7 +3991,6 @@
         "folder": "Папка",
         "page": "Страница",
         "playground": "Play",
-        "podcast": "Подкаст",
         "user": "Участник"
       },
       "updated": "Обновлено",
@@ -5120,7 +4790,6 @@
       "settings": "Настройки",
       "courses": "Курсы",
       "communities": "Сообщества",
-      "podcasts": "Подкасты",
       "boards": "Доски",
       "published": "опубликован",
       "draft": "черновик",
@@ -7357,10 +7026,6 @@
             "title": "Платежи",
             "description": "Включить обработку платежей для курсов и подписок"
           },
-          "podcasts": {
-            "title": "Подкасты",
-            "description": "Включить создание подкастов и аудио контента"
-          },
           "boards": {
             "title": "Доски",
             "description": "Создавайте совместные доски со списками и карточками для управления проектами"
@@ -8199,7 +7864,6 @@
             "assignments": "Задания",
             "folders": "Папки",
             "paths": "Траектории обучения",
-            "podcasts": "Подкасты",
             "boards": "Доски",
             "playgrounds": "Plays",
             "versioning": "История версий",
@@ -9590,7 +9254,6 @@
             "usergroups": "Группы",
             "communities": "Сообщества",
             "boards": "Доски",
-            "podcasts": "Подкасты",
             "roles": "Роли",
             "organizations": "Организация"
           },
@@ -10831,8 +10494,7 @@
         "users": "Пользователи",
         "communities": "Сообщества",
         "discussions": "Обсуждения",
-        "playgrounds": "Plays",
-        "podcasts": "Подкасты"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10850,10 +10512,6 @@
         "communities": {
           "description": "Управление сообществами",
           "keywords": "форумы, обсуждения, участники, посты"
-        },
-        "podcasts": {
-          "description": "Управление подкастами",
-          "keywords": "аудио, эпизоды, передачи"
         },
         "boards": {
           "description": "Управление досками",
@@ -13406,10 +13064,7 @@
         "topic_required": "Добавьте тему или текст, по которым нужно создать сценарий.",
         "script_ready": "Сценарий готов. Проверьте его, затем создайте аудио",
         "script_failed": "Не удалось создать сценарий. Попробуйте ещё раз.",
-        "loading_playlist": "Загрузка плейлиста...",
         "tab_generate": "Создать",
-        "tab_episode": "Выпуск",
-        "tab_playlist": "Плейлист",
         "uploading_progress": "Загрузка... {{progress}}%",
         "drop_or_browse": "Перетащите аудиофайл или нажмите, чтобы выбрать",
         "supported_formats": "Поддерживаются MP3, WAV, OGG, M4A",
@@ -13432,10 +13087,7 @@
         "generating": "Создание…",
         "generate_audio": "Создать аудио",
         "credits_with_script": "Сценарий: {{scriptCost}} кредитов · Аудио: {{audioCost}} кредитов · На базе Gemini",
-        "credits_audio_only": "Использует кредитов ИИ: {{cost}} · На базе Gemini",
-        "no_podcasts": "Подкасты не найдены",
-        "back_to_podcasts": "Назад к подкастам",
-        "no_episodes": "Выпуски не найдены"
+        "credits_audio_only": "Использует кредитов ИИ: {{cost}} · На базе Gemini"
       },
       "callout_block": {
         "change_type": "Изменить тип врезки",
@@ -16419,8 +16071,6 @@
           "payments_desc": "Продавайте курсы и предлагайте подписки для получения дохода.",
           "communities": "Обсуждения в сообществе",
           "communities_desc": "Позвольте учащимся общаться, задавать вопросы и делиться идеями.",
-          "podcasts": "Создание подкастов",
-          "podcasts_desc": "Предлагайте аудиоконтент и охватывайте учащихся где угодно.",
           "playgrounds": "Интерактивные plays",
           "playgrounds_desc": "Позвольте учащимся практиковаться с помощью пошаговых интерактивных активностей и получать бейджи.",
           "ai": "1 000 кредитов ИИ",
@@ -25143,7 +24793,6 @@
       "types": {
         "course": "Курс",
         "path": "Траектория",
-        "podcast": "Подкаст",
         "community": "Сообщество",
         "folder": "Папка"
       },
@@ -25153,7 +24802,6 @@
         "courses": "Курсы",
         "activities": "Бесплатные уроки",
         "paths": "Траектории обучения",
-        "podcasts": "Подкасты",
         "communities": "Сообщества",
         "library": "Библиотека",
         "live": "Онлайн-занятия",
@@ -27475,7 +27123,6 @@
       "course": "Избранный курс",
       "paths": "Учебные траектории",
       "communities": "Сообщества",
-      "podcasts": "Подкасты",
       "live_sessions": "Живые занятия",
       "instructors": "Люди",
       "testimonials": "Отзывы",
@@ -27522,7 +27169,6 @@
       "course": "Избранный курс",
       "paths": "Траектории",
       "communities": "Сообщества",
-      "podcasts": "Подкасты",
       "live_sessions": "Живые занятия",
       "pricing": "Цены",
       "form": "Контактная форма",
@@ -27548,7 +27194,6 @@
       "featured_course": "Избранный курс",
       "paths": "Учебные траектории",
       "communities": "Сообщества",
-      "podcasts": "Подкасты",
       "live_sessions": "Живые занятия",
       "instructors": "Преподаватели",
       "testimonials": "Отзывы",
@@ -29709,7 +29354,6 @@
         "course": "Курс",
         "path": "Трек",
         "community": "Сообщество",
-        "podcast": "Подкаст",
         "live_session": "Онлайн-занятие",
         "board": "Доска",
         "folder": "Папка библиотеки",

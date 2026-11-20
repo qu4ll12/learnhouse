@@ -119,14 +119,6 @@ async def ping(base_url: str, key: str, urls: list[str], client: Optional[httpx.
 # Events -> public URLs
 # ----------------------------------------------------------------------------
 
-def thread_segment(discussion_id: int, title: Optional[str]) -> str:
-    """``42-how-do-payouts-work``: the readable, stable part of a thread URL."""
-    from src.services.seo.slugify import slugify
-
-    slug = slugify(title or "", THREAD_SLUG_MAX)
-    return f"{discussion_id}-{slug}" if slug else str(discussion_id)
-
-
 async def _paths_for_event(db_session, org_id: int, event_name: str, data: dict) -> list[str]:
     """Public paths an event changed, only for content anyone may see."""
     from sqlalchemy import select
@@ -143,32 +135,6 @@ async def _paths_for_event(db_session, org_id: int, event_name: str, data: dict)
         if not course or not (course.public and course.published):
             return []
         return [f"/course/{quote(public_key('course', course))}", "/courses"]
-    if event_name == "discussion_posted":
-        from src.db.communities.communities import Community
-        from src.db.communities.discussions import Discussion
-
-        uuid = (data.get("discussion") or {}).get("discussion_uuid")
-        row = (
-            await db_session.execute(
-                select(Discussion, Community)
-                .join(Community, Community.id == Discussion.community_id)
-                .where(Discussion.discussion_uuid == uuid, Discussion.org_id == org_id)
-            )
-        ).first()
-        if not row or not row[1].public:
-            return []
-        discussion, community = row
-        ckey = quote(public_key("community", community))
-        return [f"/community/{ckey}/{thread_segment(discussion.id, discussion.title)}", f"/community/{ckey}"]
-    if event_name == "podcast_episode_created":
-        from src.db.podcasts.podcasts import Podcast
-
-        podcast = (
-            await db_session.execute(select(Podcast).where(Podcast.podcast_uuid == data.get("podcast_uuid"), Podcast.org_id == org_id))
-        ).scalars().first()
-        if not podcast or not (podcast.public and podcast.published):
-            return []
-        return [f"/podcast/{quote(public_key('podcast', podcast))}"]
     if event_name in ("folder_created", "folder_updated"):
         from src.db.folders.folders import Folder
 
@@ -182,7 +148,7 @@ async def _paths_for_event(db_session, org_id: int, event_name: str, data: dict)
 
 
 INDEXNOW_EVENTS = frozenset(
-    {"course_published", "course_update_published", "discussion_posted", "podcast_episode_created", "folder_created", "folder_updated"}
+    {"course_published", "course_update_published", "folder_created", "folder_updated"}
 )
 
 

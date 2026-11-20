@@ -3,13 +3,11 @@ import React from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/keys'
-import { Books, Users, ChatCircle, Microphone, Chalkboard } from '@phosphor-icons/react'
+import { Books, Users, Chalkboard } from '@phosphor-icons/react'
 import { useTranslation } from 'react-i18next'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
-import { getCommunities } from '@services/communities/communities'
 import { getBoards } from '@ee/services/boards/boards'
-import { getOrgPodcasts } from '@services/podcasts/podcasts'
 import { useHomeCourses, useHomeMembers } from './homeData'
 
 // Static so Tailwind keeps them; picked by how many cards are visible.
@@ -40,22 +38,6 @@ export default function ContentOverview() {
   const { data: coursesData, isLoading: coursesLoading } = useHomeCourses()
   const { data: membersData, isLoading: membersLoading } = useHomeMembers()
 
-  const communitiesEnabled = isEnabled('communities')
-  const { data: communitiesData, isLoading: communitiesLoading } = useQuery({
-    queryKey: queryKeys.community.list(orgId),
-    queryFn: () => getCommunities(orgId, 1, 500, null, token),
-    enabled: !!communitiesEnabled && !!token && !!orgId,
-    staleTime: 60_000,
-  })
-
-  const podcastsEnabled = isEnabled('podcasts', true)
-  const { data: podcastsData, isLoading: podcastsLoading } = useQuery({
-    queryKey: [...queryKeys.podcasts.list(orgslug), 'overview'],
-    queryFn: () => getOrgPodcasts(orgslug, null, token, true),
-    enabled: !!podcastsEnabled && !!token && !!orgslug,
-    staleTime: 60_000,
-  })
-
   const boardsEnabled = isEnabled('boards', true)
   const { data: boardsData, isLoading: boardsLoading } = useQuery({
     queryKey: [...queryKeys.boards.list(orgslug), 'overview'],
@@ -66,8 +48,6 @@ export default function ContentOverview() {
 
   const courses: any[] = coursesData ?? []
   const totalMembers = membersData?.total ?? 0
-  const communities: any[] = communitiesData ?? []
-  const podcasts: any[] = podcastsData ?? []
   const boards: any[] = boardsData ?? []
 
   const publishedCourses = courses.filter((c: any) => c.published).length
@@ -95,28 +75,6 @@ export default function ContentOverview() {
       href: '/dash/users/settings/users',
       show: true,
       loading: membersLoading,
-    },
-    {
-      key: 'communities',
-      label: t('dashboard.home.communities'),
-      value: communities.length,
-      hint: `${communities.filter((c: any) => c.public).length} ${t('dashboard.home.public')}`,
-      icon: <ChatCircle size={16} />,
-      iconClass: 'bg-violet-50 text-violet-600',
-      href: '/dash/communities',
-      show: communitiesEnabled,
-      loading: communitiesLoading,
-    },
-    {
-      key: 'podcasts',
-      label: t('dashboard.home.podcasts'),
-      value: podcasts.length,
-      hint: `${podcasts.reduce((sum: number, p: any) => sum + (p.episode_count || 0), 0)} ${t('dashboard.home.episodes')}`,
-      icon: <Microphone size={16} />,
-      iconClass: 'bg-amber-50 text-amber-600',
-      href: '/dash/podcasts',
-      show: podcastsEnabled,
-      loading: podcastsLoading,
     },
     {
       key: 'boards',

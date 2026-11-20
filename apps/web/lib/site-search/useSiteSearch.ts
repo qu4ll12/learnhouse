@@ -9,23 +9,16 @@ import { getUriWithOrg } from '@services/config/config'
 import {
   getCourseThumbnailMediaDirectory,
   getUserAvatarMediaDirectory,
-  getCommunityThumbnailMediaDirectory,
   getPlaygroundThumbnailMediaDirectory,
-  getPodcastThumbnailMediaDirectory,
 } from '@services/media/media'
 import { safeImageSrc } from '@services/security/url'
-import { extractPreviewText } from '@/lib/site-search/preview'
 import { coursePath, resourcePath } from '@/lib/seo/paths'
-import { threadPath } from '@/lib/seo/paths'
 
 export type SiteResultType =
   | 'course'
   | 'activity'
   | 'folder'
-  | 'community'
-  | 'discussion'
   | 'playground'
-  | 'podcast'
   | 'user'
 
 export interface SiteResult {
@@ -36,8 +29,6 @@ export interface SiteResult {
   href: string
   /** Thumbnail or avatar; the palette falls back to the type icon without one. */
   imageUrl?: string
-  /** Discussions carry their emoji in place of a thumbnail. */
-  emoji?: string
   /** The initials-avatar key for members without a picture. */
   userId?: string
   /** Longer text for the preview pane (a course's "about", a post's body). */
@@ -65,10 +56,7 @@ export const SITE_RESULT_ORDER: SiteResultType[] = [
   'course',
   'activity',
   'folder',
-  'community',
-  'discussion',
   'playground',
-  'podcast',
   'user',
 ]
 
@@ -79,15 +67,12 @@ const TOTAL_KEYS: Record<SiteResultType, string> = {
   course: 'total_courses',
   activity: 'total_activities',
   folder: 'total_folders',
-  community: 'total_communities',
-  discussion: 'total_discussions',
   playground: 'total_playgrounds',
-  podcast: 'total_podcasts',
   user: 'total_users',
 }
 
 export function emptyTotals(): Record<SiteResultType, number> {
-  return { course: 0, activity: 0, folder: 0, community: 0, discussion: 0, playground: 0, podcast: 0, user: 0 }
+  return { course: 0, activity: 0, folder: 0, playground: 0, user: 0 }
 }
 
 const asList = (value: unknown): any[] => (Array.isArray(value) ? value : [])
@@ -154,65 +139,6 @@ export function normalizeSiteResults(
       title: f.name,
       subtitle: f.description || undefined,
       href: link(resourcePath('folder', f)),
-    })
-  }
-  for (const com of asList(data.communities)) {
-    out.push({
-      id: com.community_uuid,
-      type: 'community',
-      title: com.name,
-      subtitle: com.description || undefined,
-      updatedAt: com.update_date || undefined,
-      href: link(resourcePath('community', com)),
-      imageUrl: com.thumbnail_image
-        ? safeImageSrc(
-            getCommunityThumbnailMediaDirectory(orgUuid, com.community_uuid, com.thumbnail_image),
-          )
-        : undefined,
-    })
-  }
-  for (const d of asList(data.discussions)) {
-    const community = stripPrefix(d.community_uuid ?? '', 'community_')
-    const discussion = stripPrefix(d.discussion_uuid, 'discussion_')
-    const body = extractPreviewText(d.content) || undefined
-    out.push({
-      id: d.discussion_uuid,
-      type: 'discussion',
-      title: d.title,
-      subtitle: body,
-      description: body,
-      updatedAt: d.update_date || d.creation_date || undefined,
-      emoji: d.emoji || undefined,
-      href: community
-        ? link(d.id ? threadPath(community, d) : `/community/${community}/discussion/${discussion}`)
-        : link(`/discussion/${discussion}`),
-    })
-  }
-  for (const p of asList(data.playgrounds)) {
-    out.push({
-      id: p.playground_uuid,
-      type: 'playground',
-      title: p.name,
-      subtitle: p.description || undefined,
-      href: link(`/playground/${p.playground_uuid}`),
-      imageUrl:
-        p.thumbnail_image && p.org_uuid
-          ? safeImageSrc(
-              getPlaygroundThumbnailMediaDirectory(p.org_uuid, p.playground_uuid, p.thumbnail_image),
-            )
-          : undefined,
-    })
-  }
-  for (const p of asList(data.podcasts)) {
-    out.push({
-      id: p.podcast_uuid,
-      type: 'podcast',
-      title: p.name,
-      subtitle: p.description || undefined,
-      href: link(resourcePath('podcast', p)),
-      imageUrl: p.thumbnail_image
-        ? safeImageSrc(getPodcastThumbnailMediaDirectory(orgUuid, p.podcast_uuid, p.thumbnail_image))
-        : undefined,
     })
   }
   for (const u of asList(data.users)) {

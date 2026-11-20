@@ -3,10 +3,8 @@ import { describe, expect, test } from "bun:test";
 import {
   breadcrumbJsonLd,
   collectionJsonLd,
-  communityJsonLd,
   compact,
   courseJsonLd,
-  discussionJsonLd,
   eventJsonLd,
   faqJsonLd,
   isoDuration,
@@ -15,7 +13,6 @@ import {
   organizationJsonLd,
   pathJsonLd,
   plainText,
-  podcastSeriesJsonLd,
   rootId,
   toIsoDate,
   websiteJsonLd,
@@ -132,40 +129,6 @@ describe("other entities", () => {
     const p = pathJsonLd({ name: "Data", url: "https://a/p", org, courses: [{ name: "C1", url: "https://a/c1" }] });
     expect(p["@type"]).toBe("EducationalOccupationalProgram");
     expect(p.hasCourse).toEqual([{ "@type": "Course", name: "C1", url: "https://a/c1" }]);
-  });
-  test("podcast series and episodes", () => {
-    const p = podcastSeriesJsonLd({
-      name: "Show",
-      url: "https://a/podcast/show",
-      org,
-      feedUrl: "https://a/podcast/x/feed",
-      episodes: [{ name: "Ep 1", durationSeconds: 1830, episodeNumber: 1, datePublished: "2026-01-01 00:00:00" }, { name: "Ep 2" }],
-    });
-    expect(p.webFeed).toBe("https://a/podcast/x/feed");
-    expect(p.hasPart[0]).toMatchObject({ "@type": "PodcastEpisode", timeRequired: "PT31M", episodeNumber: 1 });
-    expect(p.hasPart[1]).toEqual({ "@type": "PodcastEpisode", name: "Ep 2" });
-  });
-  test("community and discussion", () => {
-    const c = communityJsonLd({ name: "Club", url: "https://a/community/club", org, threads: [{ name: "Hi", url: "https://a/t/1" }] });
-    expect(c["@type"]).toBe("CollectionPage");
-    expect(c.mainEntity.itemListElement).toHaveLength(1);
-    expect(communityJsonLd({ name: "Club", url: "https://a", org, threads: [] }).mainEntity).toBeUndefined();
-    const d = discussionJsonLd({
-      headline: "x".repeat(200),
-      url: "https://a/t/1",
-      text: "",
-      author: { name: "" },
-      upvotes: 3,
-      commentCount: 1,
-      comments: [{ text: "Thanks", author: "Bo", upvotes: 1 }],
-      communityName: "Club",
-      communityUrl: "https://a/community/club",
-    });
-    expect(d.headline).toHaveLength(110);
-    expect(d.text).toBe(d.headline.padEnd(200, "x"));
-    expect(d.author).toEqual({ "@type": "Person", name: "Member" });
-    expect(d.interactionStatistic).toHaveLength(2);
-    expect(d.comment[0].author.name).toBe("Bo");
   });
   test("faq only with real questions", () => {
     expect(faqJsonLd([])).toBeNull();

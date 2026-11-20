@@ -52,7 +52,6 @@ export type OnboardingSignalData = {
   hasLogo: boolean
   memberCount: number
   inviteCount: number
-  communityCount: number
 }
 
 /** Which steps the org's data satisfies: the thing exists, not "the page was opened". */
@@ -63,7 +62,6 @@ export function stepsDoneFromData(d: OnboardingSignalData): string[] {
     brand_school: d.hasLogo,
     // The admin is the first member; anyone else, or a pending invite, counts.
     invite_learners: d.memberCount > 1 || d.inviteCount > 0,
-    build_community: d.communityCount > 0,
   }
   return Object.keys(done).filter((k) => done[k])
 }

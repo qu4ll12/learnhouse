@@ -53,13 +53,11 @@ MAX_RESOURCES_SHOWN = 100
 # Resource kinds a group can gate, by uuid prefix. Podcasts have no refs kind.
 _LINKABLE = {
     "course_": "course",
-    "community_": "community",
     "folder_": "folder",
     "media_": "media",
     "board_": "board",
-    "podcast_": "podcast",
 }
-_PAGES = {"course": "course", "community": "community", "folder": "folder", "board": "board"}
+_PAGES = {"course": "course", "folder": "folder", "board": "board"}
 
 _MEMBER_LIST = Field(
     None,
@@ -69,7 +67,7 @@ _MEMBER_LIST = Field(
 _RESOURCE_LIST = Field(
     None,
     max_length=MAX_RESOURCES_PER_CALL,
-    description="Resource uuids: course_, community_, folder_, media_, board_ or podcast_.",
+    description="Resource uuids: course_, folder_, media_ or board_.",
 )
 
 
@@ -99,15 +97,6 @@ async def _resource_ref(ctx: ToolContext, uuid: str) -> dict | None:
     kind = _kind_for(uuid)
     if kind is None:
         return None
-    if kind == "podcast":
-        from src.db.podcasts.podcasts import Podcast
-
-        row = (
-            await ctx.db_session.execute(
-                select(Podcast).where(Podcast.podcast_uuid == uuid, Podcast.org_id == ctx.org.id)
-            )
-        ).scalars().first()
-        return refs.ref("podcast", uuid, row.name) if row else None
     try:
         row = await refs.load(ctx, kind, uuid)
     except HTTPException:
@@ -497,7 +486,7 @@ SPECS: list[ToolSpec] = [
         name="get_usergroup",
         description=(
             "One user group: its members (paged) and the resources it gates (courses, "
-            "communities, folders, media, boards, podcasts)."
+            "folders, media, boards, podcasts)."
         ),
         params_model=GetUserGroupParams,
         tier=ActionTier.READ,

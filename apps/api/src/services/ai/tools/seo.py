@@ -23,7 +23,7 @@ from src.services.ai.tools.base import ActionTier, ToolContext, ToolSpec
 from src.services.ai.tools.results import changed
 from src.services.seo.seo import _load_by_uuid, get_seo_settings, seo_health, update_seo_settings
 
-ResourceType = Literal["course", "path", "podcast", "community", "folder"]
+ResourceType = Literal["course", "path", "folder"]
 
 TITLE_MAX = 60
 DESCRIPTION_MIN = 70
@@ -141,7 +141,7 @@ SPECS: list[ToolSpec] = [
     ToolSpec(
         name="audit_seo",
         description=(
-            "Check every public, published page (courses, paths, podcasts, communities, folders) for "
+            "Check every public, published page (courses, paths, folders) for "
             "search issues: missing or short descriptions, long titles, no image or image alt text, "
             "pages hidden from search. Admins only."
         ),

@@ -347,33 +347,10 @@ describe("round four: variables everywhere", () => {
   });
 });
 
-describe("community hashtags", () => {
-  test("slugs, plain-text splitting and filtering", async () => {
-    const { communitySlug, splitHashtags, filterCommunities } = await import(
-      "../components/Objects/Communities/Tags/communityTags.ts"
-    );
-    const communities = [
-      { community_uuid: "community_1", name: "Product Questions" },
-      { community_uuid: "community_2", name: "Café Lounge" },
-    ];
-    expect(communitySlug("Product Questions")).toBe("product-questions");
-    expect(communitySlug("Café Lounge!")).toBe("cafe-lounge");
-
-    const parts = splitHashtags("Ask in #product-questions or #cafe-lounge, not #nope or a#b (#Product-Questions)", communities);
-    expect(parts.filter((p) => "community" in p).map((p) => p.community.community_uuid)).toEqual([
-      "community_1", "community_2", "community_1",
-    ]);
-    expect(parts.map((p) => ("text" in p ? p.text : p.raw)).join("")).toBe(
-      "Ask in #product-questions or #cafe-lounge, not #nope or a#b (#Product-Questions)"
-    );
-    expect(splitHashtags("no tags here", communities)).toEqual([{ text: "no tags here" }]);
-    expect(filterCommunities("prod", communities).map((c) => c.name)).toEqual(["Product Questions"]);
-    expect(filterCommunities("", communities).length).toBe(2);
-  });
-
-  test("community tag round-trips through editor JSON and HTML", async () => {
-    const { CommunityTag } = await import("../components/Objects/Communities/Tags/CommunityTag.ts");
-    const Plain = CommunityTag.extend({ addNodeView: () => null });
+describe("legacy community tags", () => {
+  // Communities are removed; saved "#Community" tags must survive load and save.
+  test("round-trip through editor JSON and HTML as plain text", async () => {
+    const { CommunityTag } = await import("../components/Objects/Editor/Extensions/CommunityTag/CommunityTag.ts");
     const content = {
       type: "doc",
       content: [{ type: "paragraph", content: [
@@ -381,40 +358,26 @@ describe("community hashtags", () => {
         { type: "communityTag", attrs: { communityUuid: "community_abc", name: "Product" } },
       ] }],
     };
-    const editor = new Editor({ extensions: [StarterKit, Plain], content });
+    const editor = new Editor({ extensions: [StarterKit, CommunityTag], content });
     expect(editor.getJSON()).toEqual(content);
     expect(editor.getText()).toBe("Ask in #Product");
-    const pasted = new Editor({ extensions: [StarterKit, Plain], content: editor.getHTML() });
+    const pasted = new Editor({ extensions: [StarterKit, CommunityTag], content: editor.getHTML() });
     expect(pasted.getJSON()).toEqual(content);
-    editor.commands.insertCommunityTag({ community_uuid: "community_x", name: "X" });
-    expect(editor.getJSON().content[0].content.some((n) => n.attrs?.communityUuid === "community_x")).toBe(true);
     editor.destroy();
     pasted.destroy();
   });
 });
 
-describe("community tag safety", () => {
-  test("only well-formed community uuids are used", async () => {
-    const { isCommunityUuid } = await import("../components/Objects/Communities/Tags/communityTags.ts");
-    expect(isCommunityUuid("community_4bdcf7d0-e560-4e11-8f6c-9bab140ec078")).toBe(true);
-    for (const bad of ["community_../../users/me", "../orgs/1", "community_a?b=c", "community_a/b", "", null, 3]) {
-      expect(isCommunityUuid(bad)).toBe(false);
-    }
-  });
-});
-
 describe("learnhouse-native rules", () => {
-  test("certificate, assignment and community rules parse and describe", () => {
+  test("certificate and assignment rules parse and describe", () => {
     const rules = parseRules(
-      'course.certified is_true and assignments.submitted contains_any ["assignment_1"] and community.active_in contains_any ["community_1"] and community.posts gte 2'
+      'course.certified is_true and assignments.submitted contains_any ["assignment_1"]'
     );
     expect(parseRules(stringifyRules(rules))).toEqual(rules);
     const text = describeRules(rules, {
       assignments: { assignment_1: "Final project" },
-      communities: { community_1: "Study hall" },
     });
     expect(text).toContain("Final project");
-    expect(text).toContain("Study hall");
   });
 
   test("every field and variable is known to the API", async () => {

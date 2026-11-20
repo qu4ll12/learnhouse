@@ -13,7 +13,6 @@ import {
   getVideoBlockHlsMasterUrl,
   getVideoBlockHlsThumbnailsUrl,
   getAudioBlockStreamUrl,
-  getPodcastAudioStreamUrl,
 } from "../services/media/media.ts";
 import { shouldSendHlsCredentials } from "../components/Objects/Activities/Video/videoSource.ts";
 
@@ -38,7 +37,6 @@ const builders = () => [
   getVideoBlockHlsMasterUrl("org_1", "course_1", "activity_1", "block_1"),
   getVideoBlockHlsThumbnailsUrl("org_1", "course_1", "activity_1", "block_1", "thumbnails/sprite.jpg"),
   getAudioBlockStreamUrl("org_1", "course_1", "activity_1", "block_1", "a.mp3"),
-  getPodcastAudioStreamUrl("org_1", "podcast_1", "episode_1", "a.mp3"),
 ];
 
 beforeEach(() => {

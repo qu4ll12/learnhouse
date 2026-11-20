@@ -156,23 +156,6 @@ class TestCheckContentAccess:
         gate.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_podcast_episode_path_is_delegated_to_the_episode_gate(self):
-        """Episode files go through the podcast READ + published gate with the
-        org, podcast and episode segments of the path (covered end-to-end in
-        test_content_authz_round3)."""
-        from unittest.mock import patch
-        import src.routers.local_content as lc
-
-        db = self._make_db_session()
-        with patch.object(lc, "_verify_episode_access", new_callable=AsyncMock) as gate:
-            await lc._check_content_access(
-                "orgs/org1/podcasts/podcast_abc/episodes/ep1/audio.mp3",
-                self._make_anon_user(), db
-            )
-        gate.assert_awaited_once()
-        assert gate.await_args.args[:3] == ("org1", "podcast_abc", "ep1")
-
-    @pytest.mark.asyncio
     async def test_activity_path_with_foreign_org_segment_is_404(self):
         """The org segment must be the course's org."""
         from unittest.mock import patch

@@ -49,10 +49,12 @@ class TestLoadedInSession:
     def test_unknown_resource_type(self):
         assert _resource_model("nope") is None
         for kind in (
-            "podcasts", "communities", "folders", "media",
-            "coursechapters", "activities", "episodes", "discussions",
+            "folders", "media",
+            "coursechapters", "activities",
         ):
             assert _resource_model(kind) is not None
+        assert _resource_model("communities") is None
+        assert _resource_model("discussions") is None
         # Plays and boards are EE-only (ee/tests cover them with EE).
         assert _resource_model("playgrounds") is None
         assert _resource_model("boards") is None

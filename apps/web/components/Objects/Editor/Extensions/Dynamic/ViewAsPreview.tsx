@@ -28,7 +28,6 @@ const DEFAULT_PERSONA: PreviewPersona = {
   completed_activity_uuids: [],
   certified: false,
   assignments_submitted: [],
-  community_posts: 0,
   today: null,
   email: null,
   bucket: null,
@@ -246,10 +245,6 @@ export default function ViewAsPreview({ activity, getContent, onClose }: ViewAsP
               placeholder={t('editor.dynamic.persona.your_email', 'Your own')}
               onChange={(e) => set('email', e.target.value || null)}
             />
-          </Field>
-          <Field label={`${t('editor.dynamic.fields.community_posts', 'Community posts')}: ${persona.community_posts ?? 0}`}>
-            <input type="range" min={0} max={20} className="w-full" value={persona.community_posts ?? 0}
-              onChange={(e) => set('community_posts', Number(e.target.value))} />
           </Field>
           <Field label={`${t('editor.dynamic.fields.user_bucket', 'Audience split (0-99)')}: ${persona.bucket ?? t('editor.dynamic.persona.yours', 'yours')}`}>
             <input type="range" min={0} max={99} className="w-full" value={persona.bucket ?? 0}

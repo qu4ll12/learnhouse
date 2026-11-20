@@ -54,11 +54,6 @@ class TestRBACUtilsRuntime:
     @pytest.mark.parametrize(
         "element_uuid,expected",
         [
-            ("community_123", "communities"),
-            ("discussion_123", "discussions"),
-            ("vote_123", "votes"),
-            ("podcast_123", "podcasts"),
-            ("episode_123", "episodes"),
             ("board_123", "boards"),
             ("playground_123", "playgrounds"),
         ],
@@ -86,16 +81,6 @@ class TestRBACUtilsRuntime:
             ("usergroup_2", [None], None),
             ("user_1", [], None),
             ("house_1", [], None),
-            ("community_1", [18], 18),
-            ("community_2", [None], None),
-            ("discussion_1", [19], 19),
-            ("discussion_2", [None], None),
-            ("vote_1", [21], 21),
-            ("vote_2", [None], None),
-            ("podcast_1", [22], 22),
-            ("podcast_2", [None], None),
-            ("episode_1", [23], 23),
-            ("episode_2", [None], None),
             # Plays and boards are EE-only: without EE their uuids have no org.
             ("board_1", [24], None),
             ("playground_1", [25], None),

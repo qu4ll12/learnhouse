@@ -6,8 +6,8 @@
 import React from 'react'
 import {
   Article, Browser, CalendarBlank, ChatCircleText, Circuitry, Code, Columns, CurrencyCircleDollar, Cursor, DotsThreeOutline,
-  EnvelopeSimple, FilmStrip, Garage, GraduationCap, Image as ImageIcon, ImagesSquare, Layout, ListBullets, ListNumbers,
-  Microphone, Minus, NumberSquareOne, Question, Quotes, Rows, Square, Star, TextAa, TextHOne, Timer, TrendUp, UsersThree,
+  EnvelopeSimple, FilmStrip, GraduationCap, Image as ImageIcon, ImagesSquare, Layout, ListBullets, ListNumbers,
+  Minus, NumberSquareOne, Question, Quotes, Rows, Square, Star, TextAa, TextHOne, Timer, TrendUp, UsersThree,
   VideoCamera, Wall, FrameCorners, ArrowsOutLineVertical, BookOpenText,
 } from '@phosphor-icons/react'
 import type { ElementType, LandingNode } from '../model/types'
@@ -78,8 +78,6 @@ export const CATALOG: CatalogEntry[] = [
   { key: 'courses', type: 'courses', group: 'data', icon: GraduationCap, tone: 'bg-rose-50 text-rose-600', make: () => n('courses', { source: 'latest', limit: 6, columns: 3, layout: 'grid' }) },
   { key: 'course', type: 'course', group: 'data', icon: BookOpenText, tone: 'bg-rose-50 text-rose-600', make: () => n('course', { courseUuid: '', layout: 'split' }) },
   { key: 'paths', type: 'paths', group: 'data', icon: Circuitry, tone: 'bg-rose-50 text-rose-600', make: () => n('paths', { source: 'latest', limit: 3, columns: 3 }) },
-  { key: 'communities', type: 'communities', group: 'data', icon: Garage, tone: 'bg-rose-50 text-rose-600', make: () => n('communities', { limit: 3, columns: 3 }) },
-  { key: 'podcasts', type: 'podcasts', group: 'data', icon: Microphone, tone: 'bg-rose-50 text-rose-600', make: () => n('podcasts', { limit: 3, columns: 3 }) },
   { key: 'live_sessions', type: 'live_sessions', group: 'data', icon: CalendarBlank, tone: 'bg-rose-50 text-rose-600', make: () => n('live_sessions', { limit: 4, layout: 'list' }) },
   {
     key: 'pricing', type: 'pricing', group: 'data', icon: CurrencyCircleDollar, tone: 'bg-rose-50 text-rose-600',
@@ -158,8 +156,6 @@ export const FIELDS: Partial<Record<ElementType, Field[]>> = {
   ],
   course: [{ key: 'courseUuid', kind: 'course' }, { key: 'layout', kind: 'select', options: ['split', 'card'] }, { key: 'buttonLabel', kind: 'text' }, { key: 'showDescription', kind: 'toggle' }],
   paths: [{ key: 'source', kind: 'select', options: ['latest', 'selected'] }, { key: 'pathUuids', kind: 'paths' }, { key: 'limit', kind: 'number', min: 1, max: 24 }, { key: 'columns', kind: 'number', min: 1, max: 4 }, { key: 'cardStyle', kind: 'select', options: ['shadow', 'border', 'flat', 'minimal'] }],
-  communities: [{ key: 'limit', kind: 'number', min: 1, max: 24 }, { key: 'columns', kind: 'number', min: 1, max: 4 }, { key: 'cardStyle', kind: 'select', options: ['shadow', 'border', 'flat', 'minimal'] }, { key: 'emptyText', kind: 'text' }],
-  podcasts: [{ key: 'limit', kind: 'number', min: 1, max: 24 }, { key: 'columns', kind: 'number', min: 1, max: 4 }, { key: 'cardStyle', kind: 'select', options: ['shadow', 'border', 'flat', 'minimal'] }, { key: 'emptyText', kind: 'text' }],
   live_sessions: [{ key: 'limit', kind: 'number', min: 1, max: 12 }, { key: 'layout', kind: 'select', options: ['list', 'grid'] }, { key: 'emptyText', kind: 'text' }],
   instructors: [
     { key: 'layout', kind: 'select', options: ['cards', 'row'] }, { key: 'columns', kind: 'number', min: 1, max: 6 },

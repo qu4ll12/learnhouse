@@ -18,6 +18,14 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 from sqlmodel import select
 
+from src.db.api_tokens import APIToken
+from src.db.landing_pages import LandingPage
+from src.db.learner_notes import LearnerNote
+from src.db.mcp_oauth import MCPOAuthClient, MCPOAuthGrant
+from src.db.media.media import Media
+from src.db.folders.folders import Folder
+from src.db.resource_authors import ResourceAuthor
+
 from src.db.courses.courses import Course
 from src.db.organization_config import OrganizationConfig
 from src.db.roles import Role, RoleTypeEnum
@@ -752,7 +760,7 @@ async def test_update_org_settings_validation(registry, db, org, admin_user, set
 
 
 async def test_update_org_settings_is_admin_only(registry, db, org, admin_user, setup):
-    args = {"settings": {"section": "features", "communities": False}}
+    args = {"settings": {"section": "features", "boards": False}}
     assert "admins" in denied(await call(registry, "update_org_settings", args, _ctx(db, org, setup.maintainer, approved=True)), "preflight_denied")
     # An API token made by a maintainer is refused the same way.
     token = _token(org.id)
@@ -760,7 +768,7 @@ async def test_update_org_settings_is_admin_only(registry, db, org, admin_user, 
     denied(await call(registry, "update_org_settings", args, _ctx(db, org, token, approved=True)), "preflight_denied")
     denied(await call(registry, "update_org_settings", args, _ctx(db, org, admin_user)), "approval_required")
     ok(await call(registry, "update_org_settings", args, _ctx(db, org, admin_user, approved=True)))
-    assert (await _org_config(db, org))["admin_toggles"]["communities"]["org_disabled"] is True
+    assert (await _org_config(db, org))["admin_toggles"]["boards"]["org_disabled"] is True
 
 
 async def test_update_org_settings_sections(registry, db, org, admin_user, setup):
@@ -803,9 +811,9 @@ async def test_update_org_settings_sections(registry, db, org, admin_user, setup
     await apply({"section": "library_sort", "sort_mode": "newest"})
     assert (await _org_config(db, org))["general"]["folders"]["sort_mode"] == "newest"
 
-    await apply({"section": "features", "boards": False, "podcasts": True})
+    await apply({"section": "features", "boards": False, "folders": True})
     toggles = (await _org_config(db, org))["admin_toggles"]
-    assert toggles["boards"]["org_disabled"] is True and toggles["podcasts"]["org_disabled"] is False
+    assert toggles["boards"]["org_disabled"] is True and toggles["folders"]["org_disabled"] is False
 
     # A refused field leaves the rest of the section untouched.
     denied(

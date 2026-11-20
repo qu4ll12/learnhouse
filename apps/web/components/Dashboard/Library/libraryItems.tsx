@@ -19,7 +19,6 @@ import {
   Image as ImageIcon,
   LinkSimple,
   Lock,
-  MicrophoneStage,
   MusicNote,
   PencilSimple,
   PencilSimpleLine,
@@ -28,7 +27,6 @@ import {
   Trash,
   VideoCamera,
   CheckCircle,
-  Garage,
 } from '@phosphor-icons/react'
 import {
   DropdownMenu,
@@ -70,8 +68,6 @@ const MENU_TRIGGER =
 const TYPE_TONE: Record<string, string> = {
   courses: 'bg-sky-50 text-sky-600',
   media: 'bg-amber-50 text-amber-500',
-  podcasts: 'bg-rose-50 text-rose-500',
-  communities: 'bg-emerald-50 text-emerald-500',
   boards: 'bg-indigo-50 text-indigo-500',
   playgrounds: 'bg-fuchsia-50 text-fuchsia-500',
 }
@@ -95,8 +91,6 @@ export function typeIcon(type: string, resource?: any) {
   switch (type) {
     case 'courses': return Books
     case 'media': return mediaIcon(resource)
-    case 'podcasts': return MicrophoneStage
-    case 'communities': return Garage
     case 'boards': return SquaresFour
     case 'playgrounds': return Lightning
     default: return Cube

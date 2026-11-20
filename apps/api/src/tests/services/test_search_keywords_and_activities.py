@@ -22,6 +22,7 @@ from src.db.courses.chapter_activities import ChapterActivity
 from src.db.courses.chapters import Chapter, LockType
 from src.db.courses.course_chapters import CourseChapter
 from src.db.courses.courses import Course
+from src.db.courses.translations import CourseTranslation
 from src.db.folders.folders import Folder
 from src.services.courses.courses import search_courses
 from src.services.search.normalization import (

@@ -17,7 +17,6 @@ export interface PreviewPersona {
   completed_activity_uuids: string[]
   certified?: boolean
   assignments_submitted?: string[]
-  community_posts?: number
   today?: string | null
   email?: string | null
   bucket?: number | null

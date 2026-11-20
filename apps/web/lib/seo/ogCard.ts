@@ -41,8 +41,6 @@ export const PAGE_CARDS: Record<string, string> = {
   home: 'Home',
   courses: 'Courses',
   paths: 'Learning paths',
-  podcasts: 'Podcasts',
-  communities: 'Communities',
   library: 'Library',
   live: 'Live sessions',
   boards: 'Boards',

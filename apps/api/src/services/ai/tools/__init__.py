@@ -112,8 +112,6 @@ TOOL_MODULES: tuple[ToolModule, ...] = (
     ToolModule("enrollments", "teaching"),
     ToolModule("paths", "paths", "paths"),
     ToolModule("library", "library"),
-    ToolModule("podcasts", "library", "podcasts"),
-    ToolModule("communities", "communities", "communities"),
     ToolModule("users", "people"),
     ToolModule("usergroups", "people", "usergroups"),
     ToolModule("usergroups_plus", "people", "usergroups"),

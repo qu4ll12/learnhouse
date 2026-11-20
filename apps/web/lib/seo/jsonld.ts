@@ -4,7 +4,7 @@
  *
  * Shapes follow Google's structured data docs for the rich results that apply:
  * Course info (Course + hasCourseInstance + offers), Breadcrumb, Organization,
- * Carousel (ItemList), Discussion forum, FAQ, Event. Empty values are dropped
+ * Carousel (ItemList), FAQ, Event. Empty values are dropped
  * so the output never carries `""` or `[]` properties.
  */
 
@@ -271,104 +271,6 @@ export function pathJsonLd(input: {
   })
 }
 
-export function podcastSeriesJsonLd(input: {
-  name: string
-  url: string
-  description?: string | null
-  image?: string | null
-  org: Pick<OrgInput, 'name' | 'url' | 'logo'>
-  authors?: PersonInput[]
-  inLanguage?: string
-  feedUrl?: string
-  episodes: { name: string; description?: string | null; datePublished?: string | null; durationSeconds?: number | null; audioUrl?: string | null; episodeNumber?: number | null }[]
-}): JsonLdObject {
-  return compact({
-    '@context': CONTEXT,
-    '@type': 'PodcastSeries',
-    name: input.name,
-    url: input.url,
-    description: plainText(input.description, 1000),
-    image: input.image || undefined,
-    webFeed: input.feedUrl,
-    inLanguage: input.inLanguage,
-    publisher: orgRef(input.org),
-    author: (input.authors || []).map((a) => personJsonLd(a)),
-    // schema.org's `episode` belongs to radio/TV series; a PodcastSeries
-    // lists its episodes as parts.
-    hasPart: input.episodes.map((ep) =>
-      compact({
-        '@type': 'PodcastEpisode',
-        name: ep.name,
-        description: plainText(ep.description, 500),
-        episodeNumber: ep.episodeNumber || undefined,
-        datePublished: toIsoDate(ep.datePublished),
-        timeRequired: ep.durationSeconds ? isoDuration(Math.max(1, Math.round(ep.durationSeconds / 60))) : undefined,
-        associatedMedia: ep.audioUrl ? { '@type': 'MediaObject', contentUrl: ep.audioUrl } : undefined,
-      }),
-    ),
-  })
-}
-
-/** A community home is a forum (collection of threads), not a single post. */
-export function communityJsonLd(input: {
-  name: string
-  url: string
-  description?: string | null
-  org: Pick<OrgInput, 'name' | 'url' | 'logo'>
-  threads: { name: string; url: string }[]
-}): JsonLdObject {
-  return compact({
-    '@context': CONTEXT,
-    '@type': 'CollectionPage',
-    name: input.name,
-    url: input.url,
-    description: plainText(input.description, 500),
-    publisher: orgRef(input.org),
-    mainEntity: input.threads.length
-      ? { '@type': 'ItemList', itemListElement: input.threads.map((t, i) => ({ '@type': 'ListItem', position: i + 1, url: t.url, name: t.name })) }
-      : undefined,
-  })
-}
-
-export function discussionJsonLd(input: {
-  headline: string
-  url: string
-  text?: string | null
-  author: { name: string; url?: string }
-  datePublished?: string | null
-  dateModified?: string | null
-  upvotes?: number
-  commentCount?: number
-  comments?: { text: string; author: string; datePublished?: string | null; upvotes?: number }[]
-  communityName?: string
-  communityUrl?: string
-}): JsonLdObject {
-  return compact({
-    '@context': CONTEXT,
-    '@type': 'DiscussionForumPosting',
-    headline: input.headline.slice(0, 110),
-    url: input.url,
-    text: plainText(input.text, 5000) || input.headline,
-    author: compact({ '@type': 'Person', name: input.author.name || 'Member', url: input.author.url }),
-    datePublished: toIsoDate(input.datePublished),
-    dateModified: toIsoDate(input.dateModified),
-    isPartOf: input.communityUrl ? { '@type': 'WebPage', name: input.communityName, url: input.communityUrl } : undefined,
-    interactionStatistic: [
-      input.upvotes != null ? { '@type': 'InteractionCounter', interactionType: 'https://schema.org/LikeAction', userInteractionCount: input.upvotes } : undefined,
-      input.commentCount != null ? { '@type': 'InteractionCounter', interactionType: 'https://schema.org/CommentAction', userInteractionCount: input.commentCount } : undefined,
-    ],
-    comment: (input.comments || []).slice(0, 20).map((c) =>
-      compact({
-        '@type': 'Comment',
-        text: plainText(c.text, 2000),
-        author: { '@type': 'Person', name: c.author || 'Member' },
-        datePublished: toIsoDate(c.datePublished),
-        interactionStatistic: c.upvotes != null ? { '@type': 'InteractionCounter', interactionType: 'https://schema.org/LikeAction', userInteractionCount: c.upvotes } : undefined,
-      }),
-    ),
-  })
-}
-
 export function faqJsonLd(items: { question: string; answer: string }[]): JsonLdObject | null {
   const valid = items.filter((i) => i.question?.trim() && i.answer?.trim())
   if (!valid.length) return null
@@ -432,49 +334,6 @@ export function collectionJsonLd(input: {
     mainEntity: input.items.length
       ? { '@type': 'ItemList', itemListElement: input.items.map((t, i) => ({ '@type': 'ListItem', position: i + 1, url: t.url, name: t.name })) }
       : undefined,
-  })
-}
-
-/**
- * A question thread with answers (Google Q&A rich result): QAPage whose main
- * entity is the Question, with the accepted answer (when the author picked
- * one) and the other replies as suggested answers.
- */
-export function qaPageJsonLd(input: {
-  name: string
-  url: string
-  text?: string | null
-  author: string
-  datePublished?: string | null
-  upvotes?: number
-  answers: { text: string; author: string; datePublished?: string | null; upvotes?: number; accepted?: boolean; url?: string }[]
-}): JsonLdObject {
-  const answer = (a: (typeof input.answers)[number]) =>
-    compact({
-      '@type': 'Answer',
-      text: plainText(a.text, 2000) || '…',
-      author: { '@type': 'Person', name: a.author || 'Member' },
-      datePublished: toIsoDate(a.datePublished),
-      upvoteCount: a.upvotes ?? 0,
-      url: a.url,
-    })
-  const accepted = input.answers.find((a) => a.accepted)
-  const suggested = input.answers.filter((a) => !a.accepted)
-  return compact({
-    '@context': CONTEXT,
-    '@type': 'QAPage',
-    url: input.url,
-    mainEntity: compact({
-      '@type': 'Question',
-      name: input.name.slice(0, 200),
-      text: plainText(input.text, 5000) || input.name,
-      answerCount: input.answers.length,
-      upvoteCount: input.upvotes ?? 0,
-      datePublished: toIsoDate(input.datePublished),
-      author: { '@type': 'Person', name: input.author || 'Member' },
-      acceptedAnswer: accepted ? answer(accepted) : undefined,
-      suggestedAnswer: suggested.slice(0, 20).map(answer),
-    }),
   })
 }
 

@@ -45,8 +45,8 @@ describe('media helpers (compiled from apps/web/services/media/media.ts)', () =>
   })
 
   it('exposes standalone helpers that take the config first', () => {
-    expect(media.getPodcastAudioStreamUrl({ baseUrl: 'https://api.test' }, 'org_1', 'pod_1', 'ep_1', 'a.mp3')).toBe(
-      'https://api.test/api/v1/stream/audio/org_1/pod_1/ep_1/a.mp3',
+    expect(media.getAudioBlockStreamUrl({ baseUrl: 'https://api.test' }, 'org_1', 'course_1', 'activity_1', 'block_1', 'a.mp3')).toBe(
+      'https://api.test/api/v1/stream/block/audio/org_1/course_1/activity_1/block_1/a.mp3',
     )
     expect(() => media.getOrgLogoMediaDirectory({ baseUrl: '' }, 'o', 'f')).toThrow(/baseUrl/)
   })

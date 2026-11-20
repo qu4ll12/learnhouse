@@ -37,7 +37,7 @@ import { CustomHeading } from './CustomHeadingExtenstion'
 import WebPreview from '@components/Objects/Editor/Extensions/WebPreview/WebPreview'
 import ConditionalBlock from '@components/Objects/Editor/Extensions/Dynamic/ConditionalBlock'
 import DynamicVariable from '@components/Objects/Editor/Extensions/Dynamic/DynamicVariable'
-import { CommunityTag } from '@components/Objects/Communities/Tags/CommunityTag'
+import { CommunityTag } from '@components/Objects/Editor/Extensions/CommunityTag/CommunityTag'
 
 export interface ActivityExtensionOptions {
   activity: any

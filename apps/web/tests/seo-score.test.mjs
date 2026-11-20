@@ -52,8 +52,8 @@ describe("seo checks", () => {
   });
   test("suffix counts toward the title length; non-course types skip course checks", () => {
     expect(ids(seoChecks({ ...good, titleSuffixLength: 30 }))).toContain("title_long");
-    const pod = seoChecks({ ...good, type: "podcast" });
-    expect(ids(pod)).not.toContain("learnings_ok");
+    const path = seoChecks({ ...good, type: "path" });
+    expect(ids(path)).not.toContain("learnings_ok");
     expect(seoScore([])).toBe(100);
   });
   test("helpers", () => {
@@ -85,8 +85,8 @@ describe("public paths", () => {
     expect(coursePath({ course_uuid: "course_1" })).toBe("/course/1");
     expect(resourcePath("folder", { folder_uuid: "folder_9" })).toBe("/library/folder/9");
     expect(resourceKey("path", null, "path_3")).toBe("3");
-    expect(stripResourcePrefix("community", undefined)).toBe("");
-    expect(resourceSegment("podcast")).toBe("/podcast/");
+    expect(stripResourcePrefix("folder", undefined)).toBe("");
+    expect(resourceSegment("folder")).toBe("/library/folder/");
   });
 });
 
@@ -123,8 +123,9 @@ describe("proxy landing decisions", () => {
   });
   test("missing resources 404 for bots only; API errors never block", async () => {
     clearLandingCache();
-    expect(await landingDecision("api/", "acme", "/podcast/gone", { isBot: true }, respond(404, {}))).toEqual({ notFound: true });
-    expect(await landingDecision("api/", "acme", `/podcast/${UUID}`, { isBot: false }, respond(404, {}))).toBeNull();
+    expect(await landingDecision("api/", "acme", "/path/gone", { isBot: true }, respond(404, {}))).toEqual({ notFound: true });
+    expect(await landingDecision("api/", "acme", `/path/${UUID}`, { isBot: false }, respond(404, {}))).toBeNull();
+    expect(await landingDecision("api/", "acme", "/community/gone", { isBot: true }, respond(404, {}))).toBeNull();
     expect(await landingDecision("api/", "acme", "/path/x", { isBot: true }, respond(500, {}))).toBeNull();
     expect(await landingDecision("api/", "acme", "/path/y", { isBot: true }, async () => { throw new Error("down"); })).toBeNull();
     expect(await landingDecision("api/", "acme", "/courses", { isBot: true }, respond(200, {}))).toBeNull();

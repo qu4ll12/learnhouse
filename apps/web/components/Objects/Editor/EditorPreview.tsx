@@ -35,7 +35,7 @@ import MagicBlock from './Extensions/MagicBlocks/MagicBlock'
 import Callout from './Extensions/Callout/Callout'
 import ConditionalBlock from './Extensions/Dynamic/ConditionalBlock'
 import DynamicVariable from './Extensions/Dynamic/DynamicVariable'
-import { CommunityTag } from '@components/Objects/Communities/Tags/CommunityTag'
+import { CommunityTag } from '@components/Objects/Editor/Extensions/CommunityTag/CommunityTag'
 import { normalizeCalloutContent } from './Extensions/Callout/calloutContent'
 // Previews render without editor comment marks (this schema doesn't know them).
 import { stripCommentMarks } from './Comments/commentContent'

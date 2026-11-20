@@ -6,7 +6,7 @@ import { resolvePublicKey } from '@/lib/seo/resolve.server'
 import { breadcrumbJsonLd, collectionJsonLd } from '@/lib/seo/jsonld'
 import { resourcePath, type SeoResourceType } from '@/lib/seo/paths'
 
-const ITEM_TYPES: Record<string, SeoResourceType> = { courses: 'course', podcasts: 'podcast', communities: 'community' }
+const ITEM_TYPES: Record<string, SeoResourceType> = { courses: 'course' }
 
 export default async function FolderSeo({ params }: { params: Promise<{ orgslug: string; folderid: string }> }) {
   const { orgslug, folderid } = await params

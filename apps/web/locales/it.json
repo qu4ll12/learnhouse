@@ -93,10 +93,6 @@
           "title": "Funzionalità Standard",
           "description": "Le Community sono una funzionalità premium disponibile solo per le organizzazioni con piano Standard o superiore. Effettua l'upgrade per sbloccare le community di discussione per i tuoi membri."
         },
-        "podcasts": {
-          "title": "Funzionalità Standard",
-          "description": "I podcast sono una funzionalità premium disponibile solo per le organizzazioni con piano Standard o superiore. Aggiorna per creare e condividere podcast con i tuoi membri."
-        },
         "audit_logs": {
           "title": "Funzionalità Enterprise",
           "description": "I log di audit sono una funzionalità premium disponibile solo per le organizzazioni con piano Enterprise. Effettua l'upgrade per ottenere piena visibilità sulle attività della tua organizzazione."
@@ -247,12 +243,6 @@
           "b2": "I promemoria partono in automatico",
           "b3": "Le registrazioni restano accanto al corso"
         },
-        "podcasts": {
-          "title": "Raggiungi gli studenti ovunque si trovino",
-          "b1": "Pubblica episodi audio accanto ai tuoi corsi",
-          "b2": "Un player che ricorda dove si è fermato ogni ascoltatore",
-          "b3": "Trasforma le lezioni in episodi con l’AI"
-        },
         "usergroups": {
           "title": "Organizza gli studenti in gruppi",
           "b1": "Dai a un gruppo accesso ai corsi pensati per lui",
@@ -393,7 +383,6 @@
           "library": "Libreria",
           "folders": "Libreria",
           "communities": "Comunità",
-          "podcasts": "Podcast",
           "payments": "Pagamenti",
           "trail": "Monitoraggio progressi",
           "boards": "Lavagne",
@@ -3092,317 +3081,12 @@
       "hand_place": "Hai la mano alzata · #{{place}} in coda"
     }
   },
-  "podcasts": {
-    "podcasts": "Podcast",
-    "browse_description": "Ascolta i podcast di questa organizzazione",
-    "new_podcast": "Nuovo Podcast",
-    "search_placeholder": "Cerca podcast...",
-    "no_podcasts": "Nessun podcast ancora",
-    "no_podcasts_description": "Non ci sono podcast disponibili al momento",
-    "create_podcasts_placeholder": "Crea podcast per condividere contenuti audio con il tuo pubblico",
-    "no_search_results": "Nessun podcast trovato",
-    "try_different_search": "Prova un termine di ricerca diverso",
-    "search_results_one": "Trovato {{count}} podcast per \"{{query}}\"",
-    "search_results_many": "Trovati {{count}} di podcast per \"{{query}}\"",
-    "search_results_other": "Trovati {{count}} podcast per \"{{query}}\"",
-    "podcast_name": "Nome del podcast",
-    "podcast_name_required": "Il nome del podcast è obbligatorio",
-    "podcast_thumbnail": "Miniatura del podcast",
-    "podcast_tags": "Tag",
-    "podcast_visibility": "Visibilità",
-    "create_podcast": "Crea podcast",
-    "create_new_podcast": "Crea un nuovo podcast per la tua organizzazione",
-    "create_podcast_btn": "Crea podcast",
-    "creating_podcast": "Creazione podcast...",
-    "podcast_created_success": "Podcast creato con successo",
-    "failed_to_create_podcast": "Impossibile creare il podcast",
-    "episodes": "Episodi",
-    "no_episodes": "Nessun episodio ancora",
-    "hosted_by": "Condotto da",
-    "tags": "Tag",
-    "manage_podcast": "Gestisci Podcast",
-    "published": "Pubblicato",
-    "unpublished": "Non pubblicato",
-    "public": "Pubblico",
-    "private": "Privato",
-    "listen_now": "Ascolta ora",
-    "delete_podcast": "Elimina Podcast",
-    "delete_podcast_title": "Eliminare il Podcast?",
-    "delete_podcast_confirm": "Sei sicuro di voler eliminare questo podcast? Questa azione non può essere annullata e tutti gli episodi verranno eliminati.",
-    "deleting_podcast": "Eliminazione podcast...",
-    "podcast_deleted_success": "Podcast eliminato con successo",
-    "podcast_deleted_error": "Impossibile eliminare il podcast",
-    "edit_content": "Modifica Contenuto",
-    "form": {
-      "name_required": "Il nome del podcast è obbligatorio",
-      "name_min_length": "Il nome deve essere almeno 3 caratteri",
-      "name_max_length": "Il nome deve essere al massimo 100 caratteri",
-      "description_max_length": "La descrizione deve essere al massimo 500 caratteri"
-    },
-    "modals": {
-      "create": {
-        "title": "Crea nuovo podcast",
-        "description": "Compila i dettagli per creare un nuovo podcast",
-        "form": {
-          "name_label": "Nome del podcast",
-          "name_placeholder": "Inserisci il nome del podcast",
-          "description_label": "Descrizione",
-          "description_placeholder": "Inserisci la descrizione del podcast",
-          "public_label": "Rendi questo podcast pubblico"
-        },
-        "cancel": "Annulla",
-        "submit": "Crea podcast",
-        "generated_image_failed": "Impossibile caricare l'immagine generata",
-        "draft_hint": "I nuovi podcast partono come bozze. Pubblica quando il tuo primo episodio è pronto."
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "Generale",
-        "episodes": "Episodi",
-        "distribution": "Distribuzione"
-      },
-      "view_podcast": "Visualizza podcast",
-      "saving": "Salvataggio...",
-      "saved": "Modifiche salvate",
-      "save_error": "Impossibile salvare le modifiche",
-      "save_changes": "Salva modifiche",
-      "form": {
-        "thumbnail": "Miniatura",
-        "upload_thumbnail": "Carica miniatura",
-        "thumbnail_hint": "Dimensione raccomandata: 1400x1400px. JPG o PNG.",
-        "about": "Informazioni",
-        "about_placeholder": "Racconta di più ai tuoi ascoltatori su questo podcast...",
-        "about_max_length": "Le informazioni devono essere al massimo 2000 caratteri",
-        "tags_placeholder": "musica, educazione, tech",
-        "tags_hint": "Separa i tag con virgole",
-        "visibility": "Impostazioni di visibilità",
-        "public_hint": "Chiunque può trovare e ascoltare questo podcast",
-        "published_hint": "Rendi questo podcast visibile sulla pagina della tua organizzazione",
-        "private_hint": "Solo i membri connessi della tua organizzazione possono ascoltare"
-      },
-      "episodes": {
-        "new_episode": "Nuovo episodio",
-        "new_episode_description": "Aggiungi un nuovo episodio a questo podcast",
-        "no_episodes_description": "Inizia aggiungendo il tuo primo episodio",
-        "create_first": "Crea il primo episodio",
-        "creating": "Creazione episodio...",
-        "created": "Episodio creato",
-        "create_error": "Impossibile creare l'episodio",
-        "create": "Crea episodio",
-        "deleting": "Eliminazione episodio...",
-        "deleted": "Episodio eliminato",
-        "delete_error": "Impossibile eliminare l'episodio",
-        "delete": "Elimina",
-        "delete_title": "Eliminare l'episodio?",
-        "delete_confirm": "Sei sicuro di voler eliminare questo episodio? Questa azione non può essere annullata.",
-        "updating": "Aggiornamento episodio...",
-        "updated": "Episodio aggiornato",
-        "update_error": "Impossibile aggiornare l'episodio",
-        "edit": "Modifica",
-        "edit_episode": "Modifica episodio",
-        "edit_episode_description": "Aggiorna i dettagli dell'episodio",
-        "save": "Salva modifiche",
-        "publish": "Pubblica",
-        "unpublish": "Annulla pubblicazione",
-        "no_audio": "Nessun file audio",
-        "title_label": "Titolo",
-        "title_placeholder": "Inserisci il titolo dell'episodio",
-        "description_label": "Descrizione",
-        "description_placeholder": "Inserisci la descrizione dell'episodio",
-        "audio_label": "File audio",
-        "upload_audio": "Carica file audio",
-        "replace_audio": "Sostituisci file audio",
-        "audio_hint": "File MP3, WAV o M4A supportati",
-        "actions": "Azioni dell'episodio",
-        "cover_drop_hint": "Immagine quadrata, JPG o PNG. Se vuoto, viene usata la copertina del podcast.",
-        "cover_hint": "Facoltativo",
-        "cover_label": "Copertina dell'episodio",
-        "drag_to_reorder": "Trascina per riordinare",
-        "drop_hint": "Trascina un file qui o clicca per sfogliare",
-        "move_down": "Sposta giù",
-        "move_up": "Sposta su",
-        "pause": "Pausa",
-        "play": "Riproduci",
-        "publish_hint": "Gli episodi pubblicati compaiono per gli ascoltatori e nel feed RSS.",
-        "publish_now": "Pubblica subito",
-        "remove_file": "Rimuovi file",
-        "reorder_error": "Impossibile salvare il nuovo ordine",
-        "reorder_hint": "Trascina la maniglia per cambiare l'ordine, oppure usa Sposta su / Sposta giù nel menu.",
-        "replace_cover": "Sostituisci copertina",
-        "section_description": "Aggiungi episodi audio. Gli ascoltatori li sentono in questo ordine.",
-        "summary_one": "{{count}} episodio · {{published}} pubblicati · {{duration}} in totale",
-        "summary_other": "{{count}} episodi · {{published}} pubblicati · {{duration}} in totale",
-        "upload_cover": "Carica una copertina",
-        "wrong_file_type": "Questo tipo di file non è supportato qui",
-        "summary_many": "{{count}} episodi · {{published}} pubblicati · {{duration}} in totale"
-      },
-      "back_to_podcasts": "Torna ai podcast",
-      "general": {
-        "cover_drop": "Trascina un'immagine qui o clicca per sfogliare",
-        "details_description": "Il nome, la sintesi e i tag che vedono gli ascoltatori.",
-        "details_title": "Dettagli",
-        "discard_cover": "Scarta nuova copertina",
-        "replace_cover": "Sostituisci copertina",
-        "visibility_description": "Questi interruttori si salvano appena li cambi."
-      },
-      "list": {
-        "clear_filters": "Cancella filtri",
-        "columns": {
-          "authors": "Autori",
-          "podcast": "Podcast",
-          "updated": "Aggiornato",
-          "visibility": "Visibilità"
-        },
-        "copy_failed": "Impossibile copiare il link",
-        "copy_link": "Copia link",
-        "draft": "Bozza",
-        "edit_episodes": "Modifica episodi",
-        "episodes_count_one": "{{count}} episodio",
-        "episodes_count_other": "{{count}} episodi",
-        "episodes_short": "Episodi",
-        "filters": {
-          "all": "Tutti",
-          "drafts": "Bozze",
-          "published": "Pubblicati"
-        },
-        "make_private": "Rendi privato",
-        "make_public": "Rendi pubblico",
-        "no_description": "Ancora nessuna descrizione",
-        "published_toast": "Podcast pubblicato",
-        "showing_count": "Mostrati {{shown}} di {{total}}",
-        "sort": {
-          "episodes": "Più episodi",
-          "name": "Nome",
-          "newest": "Più recenti",
-          "updated": "Ultimo aggiornamento"
-        },
-        "sort_label": "Ordina podcast",
-        "stats": {
-          "drafts": "Bozze",
-          "episodes": "Episodi",
-          "published": "Pubblicati",
-          "total": "Tutti i podcast"
-        },
-        "status_filter": "Filtra per stato",
-        "subtitle": "Pubblica serie audio e gestisci i loro episodi.",
-        "unpublished_toast": "Podcast ritirato",
-        "episodes_count_many": "{{count}} episodi"
-      }
-    },
-    "distribution": {
-      "copied": "Copiato negli appunti",
-      "rss_title": "Feed RSS",
-      "rss_description": "Il feed RSS del tuo podcast viene generato automaticamente. Usa questo URL per inviare il tuo podcast alle directory.",
-      "copy": "Copia",
-      "preview": "Anteprima",
-      "unpublished_warning": "Il tuo podcast al momento non è pubblicato. Pubblicalo prima di inviarlo alle directory.",
-      "directories_title": "Invia alle directory di podcast",
-      "directories_description": "Segui questi passaggi per far comparire il tuo podcast sulle principali piattaforme. Ogni piattaforma richiede di inviare l'URL del tuo feed RSS.",
-      "apple": {
-        "subtitle": "Distribuito anche su Apple Music",
-        "step1": "Vai su <link>podcastsconnect.apple.com</link> e accedi con il tuo Apple ID",
-        "step2": "Fai clic sul pulsante <strong>+</strong> e seleziona \"Nuovo programma\"",
-        "step3": "Seleziona \"Aggiungi un programma con un feed RSS\" e incolla l'URL del tuo feed RSS",
-        "step4": "Apple convaliderà il tuo feed; la revisione richiede in genere 1-5 giorni lavorativi"
-      },
-      "spotify": {
-        "subtitle": "La più grande piattaforma di ascolto di podcast",
-        "step1": "Vai su <link>podcasters.spotify.com</link> e accedi o crea un account",
-        "step2": "Fai clic su \"Inizia\" e seleziona \"Ho un podcast con un provider di hosting\"",
-        "step3": "Incolla l'URL del tuo feed RSS e fai clic su \"Avanti\"",
-        "step4": "Verifica la proprietà, compila i dettagli e invia (in genere è online entro poche ore)"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts è migrato su YouTube Music",
-        "step1": "Vai su <link>podcasts.google.com/publish</link>",
-        "step2": "Accedi con il tuo account Google e fai clic su \"Aggiungi un podcast\"",
-        "step3": "Incolla l'URL del tuo feed RSS e verifica la proprietà via email",
-        "step4": "Il tuo podcast apparirà su YouTube Music e nei risultati di ricerca di Google"
-      },
-      "amazon": {
-        "subtitle": "Disponibile anche sui dispositivi Alexa",
-        "step1": "Vai su <link>podcasters.amazon.com</link> e accedi con il tuo account Amazon",
-        "step2": "Fai clic su \"Aggiungi il tuo podcast\" e incolla l'URL del tuo feed RSS",
-        "step3": "Controlla i dettagli del tuo podcast e invialo per la revisione"
-      },
-      "tips_title": "Consigli per una distribuzione efficace",
-      "tip_thumbnail": "Assicurati che il tuo podcast abbia un'<strong>immagine di copertina</strong> (minimo 1400x1400 per Apple Podcasts)",
-      "tip_episode": "Pubblica almeno <strong>un episodio</strong> prima dell'invio",
-      "tip_description": "Scrivi una <strong>descrizione del podcast</strong> efficace; aiuta la reperibilità",
-      "tip_auto": "I nuovi episodi compariranno automaticamente su tutte le piattaforme una volta inviato il feed",
-      "tip_propagate": "Gli aggiornamenti possono richiedere alcune ore per propagarsi tra le piattaforme",
-      "check_cover": "Il podcast ha un'immagine di copertina",
-      "check_description": "Il podcast ha una descrizione",
-      "check_episode": "Almeno un episodio pubblicato",
-      "check_published": "Il podcast è pubblicato",
-      "checklist_description": "Cosa controllano le directory prima di accettare un feed.",
-      "checklist_title": "Pronto per l'invio?",
-      "tips_description": "Piccoli accorgimenti che aiutano il tuo show a essere accettato e trovato."
-    },
-    "player": {
-      "minimize": "Riduci a icona"
-    },
-    "actions": "Azioni del podcast",
-    "load_failed": "Impossibile caricare il podcast",
-    "failed_to_load": "Impossibile caricare il podcast",
-    "listen": {
-      "about": "Informazioni",
-      "all_podcasts": "Tutti i podcast",
-      "by": "Di {{names}}",
-      "close_player": "Chiudi player",
-      "continue_listening": "Continua ad ascoltare",
-      "episode_count_one": "{{count}} episodio",
-      "episode_count_other": "{{count}} episodi",
-      "eyebrow": "Podcast",
-      "feed_hint": "Seguilo in qualsiasi app di podcast con questo feed RSS",
-      "latest": "Ultimo",
-      "latest_on": "Ultimo {{date}}",
-      "length_hr_min": "{{h}} h {{m}} min",
-      "length_min_one": "{{count}} min",
-      "length_min_other": "{{count}} min",
-      "length_sec_one": "{{count}} sec",
-      "length_sec_other": "{{count}} sec",
-      "link_copied": "Link copiato",
-      "mute": "Silenzia",
-      "new": "Nuovo",
-      "no_episodes_description": "I nuovi episodi compariranno qui non appena saranno pubblicati.",
-      "now_playing": "In riproduzione",
-      "open_player": "Apri il player",
-      "pause": "Pausa",
-      "pause_episode": "Metti in pausa {{title}}",
-      "play": "Riproduci",
-      "play_episode": "Riproduci {{title}}",
-      "play_error": "Impossibile riprodurre questo episodio. Riprova più tardi.",
-      "play_latest": "Riproduci l'ultimo",
-      "play_latest_of": "Riproduci l'ultimo episodio di {{name}}",
-      "played": "Ascoltato",
-      "player": "Player del podcast",
-      "resume": "Riprendi",
-      "seek": "Cerca",
-      "share": "Condividi",
-      "sort_label": "Ordine degli episodi",
-      "sort_newest": "Più recenti",
-      "sort_order": "In ordine",
-      "speed": "Velocità di riproduzione",
-      "time_left": "{{time}} rimanenti",
-      "total_length": "Durata totale",
-      "unmute": "Riattiva audio",
-      "up_next": "Prossimo",
-      "updated": "Aggiornato",
-      "volume": "Volume",
-      "episode_count_many": "{{count}} episodi",
-      "length_min_many": "{{count}} min",
-      "length_sec_many": "{{count}} sec"
-    }
-  },
   "library": {
     "library": "Libreria",
     "my_library": "La mia libreria",
     "new_folder": "Nuova cartella",
     "tabs": {
       "courses": "Corsi",
-      "podcasts": "Podcast",
       "communities": "Comunità",
       "boards": "Bacheche",
       "playgrounds": "Plays",
@@ -3753,7 +3437,6 @@
       "no_resource": "Nessuna risorsa configurata",
       "open": "Apri",
       "kind_course": "Corso",
-      "kind_podcast": "Podcast",
       "kind_community": "Comunità",
       "kind_board": "Bacheca",
       "kind_playground": "Play"
@@ -4080,7 +3763,6 @@
       "communities": "Community",
       "discussions": "Discussioni",
       "playgrounds": "Plays",
-      "podcasts": "Podcast",
       "activities": "Lezioni",
       "folders": "Cartelle"
     },
@@ -4106,7 +3788,6 @@
         "communities": "Comunità",
         "discussions": "Discussioni",
         "playgrounds": "Plays",
-        "podcasts": "Podcast",
         "users": "Membri"
       },
       "keys": {
@@ -4127,10 +3808,6 @@
         "library": {
           "description": "Cartelle di contenuti raggruppati",
           "keywords": "libreria, cartelle, raccolte, pacchetti, percorsi"
-        },
-        "podcasts": {
-          "description": "Ascolta gli episodi",
-          "keywords": "podcast, audio, episodi, programmi, ascoltare"
         },
         "communities": {
           "description": "Discussioni con altri membri",
@@ -4234,7 +3911,6 @@
         "folder": "Cartella",
         "page": "Pagina",
         "playground": "Play",
-        "podcast": "Podcast",
         "user": "Membro"
       },
       "updated": "Aggiornato",
@@ -5021,7 +4697,6 @@
       "settings": "Impostazioni",
       "courses": "Corsi",
       "communities": "Comunità",
-      "podcasts": "Podcast",
       "boards": "Bacheche",
       "published": "pubblicato",
       "draft": "bozza",
@@ -7234,10 +6909,6 @@
             "title": "Pagamenti",
             "description": "Abilita l'elaborazione dei pagamenti per corsi e abbonamenti"
           },
-          "podcasts": {
-            "title": "Podcast",
-            "description": "Abilita la creazione di podcast e contenuti audio per la tua organizzazione"
-          },
           "boards": {
             "title": "Bacheche",
             "description": "Crea bacheche collaborative con elenchi e schede per la gestione dei progetti"
@@ -8065,7 +7736,6 @@
             "assignments": "Compiti",
             "folders": "Cartelle",
             "paths": "Percorsi di apprendimento",
-            "podcasts": "Podcast",
             "boards": "Lavagne",
             "playgrounds": "Plays",
             "versioning": "Cronologia versioni",
@@ -9416,7 +9086,6 @@
             "usergroups": "Gruppi",
             "communities": "Community",
             "boards": "Bacheche",
-            "podcasts": "Podcast",
             "roles": "Ruoli",
             "organizations": "Organizzazione"
           },
@@ -10614,8 +10283,7 @@
         "users": "Utenti",
         "communities": "Comunità",
         "discussions": "Discussioni",
-        "playgrounds": "Plays",
-        "podcasts": "Podcast"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10633,10 +10301,6 @@
         "communities": {
           "description": "Gestisci le comunità",
           "keywords": "forum, discussioni, membri, post"
-        },
-        "podcasts": {
-          "description": "Gestisci i podcast",
-          "keywords": "audio, episodi, programmi"
         },
         "boards": {
           "description": "Gestisci le bacheche",
@@ -13154,10 +12818,7 @@
         "topic_required": "Aggiungi un argomento o del testo da cui generare uno script.",
         "script_ready": "Script pronto. Controllalo, poi genera l'audio",
         "script_failed": "Impossibile generare lo script. Riprova.",
-        "loading_playlist": "Caricamento della playlist...",
         "tab_generate": "Genera",
-        "tab_episode": "Episodio",
-        "tab_playlist": "Playlist",
         "uploading_progress": "Caricamento... {{progress}}%",
         "drop_or_browse": "Trascina un file audio o fai clic per sfogliare",
         "supported_formats": "Supporta MP3, WAV, OGG, M4A",
@@ -13180,10 +12841,7 @@
         "generating": "Generazione in corso…",
         "generate_audio": "Genera audio",
         "credits_with_script": "Script {{scriptCost}} credito · Audio {{audioCost}} crediti · Offerto da Gemini",
-        "credits_audio_only": "Usa {{cost}} crediti IA · Offerto da Gemini",
-        "no_podcasts": "Nessun podcast trovato",
-        "back_to_podcasts": "Torna ai podcast",
-        "no_episodes": "Nessun episodio trovato"
+        "credits_audio_only": "Usa {{cost}} crediti IA · Offerto da Gemini"
       },
       "callout_block": {
         "change_type": "Cambia tipo di riquadro",
@@ -16101,8 +15759,6 @@
           "payments_desc": "Vendi corsi e offri abbonamenti per generare entrate.",
           "communities": "Discussioni della community",
           "communities_desc": "Lascia che gli studenti si connettano, facciano domande e condividano idee.",
-          "podcasts": "Crea podcast",
-          "podcasts_desc": "Offri contenuti audio e raggiungi gli studenti ovunque.",
           "playgrounds": "Play interattivi",
           "playgrounds_desc": "Lascia che gli studenti si esercitino con attività interattive passo passo e ottengano badge.",
           "ai": "1.000 crediti IA",
@@ -24580,7 +24236,6 @@
       "types": {
         "course": "Corso",
         "path": "Percorso",
-        "podcast": "Podcast",
         "community": "Community",
         "folder": "Cartella"
       },
@@ -24590,7 +24245,6 @@
         "courses": "Corsi",
         "activities": "Lezioni gratuite",
         "paths": "Percorsi di apprendimento",
-        "podcasts": "Podcast",
         "communities": "Community",
         "library": "Libreria",
         "live": "Sessioni live",
@@ -26835,7 +26489,6 @@
       "course": "Corso in evidenza",
       "paths": "Percorsi di apprendimento",
       "communities": "Community",
-      "podcasts": "Podcast",
       "live_sessions": "Sessioni live",
       "instructors": "Persone",
       "testimonials": "Testimonianze",
@@ -26882,7 +26535,6 @@
       "course": "Corso in evidenza",
       "paths": "Percorsi",
       "communities": "Community",
-      "podcasts": "Podcast",
       "live_sessions": "Sessioni live",
       "pricing": "Prezzi",
       "form": "Modulo di contatto",
@@ -26908,7 +26560,6 @@
       "featured_course": "Corso in evidenza",
       "paths": "Percorsi di apprendimento",
       "communities": "Community",
-      "podcasts": "Podcast",
       "live_sessions": "Sessioni live",
       "instructors": "Docenti",
       "testimonials": "Testimonianze",
@@ -29010,7 +28661,6 @@
         "course": "Corso",
         "path": "Percorso",
         "community": "Community",
-        "podcast": "Podcast",
         "live_session": "Sessione live",
         "board": "Bacheca",
         "folder": "Cartella della libreria",

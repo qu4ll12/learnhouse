@@ -107,20 +107,6 @@ class TestAISessionsBelongToTheirStarter:
         assert exc.value.status_code == 404
 
 
-class TestCommentsGoThroughTheRichContentValidator:
-    async def test_validate_comment_content_calls_rich_validator(self):
-        from src.services.communities import moderation
-
-        fake_db = MagicMock()
-        fake_db.execute = AsyncMock(return_value=MagicMock())
-        with patch.object(moderation, "get_community_settings", return_value={}), \
-             patch.object(moderation, "validate_rich_content") as rich, \
-             patch.object(moderation, "validate_content_for_community", new=AsyncMock()):
-            await moderation.validate_comment_content('{"type":"doc"}', 1, fake_db)
-        rich.assert_called_once()
-        assert rich.call_args.kwargs.get("content_type") == "reply"
-
-
 @pytest.fixture(autouse=True)
 def _ai_credit_store(ai_credit_spy):
     """Fake credit store + usage ledger for metered AI charges (conftest)."""

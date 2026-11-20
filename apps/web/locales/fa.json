@@ -93,10 +93,6 @@
           "title": "ویژگی استاندارد",
           "description": "انجمن‌ها یک ویژگی ممتاز است که فقط برای سازمان‌های دارای طرح استاندارد یا بالاتر در دسترس است. برای فعال‌سازی انجمن‌های گفتگو برای اعضای خود ارتقا دهید."
         },
-        "podcasts": {
-          "title": "ویژگی استاندارد",
-          "description": "پادکست‌ها یک ویژگی ممتاز است که فقط برای سازمان‌های دارای طرح استاندارد یا بالاتر در دسترس است. برای ایجاد و اشتراک‌گذاری پادکست با اعضای خود ارتقا دهید."
-        },
         "audit_logs": {
           "title": "ویژگی سازمانی",
           "description": "گزارش‌های حسابرسی یک ویژگی ممتاز است که فقط برای سازمان‌های دارای طرح سازمانی در دسترس است. برای دید کامل به فعالیت‌های سازمان خود ارتقا دهید."
@@ -247,12 +243,6 @@
           "b2": "یادآوری‌ها خودکار ارسال می‌شوند",
           "b3": "ضبط‌ها کنار دوره می‌مانند"
         },
-        "podcasts": {
-          "title": "در مسیر هم کنار یادگیرندگان باشید",
-          "b1": "قسمت‌های صوتی را کنار دوره‌هایتان منتشر کنید",
-          "b2": "پخش‌کننده‌ای که به یاد دارد هر شنونده کجا متوقف شد",
-          "b3": "درس‌ها را با هوش مصنوعی به قسمت‌های صوتی تبدیل کنید"
-        },
         "usergroups": {
           "title": "یادگیرندگان را در گروه‌ها سازمان دهید",
           "b1": "به هر گروه دسترسی به دوره‌های مخصوص خودش بدهید",
@@ -393,7 +383,6 @@
           "library": "کتابخانه",
           "folders": "کتابخانه",
           "communities": "انجمن‌ها",
-          "podcasts": "پادکست‌ها",
           "payments": "پرداخت‌ها",
           "trail": "ردیابی پیشرفت",
           "boards": "تخته‌ها",
@@ -3041,311 +3030,12 @@
       "hand_place": "دست شما بالاست · نفر #{{place}} در صف"
     }
   },
-  "podcasts": {
-    "podcasts": "پادکست‌ها",
-    "browse_description": "به پادکست‌های این سازمان گوش دهید",
-    "new_podcast": "پادکست جدید",
-    "search_placeholder": "جستجوی پادکست‌ها...",
-    "no_podcasts": "هنوز پادکستی وجود ندارد",
-    "no_podcasts_description": "در حال حاضر هیچ پادکستی در دسترس نیست",
-    "create_podcasts_placeholder": "برای به اشتراک گذاشتن محتوای صوتی با مخاطبان خود، پادکست ایجاد کنید",
-    "no_search_results": "هیچ پادکستی یافت نشد",
-    "try_different_search": "عبارت جستجوی دیگری را امتحان کنید",
-    "search_results_one": "{{count}} پادکست برای «{{query}}» پیدا شد",
-    "search_results_other": "{{count}} پادکست برای «{{query}}» یافت شد",
-    "podcast_name": "نام پادکست",
-    "podcast_name_required": "نام پادکست الزامی است",
-    "podcast_thumbnail": "تصویر بند انگشتی پادکست",
-    "podcast_tags": "برچسب‌ها",
-    "podcast_visibility": "قابلیت مشاهده",
-    "create_podcast": "ایجاد پادکست",
-    "create_new_podcast": "ایجاد یک پادکست جدید برای سازمان شما",
-    "create_podcast_btn": "ایجاد پادکست",
-    "creating_podcast": "در حال ایجاد پادکست...",
-    "podcast_created_success": "پادکست با موفقیت ایجاد شد",
-    "failed_to_create_podcast": "ایجاد پادکست ناموفق بود",
-    "episodes": "قسمت‌ها",
-    "no_episodes": "هنوز قسمتی وجود ندارد",
-    "hosted_by": "مجری",
-    "tags": "برچسب‌ها",
-    "manage_podcast": "مدیریت پادکست",
-    "published": "منتشر شده",
-    "unpublished": "منتشر نشده",
-    "public": "عمومی",
-    "private": "خصوصی",
-    "listen_now": "اکنون گوش دهید",
-    "delete_podcast": "حذف پادکست",
-    "delete_podcast_title": "حذف پادکست؟",
-    "delete_podcast_confirm": "آیا مطمئن هستید که می‌خواهید این پادکست را حذف کنید؟ این عمل قابل بازگشت نیست و تمام قسمت‌ها حذف خواهند شد.",
-    "deleting_podcast": "در حال حذف پادکست...",
-    "podcast_deleted_success": "پادکست با موفقیت حذف شد",
-    "podcast_deleted_error": "حذف پادکست ناموفق بود",
-    "edit_content": "ویرایش محتوا",
-    "form": {
-      "name_required": "نام پادکست الزامی است",
-      "name_min_length": "نام باید حداقل ۳ کاراکتر باشد",
-      "name_max_length": "نام باید حداکثر ۱۰۰ کاراکتر باشد",
-      "description_max_length": "توضیحات باید حداکثر ۵۰۰ کاراکتر باشد"
-    },
-    "modals": {
-      "create": {
-        "title": "ایجاد پادکست جدید",
-        "description": "جزئیات را برای ایجاد یک پادکست جدید تکمیل کنید",
-        "form": {
-          "name_label": "نام پادکست",
-          "name_placeholder": "نام پادکست را وارد کنید",
-          "description_label": "توضیحات",
-          "description_placeholder": "توضیحات پادکست را وارد کنید",
-          "public_label": "عمومی کردن این پادکست"
-        },
-        "cancel": "لغو",
-        "submit": "ایجاد پادکست",
-        "generated_image_failed": "بارگذاری تصویر تولیدشده ناموفق بود",
-        "draft_hint": "پادکست‌های جدید به‌صورت پیش‌نویس شروع می‌شوند. وقتی اولین قسمت آماده شد منتشر کنید."
-      }
-    },
-    "dashboard": {
-      "tabs": {
-        "general": "عمومی",
-        "episodes": "قسمت‌ها",
-        "distribution": "توزیع"
-      },
-      "view_podcast": "مشاهده پادکست",
-      "saving": "در حال ذخیره...",
-      "saved": "تغییرات ذخیره شد",
-      "save_error": "ذخیره تغییرات ناموفق بود",
-      "save_changes": "ذخیره تغییرات",
-      "form": {
-        "thumbnail": "تصویر بند انگشتی",
-        "upload_thumbnail": "آپلود تصویر بند انگشتی",
-        "thumbnail_hint": "اندازه توصیه شده: ۱۴۰۰x۱۴۰۰ پیکسل. JPG یا PNG.",
-        "about": "درباره",
-        "about_placeholder": "به شنوندگان درباره این پادکست بیشتر بگویید...",
-        "about_max_length": "درباره باید حداکثر ۲۰۰۰ کاراکتر باشد",
-        "tags_placeholder": "موسیقی، آموزش، فناوری",
-        "tags_hint": "برچسب‌ها را با کاما جدا کنید",
-        "visibility": "تنظیمات قابلیت مشاهده",
-        "public_hint": "هر کسی می‌تواند این پادکست را پیدا کرده و به آن گوش دهد",
-        "published_hint": "این پادکست را در صفحه سازمان خود قابل مشاهده کنید",
-        "private_hint": "فقط اعضای واردشده سازمان شما می‌توانند گوش دهند"
-      },
-      "episodes": {
-        "new_episode": "قسمت جدید",
-        "new_episode_description": "افزودن یک قسمت جدید به این پادکست",
-        "no_episodes_description": "با افزودن اولین قسمت خود شروع کنید",
-        "create_first": "ایجاد اولین قسمت",
-        "creating": "در حال ایجاد قسمت...",
-        "created": "قسمت ایجاد شد",
-        "create_error": "ایجاد قسمت ناموفق بود",
-        "create": "ایجاد قسمت",
-        "deleting": "در حال حذف قسمت...",
-        "deleted": "قسمت حذف شد",
-        "delete_error": "حذف قسمت ناموفق بود",
-        "delete": "حذف",
-        "delete_title": "حذف قسمت؟",
-        "delete_confirm": "آیا مطمئن هستید که می‌خواهید این قسمت را حذف کنید؟ این عمل قابل بازگشت نیست.",
-        "updating": "در حال به‌روزرسانی قسمت...",
-        "updated": "قسمت به‌روزرسانی شد",
-        "update_error": "به‌روزرسانی قسمت ناموفق بود",
-        "edit": "ویرایش",
-        "edit_episode": "ویرایش قسمت",
-        "edit_episode_description": "به‌روزرسانی جزئیات قسمت",
-        "save": "ذخیره تغییرات",
-        "publish": "انتشار",
-        "unpublish": "لغو انتشار",
-        "no_audio": "هیچ فایل صوتی وجود ندارد",
-        "title_label": "عنوان",
-        "title_placeholder": "عنوان قسمت را وارد کنید",
-        "description_label": "توضیحات",
-        "description_placeholder": "توضیحات قسمت را وارد کنید",
-        "audio_label": "فایل صوتی",
-        "upload_audio": "آپلود فایل صوتی",
-        "replace_audio": "جایگزینی فایل صوتی",
-        "audio_hint": "فرمت‌های MP3، WAV یا M4A پشتیبانی می‌شوند",
-        "actions": "اقدامات قسمت",
-        "cover_drop_hint": "تصویر مربعی با فرمت JPG یا PNG. اگر خالی باشد از جلد پادکست استفاده می‌شود.",
-        "cover_hint": "اختیاری",
-        "cover_label": "جلد قسمت",
-        "drag_to_reorder": "برای تغییر ترتیب بکشید",
-        "drop_hint": "فایلی را اینجا رها کنید یا برای مرور کلیک کنید",
-        "move_down": "انتقال به پایین",
-        "move_up": "انتقال به بالا",
-        "pause": "توقف موقت",
-        "play": "پخش",
-        "publish_hint": "قسمت‌های منتشرشده برای شنوندگان و در فید RSS نمایش داده می‌شوند.",
-        "publish_now": "انتشار فوری",
-        "remove_file": "حذف فایل",
-        "reorder_error": "ذخیره ترتیب جدید ممکن نشد",
-        "reorder_hint": "دستگیره را بکشید تا ترتیب عوض شود، یا از منو «انتقال به بالا / پایین» را بزنید.",
-        "replace_cover": "جایگزینی جلد",
-        "section_description": "قسمت‌های صوتی اضافه کنید. شنوندگان آن‌ها را به همین ترتیب می‌شنوند.",
-        "summary_one": "{{count}} قسمت · {{published}} منتشرشده · مجموعاً {{duration}}",
-        "summary_other": "{{count}} قسمت · {{published}} منتشرشده · مجموعاً {{duration}}",
-        "upload_cover": "آپلود جلد",
-        "wrong_file_type": "این نوع فایل در اینجا پشتیبانی نمی‌شود"
-      },
-      "back_to_podcasts": "بازگشت به پادکست‌ها",
-      "general": {
-        "cover_drop": "تصویری را اینجا رها کنید یا برای مرور کلیک کنید",
-        "details_description": "نام، خلاصه و برچسب‌هایی که شنوندگان می‌بینند.",
-        "details_title": "جزئیات",
-        "discard_cover": "دور انداختن جلد جدید",
-        "replace_cover": "جایگزینی جلد",
-        "visibility_description": "این کلیدها به‌محض تغییر ذخیره می‌شوند."
-      },
-      "list": {
-        "clear_filters": "پاک کردن فیلترها",
-        "columns": {
-          "authors": "نویسندگان",
-          "podcast": "پادکست",
-          "updated": "به‌روزرسانی",
-          "visibility": "نمایان‌پذیری"
-        },
-        "copy_failed": "کپی پیوند ممکن نشد",
-        "copy_link": "کپی پیوند",
-        "draft": "پیش‌نویس",
-        "edit_episodes": "ویرایش قسمت‌ها",
-        "episodes_count_one": "{{count}} قسمت",
-        "episodes_count_other": "{{count}} قسمت",
-        "episodes_short": "قسمت‌ها",
-        "filters": {
-          "all": "همه",
-          "drafts": "پیش‌نویس‌ها",
-          "published": "منتشرشده‌ها"
-        },
-        "make_private": "خصوصی کردن",
-        "make_public": "عمومی کردن",
-        "no_description": "هنوز توضیحی وجود ندارد",
-        "published_toast": "پادکست منتشر شد",
-        "showing_count": "نمایش {{shown}} از {{total}}",
-        "sort": {
-          "episodes": "بیشترین قسمت",
-          "name": "نام",
-          "newest": "جدیدترین",
-          "updated": "آخرین به‌روزرسانی"
-        },
-        "sort_label": "مرتب‌سازی پادکست‌ها",
-        "stats": {
-          "drafts": "پیش‌نویس‌ها",
-          "episodes": "قسمت‌ها",
-          "published": "منتشرشده‌ها",
-          "total": "همه پادکست‌ها"
-        },
-        "status_filter": "فیلتر بر اساس وضعیت",
-        "subtitle": "مجموعه‌های صوتی منتشر کنید و قسمت‌هایشان را مدیریت کنید.",
-        "unpublished_toast": "انتشار پادکست لغو شد"
-      }
-    },
-    "distribution": {
-      "copied": "در کلیپ‌بورد کپی شد",
-      "rss_title": "فید RSS",
-      "rss_description": "فید RSS پادکست شما به‌صورت خودکار ساخته می‌شود. از این نشانی برای ثبت پادکست خود در دایرکتوری‌ها استفاده کنید.",
-      "copy": "کپی",
-      "preview": "پیش‌نمایش",
-      "unpublished_warning": "پادکست شما اکنون منتشر نشده است. پیش از ثبت در دایرکتوری‌ها ابتدا آن را منتشر کنید.",
-      "directories_title": "ثبت در دایرکتوری‌های پادکست",
-      "directories_description": "برای قرار گرفتن پادکست خود در پلتفرم‌های اصلی این مراحل را دنبال کنید. هر پلتفرم از شما می‌خواهد نشانی فید RSS را ثبت کنید.",
-      "apple": {
-        "subtitle": "در Apple Music هم منتشر می‌شود",
-        "step1": "به <link>podcastsconnect.apple.com</link> بروید و با Apple ID خود وارد شوید",
-        "step2": "روی دکمهٔ <strong>+</strong> کلیک کنید و «New Show» را انتخاب کنید",
-        "step3": "«Add a show with an RSS feed» را انتخاب کنید و نشانی فید RSS خود را بچسبانید",
-        "step4": "Apple فید شما را اعتبارسنجی می‌کند؛ بررسی معمولاً ۱ تا ۵ روز کاری طول می‌کشد"
-      },
-      "spotify": {
-        "subtitle": "بزرگ‌ترین پلتفرم شنیدن پادکست",
-        "step1": "به <link>podcasters.spotify.com</link> بروید و وارد شوید یا حساب بسازید",
-        "step2": "روی «Get started» کلیک کنید و سپس «I have a podcast with a hosting provider» را انتخاب کنید",
-        "step3": "نشانی فید RSS خود را بچسبانید و روی «Next» کلیک کنید",
-        "step4": "مالکیت را تأیید کنید، جزئیات را پر کنید و ثبت کنید (معمولاً ظرف چند ساعت منتشر می‌شود)"
-      },
-      "youtube_music": {
-        "subtitle": "Google Podcasts به YouTube Music منتقل شده است",
-        "step1": "به <link>podcasts.google.com/publish</link> بروید",
-        "step2": "با حساب Google خود وارد شوید و روی «Add a podcast» کلیک کنید",
-        "step3": "نشانی فید RSS خود را بچسبانید و مالکیت را از طریق ایمیل تأیید کنید",
-        "step4": "پادکست شما در YouTube Music و نتایج جستجوی Google ظاهر می‌شود"
-      },
-      "amazon": {
-        "subtitle": "روی دستگاه‌های Alexa هم در دسترس است",
-        "step1": "به <link>podcasters.amazon.com</link> بروید و با حساب Amazon خود وارد شوید",
-        "step2": "روی «Add your podcast» کلیک کنید و نشانی فید RSS خود را بچسبانید",
-        "step3": "جزئیات پادکست خود را بررسی کنید و برای بازبینی ثبت کنید"
-      },
-      "tips_title": "نکاتی برای انتشار موفق",
-      "tip_thumbnail": "مطمئن شوید پادکست شما <strong>تصویر بندانگشتی</strong> دارد (برای Apple Podcasts حداقل ۱۴۰۰×۱۴۰۰)",
-      "tip_episode": "پیش از ثبت، دست‌کم <strong>یک قسمت منتشرشده</strong> داشته باشید",
-      "tip_description": "یک <strong>توضیح</strong> گویا برای پادکست بنویسید؛ این کار به یافته شدن آن کمک می‌کند",
-      "tip_auto": "پس از ثبت فید، قسمت‌های جدید به‌طور خودکار در همهٔ پلتفرم‌ها ظاهر می‌شوند",
-      "tip_propagate": "ممکن است چند ساعت طول بکشد تا به‌روزرسانی‌ها در پلتفرم‌ها اعمال شوند",
-      "check_cover": "پادکست تصویر جلد دارد",
-      "check_description": "پادکست توضیح دارد",
-      "check_episode": "دست‌کم یک قسمت منتشرشده",
-      "check_published": "پادکست منتشر شده است",
-      "checklist_description": "آنچه دایرکتوری‌ها پیش از پذیرش فید بررسی می‌کنند.",
-      "checklist_title": "آماده ارسال هستید؟",
-      "tips_description": "نکته‌های کوچکی که به پذیرفته شدن و پیدا شدن برنامه شما کمک می‌کنند."
-    },
-    "player": {
-      "minimize": "کوچک کردن"
-    },
-    "actions": "عملیات پادکست",
-    "load_failed": "بارگذاری پادکست ناموفق بود",
-    "failed_to_load": "بارگذاری پادکست ناموفق بود",
-    "listen": {
-      "about": "درباره",
-      "all_podcasts": "همه پادکست‌ها",
-      "by": "از {{names}}",
-      "close_player": "بستن پخش‌کننده",
-      "continue_listening": "ادامه شنیدن",
-      "episode_count_one": "{{count}} قسمت",
-      "episode_count_other": "{{count}} قسمت",
-      "eyebrow": "پادکست",
-      "feed_hint": "با این فید RSS در هر برنامه پادکستی دنبالش کنید",
-      "latest": "جدیدترین",
-      "latest_on": "آخرین انتشار {{date}}",
-      "length_hr_min": "{{h}} ساعت و {{m}} دقیقه",
-      "length_min_one": "{{count}} دقیقه",
-      "length_min_other": "{{count}} دقیقه",
-      "length_sec_one": "{{count}} ثانیه",
-      "length_sec_other": "{{count}} ثانیه",
-      "link_copied": "پیوند کپی شد",
-      "mute": "بی‌صدا",
-      "new": "جدید",
-      "no_episodes_description": "قسمت‌های جدید به‌محض انتشار اینجا نمایش داده می‌شوند.",
-      "now_playing": "در حال پخش",
-      "open_player": "باز کردن پخش‌کننده",
-      "pause": "توقف موقت",
-      "pause_episode": "توقف موقت {{title}}",
-      "play": "پخش",
-      "play_episode": "پخش {{title}}",
-      "play_error": "این قسمت پخش نشد. بعداً دوباره تلاش کنید.",
-      "play_latest": "پخش جدیدترین",
-      "play_latest_of": "پخش جدیدترین قسمت {{name}}",
-      "played": "پخش شده",
-      "player": "پخش‌کننده پادکست",
-      "resume": "ادامه",
-      "seek": "جستجو در زمان",
-      "share": "اشتراک‌گذاری",
-      "sort_label": "ترتیب قسمت‌ها",
-      "sort_newest": "جدیدترین",
-      "sort_order": "به ترتیب",
-      "speed": "سرعت پخش",
-      "time_left": "{{time}} باقی مانده",
-      "total_length": "مدت کل",
-      "unmute": "لغو بی‌صدا",
-      "up_next": "بعدی",
-      "updated": "به‌روزرسانی",
-      "volume": "بلندی صدا"
-    }
-  },
   "library": {
     "library": "کتابخانه",
     "my_library": "کتابخانه من",
     "new_folder": "پوشه جدید",
     "tabs": {
       "courses": "دوره‌ها",
-      "podcasts": "پادکست‌ها",
       "communities": "انجمن‌ها",
       "boards": "تخته‌ها",
       "playgrounds": "Plays",
@@ -3693,7 +3383,6 @@
       "no_resource": "منبعی پیکربندی نشده است",
       "open": "باز کردن",
       "kind_course": "دوره",
-      "kind_podcast": "پادکست",
       "kind_community": "انجمن",
       "kind_board": "تخته",
       "kind_playground": "Play"
@@ -4017,7 +3706,6 @@
       "communities": "انجمن‌ها",
       "discussions": "گفتگوها",
       "playgrounds": "Plays",
-      "podcasts": "پادکست‌ها",
       "activities": "درس‌ها",
       "folders": "پوشه‌ها"
     },
@@ -4042,7 +3730,6 @@
         "communities": "انجمن‌ها",
         "discussions": "گفتگوها",
         "playgrounds": "Plays",
-        "podcasts": "پادکست‌ها",
         "users": "اعضا"
       },
       "keys": {
@@ -4063,10 +3750,6 @@
         "library": {
           "description": "پوشه‌هایی از محتوای گروه‌بندی‌شده",
           "keywords": "کتابخانه، پوشه‌ها، مجموعه‌ها، بسته‌ها، مسیرها، library"
-        },
-        "podcasts": {
-          "description": "گوش دادن به قسمت‌ها",
-          "keywords": "پادکست‌ها، صوت، قسمت‌ها، برنامه‌ها، گوش دادن، podcasts"
         },
         "communities": {
           "description": "گفتگو با سایر اعضا",
@@ -4170,7 +3853,6 @@
         "folder": "پوشه",
         "page": "صفحه",
         "playground": "Play",
-        "podcast": "پادکست",
         "user": "عضو"
       },
       "updated": "به‌روزرسانی",
@@ -4942,7 +4624,6 @@
       "settings": "تنظیمات",
       "courses": "دوره‌ها",
       "communities": "انجمن‌ها",
-      "podcasts": "پادکست‌ها",
       "boards": "تخته‌ها",
       "published": "منتشر شده",
       "draft": "پیش‌نویس",
@@ -7133,10 +6814,6 @@
             "title": "پرداخت‌ها",
             "description": "فعال‌سازی پردازش پرداخت برای دوره‌ها و اشتراک‌ها"
           },
-          "podcasts": {
-            "title": "پادکست‌ها",
-            "description": "فعال‌سازی ایجاد پادکست و محتوای صوتی برای سازمان شما"
-          },
           "boards": {
             "title": "تخته‌ها",
             "description": "ایجاد تخته‌های مشارکتی با لیست‌ها و کارت‌ها برای مدیریت پروژه"
@@ -7955,7 +7632,6 @@
             "assignments": "تکالیف",
             "folders": "پوشه‌ها",
             "paths": "مسیرهای یادگیری",
-            "podcasts": "پادکست‌ها",
             "boards": "تخته‌ها",
             "playgrounds": "Plays",
             "versioning": "تاریخچهٔ نسخه‌ها",
@@ -9272,7 +8948,6 @@
             "usergroups": "گروه‌ها",
             "communities": "انجمن‌ها",
             "boards": "تابلوها",
-            "podcasts": "پادکست‌ها",
             "roles": "نقش‌ها",
             "organizations": "سازمان"
           },
@@ -10427,8 +10102,7 @@
         "users": "کاربران",
         "communities": "انجمن‌ها",
         "discussions": "گفتگوها",
-        "playgrounds": "Plays",
-        "podcasts": "پادکست‌ها"
+        "playgrounds": "Plays"
       },
       "entries": {
         "home": {
@@ -10446,10 +10120,6 @@
         "communities": {
           "description": "مدیریت انجمن‌ها",
           "keywords": "انجمن‌ها, گفتگوها, اعضا, پست‌ها"
-        },
-        "podcasts": {
-          "description": "مدیریت پادکست‌ها",
-          "keywords": "صوتی, قسمت‌ها, نمایش‌ها"
         },
         "boards": {
           "description": "مدیریت تخته‌ها",
@@ -12932,10 +12602,7 @@
         "topic_required": "یک موضوع یا مقداری متن اضافه کنید تا متن (اسکریپت) از آن تولید شود.",
         "script_ready": "متن آماده است. آن را بررسی کنید، سپس صوت را تولید کنید",
         "script_failed": "تولید متن ناموفق بود. لطفاً دوباره تلاش کنید.",
-        "loading_playlist": "در حال بارگذاری فهرست پخش...",
         "tab_generate": "تولید",
-        "tab_episode": "قسمت",
-        "tab_playlist": "فهرست پخش",
         "uploading_progress": "در حال آپلود... {{progress}}٪",
         "drop_or_browse": "یک فایل صوتی را رها کنید یا برای مرور کلیک کنید",
         "supported_formats": "از MP3، WAV، OGG، M4A پشتیبانی می‌کند",
@@ -12958,10 +12625,7 @@
         "generating": "در حال تولید…",
         "generate_audio": "تولید صوت",
         "credits_with_script": "متن {{scriptCost}} اعتبار · صوت {{audioCost}} اعتبار · با قدرت Gemini",
-        "credits_audio_only": "{{cost}} اعتبار هوش مصنوعی مصرف می‌کند · با قدرت Gemini",
-        "no_podcasts": "پادکستی یافت نشد",
-        "back_to_podcasts": "بازگشت به پادکست‌ها",
-        "no_episodes": "قسمتی یافت نشد"
+        "credits_audio_only": "{{cost}} اعتبار هوش مصنوعی مصرف می‌کند · با قدرت Gemini"
       },
       "callout_block": {
         "change_type": "تغییر نوع کادر",
@@ -15813,8 +15477,6 @@
           "payments_desc": "دوره‌ها را بفروشید و اشتراک ارائه دهید تا درآمد ایجاد کنید.",
           "communities": "گفتگوهای انجمن",
           "communities_desc": "به زبان‌آموزان اجازه دهید ارتباط برقرار کنند، سوال بپرسند و ایده‌ها را به اشتراک بگذارند.",
-          "podcasts": "ایجاد پادکست",
-          "podcasts_desc": "محتوای صوتی ارائه دهید و در حرکت به زبان‌آموزان برسید.",
           "playgrounds": "Playهای تعاملی",
           "playgrounds_desc": "بگذارید زبان‌آموزان با فعالیت‌های تعاملی گام‌به‌گام تمرین کنند و نشان کسب کنند.",
           "ai": "۱٬۰۰۰ اعتبار هوش مصنوعی",
@@ -24059,7 +23721,6 @@
       "types": {
         "course": "دوره",
         "path": "مسیر",
-        "podcast": "پادکست",
         "community": "انجمن",
         "folder": "پوشه"
       },
@@ -24069,7 +23730,6 @@
         "courses": "دوره‌ها",
         "activities": "درس‌های رایگان",
         "paths": "مسیرهای یادگیری",
-        "podcasts": "پادکست‌ها",
         "communities": "انجمن‌ها",
         "library": "کتابخانه",
         "live": "جلسه‌های زنده",
@@ -26243,7 +25903,6 @@
       "course": "دورهٔ ویژه",
       "paths": "مسیرهای یادگیری",
       "communities": "انجمن‌ها",
-      "podcasts": "پادکست‌ها",
       "live_sessions": "جلسه‌های زنده",
       "instructors": "افراد",
       "testimonials": "نظرات",
@@ -26290,7 +25949,6 @@
       "course": "دورهٔ ویژه",
       "paths": "مسیرها",
       "communities": "انجمن‌ها",
-      "podcasts": "پادکست‌ها",
       "live_sessions": "جلسه‌های زنده",
       "pricing": "قیمت‌گذاری",
       "form": "فرم تماس",
@@ -26316,7 +25974,6 @@
       "featured_course": "دورهٔ ویژه",
       "paths": "مسیرهای یادگیری",
       "communities": "انجمن‌ها",
-      "podcasts": "پادکست‌ها",
       "live_sessions": "جلسه‌های زنده",
       "instructors": "مدرسان",
       "testimonials": "نظرات",
@@ -28381,7 +28038,6 @@
         "course": "دوره",
         "path": "مسیر",
         "community": "انجمن",
-        "podcast": "پادکست",
         "live_session": "جلسه زنده",
         "board": "بُرد",
         "folder": "پوشه کتابخانه",

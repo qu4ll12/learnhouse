@@ -60,45 +60,10 @@ async def api_sitemap_data(request: Request, org_slug: str, db_session: AsyncSes
 
 
 @router.get(
-    "/thread/{org_slug}/{community_key}/{ref}",
-    summary="Resolve a community thread URL",
-    description=(
-        "Maps `<id>-<slug>` (or a legacy discussion uuid) inside a community to the thread, with its "
-        "readable `segment`, whether this caller is shut out (`restricted`) and whether search engines may "
-        "index it (`indexable`: public, not sold, org/community switches, thin-thread rule)."
-    ),
-)
-async def api_thread_lookup(
-    request: Request,
-    org_slug: str,
-    community_key: str,
-    ref: str,
-    db_session: AsyncSession = Depends(get_db_session),
-    current_user: Union[PublicUser, AnonymousUser, APITokenUser] = Depends(get_current_user),
-) -> dict:
-    return await public_seo.thread_lookup(request, db_session, current_user, org_slug, community_key, ref)
-
-
-@router.get(
-    "/thread-jsonld/{org_slug}/{community_key}/{ref}",
-    summary="Structured data facts of an indexable thread",
-    description="Thread, author and top replies as an anonymous visitor sees them; 404 unless the thread is indexable.",
-)
-async def api_thread_jsonld(
-    request: Request,
-    org_slug: str,
-    community_key: str,
-    ref: str,
-    db_session: AsyncSession = Depends(get_db_session),
-) -> dict:
-    return await public_seo.thread_jsonld_data(request, db_session, org_slug, community_key, ref)
-
-
-@router.get(
     "/feed/{org_slug}",
     summary="Public feed items",
     description=(
-        "Items of a public feed (`kind`: org, courses, communities, community, podcast, course_updates) as an "
+        "Items of a public feed (`kind`: org, courses, course_updates) as an "
         "anonymous visitor sees them. 404 when the org turned feeds off or the resource isn't public."
     ),
 )

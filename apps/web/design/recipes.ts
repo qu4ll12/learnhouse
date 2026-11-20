@@ -14,7 +14,7 @@ export const recipes = {
   pageShell: 'px-4 sm:px-10 pb-10 flex flex-col gap-5 w-full min-w-0',
   /** Four stat tiles: two per row on phones. */
   statGrid: 'grid grid-cols-2 lg:grid-cols-4 gap-3',
-  /** Card grid for courses, paths, podcasts, communities. */
+  /** Card grid for courses and paths. */
   cardGrid: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4',
   /** Search + filters row: stacked on phones, one row from xl. */
   toolbar: 'flex flex-col xl:flex-row gap-3 xl:items-center',

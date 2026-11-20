@@ -1,5 +1,5 @@
-"""Feature coverage tools (OSS): webhooks, AI credits, signup fields, and
-managing podcasts and episodes, through the run_tool pipeline."""
+"""Feature coverage tools (OSS): webhooks, AI credits, and signup fields,
+through the run_tool pipeline."""
 
 from datetime import datetime
 from types import SimpleNamespace
@@ -9,11 +9,9 @@ import pytest
 from fastapi import HTTPException
 
 from src.db.organization_config import OrganizationConfig
-from src.db.podcasts.episodes import PodcastEpisode
-from src.db.podcasts.podcasts import Podcast
 from src.db.users import APITokenUser
 from src.services.ai.tools import ToolContext, ToolRegistry, make_synthetic_request, refs, run_tool
-from src.services.ai.tools import ai_credits, podcasts, signup_fields, webhooks
+from src.services.ai.tools import ai_credits, signup_fields, webhooks
 
 NOW = str(datetime.now())
 FULL = {"action_create": True, "action_read": True, "action_update": True, "action_delete": True}
@@ -28,7 +26,7 @@ def links():
 @pytest.fixture
 def registry():
     r = ToolRegistry()
-    for m in (webhooks, ai_credits, signup_fields, podcasts):
+    for m in (webhooks, ai_credits, signup_fields):
         r.register_all(m.SPECS)
     return r
 
@@ -162,101 +160,13 @@ async def test_signup_fields(db, org, admin_user, registry):
         assert ok(await call(registry, db, org, admin_user, "get_signup_fields"))["url"] is None
 
 
-# ─── podcasts ────────────────────────────────────────────────────────────────
-
-
-@pytest.fixture
-async def show(db, org):
-    db.add(Podcast(id=1, name="Show", description="d", about="a", tags="t", public=False, published=False,
-                   org_id=org.id, podcast_uuid="podcast_show", thumbnail_image="cover.png", creation_date=NOW, update_date=NOW))
-    db.add(PodcastEpisode(id=1, title="Pilot", order=0, episode_number=1, duration_seconds=600, podcast_id=1, org_id=org.id,
-                          episode_uuid="episode_pilot", audio_file="a.mp3", creation_date=NOW, update_date=NOW))
-    await db.commit()
-
-
-@pytest.fixture(autouse=True)
-def podcasts_on():
-    with patch("src.services.podcasts.podcasts._is_podcasts_feature_enabled", new=AsyncMock(return_value=True)), \
-            patch("src.services.podcasts.podcasts.check_feature_access", new=AsyncMock()), \
-            patch("src.services.podcasts.episodes.check_feature_access", new=AsyncMock()), \
-            patch("src.services.podcasts.podcasts.check_limits_with_usage", new=AsyncMock(), create=True), \
-            patch("src.services.podcasts.podcasts.decrease_feature_usage", new=AsyncMock(), create=True):
-        yield
-
-
-async def test_get_podcast(db, org, admin_user, registry, show):
-    out = ok(await call(registry, db, org, admin_user, "get_podcast", {"podcast_uuid": "podcast_show"}))
-    assert out["podcast"]["url"] == "https://acme.test/dash/podcasts/podcast/show/general"
-    assert out["items"][0] == {"uuid": "episode_pilot", "title": "Pilot", "number": 1, "order": 0, "published": False,
-                               "minutes": 10, "has_audio": True, "description": None}
-    with patch.object(refs, "web_base", new=AsyncMock(return_value="")):
-        assert ok(await call(registry, db, org, admin_user, "get_podcast", {"podcast_uuid": "podcast_show"}))["podcast"].get("url") is None
-
-
-async def test_podcast_ids_from_elsewhere_are_not_found(db, org, other_org, admin_user, registry):
-    db.add(Podcast(id=5, name="Far", public=True, published=True, org_id=other_org.id, podcast_uuid="podcast_far",
-                   creation_date=NOW, update_date=NOW))
-    db.add(PodcastEpisode(id=5, title="Far ep", podcast_id=5, org_id=other_org.id, episode_uuid="episode_far",
-                          creation_date=NOW, update_date=NOW))
-    await db.commit()
-    with patch("src.services.ai.tools.registry.check_resource_access", new=AsyncMock(return_value=SimpleNamespace(allowed=True))):
-        assert (await call(registry, db, org, admin_user, "get_podcast", {"podcast_uuid": "podcast_far"})).denied_code == "http_404"
-        assert (await call(registry, db, org, admin_user, "update_podcast_episode",
-                           {"episode_uuid": "episode_far", "title": "x"})).denied_code == "http_404"
-
-
-async def test_create_update_delete_podcast(db, org, admin_user, registry, show):
-    created = SimpleNamespace(podcast_uuid="podcast_new", name="New")
-    with patch("src.services.ai.tools.podcasts.create_podcast", new=AsyncMock(return_value=created)) as create:
-        out = ok(await call(registry, db, org, admin_user, "create_podcast", {"name": "New"}))
-    assert out["podcast"]["uuid"] == "podcast_new" and create.await_args.args[2].org_id == org.id
-
-    with patch("src.services.ai.tools.podcasts.update_podcast", new=AsyncMock(return_value=SimpleNamespace(podcast_uuid="podcast_show", name="Renamed"))) as upd:
-        out = ok(await call(registry, db, org, admin_user, "update_podcast", {"podcast_uuid": "podcast_show", "name": "Renamed"}))
-        assert upd.await_args.args[1].thumbnail_image == "cover.png" and "name" in out["summary"]
-        assert (await call(registry, db, org, admin_user, "update_podcast",
-                           {"podcast_uuid": "podcast_show", "published": True})).denied_code == "approval_required"
-    assert (await call(registry, db, org, admin_user, "update_podcast", {"podcast_uuid": "podcast_show"})).denied_code == "http_400"
-
-    with patch("src.services.ai.tools.podcasts.delete_podcast", new=AsyncMock()) as delete:
-        out = ok(await call(registry, db, org, admin_user, "delete_podcast", {"podcast_uuid": "podcast_show"}, approved=True))
-    delete.assert_awaited_once()
-    assert "Deleted podcast" in out["summary"]
-
-
-async def test_episodes(db, org, admin_user, registry, show):
-    made = SimpleNamespace(episode_uuid="episode_new", title="Two")
-    with patch("src.services.ai.tools.podcasts.create_episode", new=AsyncMock(return_value=made)) as create:
-        out = ok(await call(registry, db, org, admin_user, "create_podcast_episode", {"podcast_uuid": "podcast_show", "title": "Two"}))
-        assert create.await_args.args[2].episode_number == 2 and create.await_args.args[2].order == 1
-        ok(await call(registry, db, org, admin_user, "create_podcast_episode",
-                      {"podcast_uuid": "podcast_show", "title": "Ten", "episode_number": 10}))
-        assert create.await_args.args[2].episode_number == 10
-    assert out["episode"]["uuid"] == "episode_new"
-
-    with patch("src.services.ai.tools.podcasts.update_episode", new=AsyncMock(return_value=SimpleNamespace(episode_uuid="episode_pilot", title="P2"))):
-        out = ok(await call(registry, db, org, admin_user, "update_podcast_episode", {"episode_uuid": "episode_pilot", "title": "P2"}))
-        assert "title" in out["summary"]
-        assert (await call(registry, db, org, admin_user, "update_podcast_episode",
-                           {"episode_uuid": "episode_pilot", "published": True})).denied_code == "approval_required"
-    assert (await call(registry, db, org, admin_user, "update_podcast_episode", {"episode_uuid": "episode_pilot"})).denied_code == "http_400"
-
-    with patch("src.services.ai.tools.podcasts.delete_episode", new=AsyncMock()):
-        out = ok(await call(registry, db, org, admin_user, "delete_podcast_episode", {"episode_uuid": "episode_pilot"}, approved=True))
-    assert "Deleted episode" in out["summary"]
-
-
 def test_summaries():
-    specs = {s.name: s for s in podcasts.SPECS + webhooks.SPECS}
-    P = specs["update_podcast"].params_model
-    assert "name" in specs["update_podcast"].summarize(P(podcast_uuid="p", name="x"))
-    assert "nothing" in specs["update_podcast_episode"].summarize(specs["update_podcast_episode"].params_model(episode_uuid="e"))
+    specs = {s.name: s for s in webhooks.SPECS}
     assert "nothing" in specs["update_webhook"].summarize(specs["update_webhook"].params_model(webhook_uuid="w"))
-    for name in ("create_podcast", "delete_podcast", "create_podcast_episode", "delete_podcast_episode",
-                 "create_webhook", "send_test_webhook", "delete_webhook"):
+    for name in ("create_webhook", "send_test_webhook", "delete_webhook"):
         s = specs[name]
         fields = {k: ("x" if f.annotation in (str, "str") else None) for k, f in s.params_model.model_fields.items()}
-        sample = {"podcast_uuid": "p", "episode_uuid": "e", "webhook_uuid": "w", "name": "n", "title": "t",
+        sample = {"webhook_uuid": "w", "name": "n",
                   "url": "https://x.test/aaaa", "events": ["ping"]}
         params = s.params_model(**{k: v for k, v in sample.items() if k in s.params_model.model_fields})
         assert s.summarize(params)

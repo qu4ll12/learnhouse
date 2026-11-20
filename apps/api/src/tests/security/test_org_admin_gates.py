@@ -426,7 +426,7 @@ async def test_create_role_cannot_grant_bucket_creator_lacks(db, org, admin_user
     from src.services.roles.roles import create_role
 
     creator_rights = ADMIN_RIGHTS.model_dump()
-    del creator_rights["communities"]
+    del creator_rights["folders"]
     creator_role = Role(id=7, name="Partial", org_id=org.id, rights=creator_rights)
 
     with patch("src.services.roles.roles.rbac_check", new_callable=AsyncMock), patch(
@@ -448,7 +448,7 @@ async def test_create_role_cannot_grant_bucket_creator_lacks(db, org, admin_user
                 admin_user,
             )
     assert exc.value.status_code == 403
-    assert "communities" in exc.value.detail
+    assert "folders" in exc.value.detail
 
 
 # ---------------------------------------------------------------------------

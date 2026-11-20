@@ -34,7 +34,7 @@ def registered_sources() -> dict[str, CalendarSource]:
 
 
 # Register the built-in sources.
-from src.services.calendar.sources import assignments, courses, podcasts  # noqa: E402,F401
+from src.services.calendar.sources import assignments, courses  # noqa: E402,F401
 from src.core.ee_hooks import register_ee_calendar_sources  # noqa: E402
 
 register_ee_calendar_sources()

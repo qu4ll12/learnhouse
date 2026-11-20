@@ -12,19 +12,16 @@ from sqlalchemy.dialects import postgresql
 
 from src.db.courses.courses import Course
 from src.db.folders.folder_content import FolderContent
+from src.db.nudges import NudgeSend
 from src.db.organizations import Organization
-from src.db.podcasts.podcasts import PodcastUpdate
 from src.db.users import AnonymousUser
-from src.services.communities.moderation import extract_youtube_video_id
 from src.services.email.safe_text import header_safe
 from src.services.email.utils import get_org_square_logo_url
 from src.services.explore.explore import _get_sort_expression, search_orgs_for_explore
 from src.services.folders import folders as folders_service
 from src.services.media import media_serve
-from src.services.podcasts.podcasts import update_podcast
 from src.services.search.search import _ilike_terms
 from src.services.webhooks import dispatch
-from src.tests.services.test_podcasts_service import _make_podcast
 
 
 # ─── webhooks/dispatch.py ────────────────────────────────────────────────────
@@ -193,10 +190,6 @@ async def test_s3_stream_stops_on_an_empty_body():
 # ─── small helpers ───────────────────────────────────────────────────────────
 
 
-def test_malformed_youtube_url_is_not_a_video():
-    assert extract_youtube_video_id("http://[::1") is None
-
-
 def test_ilike_terms_without_terms_matches_everything():
     assert str(_ilike_terms([Course.name], [])) == "true"
 
@@ -213,18 +206,4 @@ def test_square_logo_needs_a_media_host():
         assert get_org_square_logo_url(org, config) is None
     with patch("src.services.email.utils.get_media_base_url", return_value="https://media.test"):
         assert get_org_square_logo_url(org, config) == "https://media.test/content/orgs/org_x/square_logos/sq.png"
-
-
-async def test_publishing_a_podcast_is_a_sensitive_change(db, org, admin_user, mock_request):
-    """Changing `published` goes through the owner/admin check like `public` does."""
-    podcast = await _make_podcast(db, org, published=False)
-    with patch("src.services.podcasts.podcasts.check_resource_access", new_callable=AsyncMock), \
-         patch(
-             "src.services.podcasts.podcasts.authorization_verify_based_on_org_admin_status",
-             new=AsyncMock(return_value=False),
-         ):
-        with pytest.raises(HTTPException) as exc:
-            await update_podcast(mock_request, PodcastUpdate(published=True), podcast.podcast_uuid, admin_user, db)
-    assert exc.value.status_code == 403
-    assert "published" in exc.value.detail
 

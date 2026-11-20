@@ -69,7 +69,6 @@ const GOAL_TEMPLATE: Record<OnboardingGoal | 'none', string> = {
   team: 'corporate',
   school: 'university',
   customers: 'partner',
-  community: 'membership',
   none: 'academy',
 }
 

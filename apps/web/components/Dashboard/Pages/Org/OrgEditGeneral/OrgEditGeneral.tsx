@@ -15,7 +15,6 @@ import {
   Buildings,
   Circuitry,
   EnvelopeSimple,
-  Garage,
   LockSimple,
   Rows,
   ShareNetwork,
@@ -107,7 +106,7 @@ const SECTION_ICONS: Record<Section, React.ReactNode> = {
 }
 
 // The dashboard-wide icons for these two changed; the shared list keeps the old ones.
-const ICON_OVERRIDES: Partial<Record<string, React.ComponentType<any>>> = { paths: Circuitry, communities: Garage }
+const ICON_OVERRIDES: Partial<Record<string, React.ComponentType<any>>> = { paths: Circuitry }
 const FEATURE_BY_KEY = Object.fromEntries(OPTIONAL_FEATURES.map((f) => [f.key, f])) as Record<string, OptionalFeature>
 
 function scrollPane(): HTMLElement | null {

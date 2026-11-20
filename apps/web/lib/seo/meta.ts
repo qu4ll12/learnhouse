@@ -15,7 +15,6 @@ export type OrgSeoConfig = {
   yandex_verification?: string
   pinterest_verification?: string
   twitter_handle?: string
-  noindex_communities?: boolean
   indexing_disabled?: boolean
   robots_extra_rules?: string
   organization_type?: string
@@ -23,7 +22,6 @@ export type OrgSeoConfig = {
   ai_crawlers_blocked?: string[]
   /** Per-section indexing switch; a missing key means indexable. */
   indexable_features?: Partial<Record<SeoFeature, boolean>>
-  thin_thread_noindex_days?: number
   feeds_enabled?: boolean
   llms_txt_enabled?: boolean
   indexnow_enabled?: boolean
@@ -31,13 +29,12 @@ export type OrgSeoConfig = {
 }
 
 /** Public sections an org can keep out of search engines one by one. */
-export const SEO_FEATURES = ['courses', 'activities', 'paths', 'podcasts', 'library', 'live', 'newsletters', 'pages', 'store'] as const
+export const SEO_FEATURES = ['courses', 'activities', 'paths', 'library', 'live', 'newsletters', 'pages', 'store'] as const
 export type SeoFeature = (typeof SEO_FEATURES)[number]
 
-/** Whether a section may be indexed (communities keep `noindex_communities`). */
-export function featureIndexable(seo: OrgSeoConfig | undefined, feature: SeoFeature | 'communities'): boolean {
+/** Whether a section may be indexed. */
+export function featureIndexable(seo: OrgSeoConfig | undefined, feature: SeoFeature): boolean {
   if (seo?.indexing_disabled) return false
-  if (feature === 'communities') return !seo?.noindex_communities
   return seo?.indexable_features?.[feature] !== false
 }
 

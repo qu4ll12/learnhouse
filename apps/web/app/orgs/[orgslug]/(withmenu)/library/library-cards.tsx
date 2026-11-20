@@ -19,7 +19,6 @@ import { resourcePath } from '@/lib/seo/paths'
 import {
   FolderSimple,
   GraduationCap,
-  MicrophoneStage,
   SquaresFour,
   Lightning,
   LinkSimple,
@@ -31,16 +30,13 @@ import {
   ArrowSquareOut,
   Eye,
   type IconProps,
-  Garage,
 } from '@phosphor-icons/react'
 
-type ResourceType = 'courses' | 'podcasts' | 'communities' | 'boards' | 'playgrounds' | 'media'
+type ResourceType = 'courses' | 'boards' | 'playgrounds' | 'media'
 
 const TYPE_TONE: Record<string, string> = {
   courses: 'bg-blue-50 text-blue-500',
   media: 'bg-amber-50 text-amber-500',
-  podcasts: 'bg-rose-50 text-rose-500',
-  communities: 'bg-emerald-50 text-emerald-500',
   boards: 'bg-indigo-50 text-indigo-500',
   playgrounds: 'bg-fuchsia-50 text-fuchsia-500',
 }
@@ -60,8 +56,6 @@ function typeIcon(type: string, resource: any): React.ComponentType<IconProps> {
   switch (type) {
     case 'courses': return GraduationCap
     case 'media': return mediaIcon(resource)
-    case 'podcasts': return MicrophoneStage
-    case 'communities': return Garage
     case 'boards': return SquaresFour
     case 'playgrounds': return Lightning
     default: return FileIcon

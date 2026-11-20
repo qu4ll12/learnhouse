@@ -246,12 +246,10 @@ def membership(ctx: dict) -> dict:
         ]),
     ], name="Inside", anchor="inside")
 
-    community = section([
-        heading_group("Community spaces", "Where members hang out"),
-        el("communities", {"limit": 3, "columns": 3, "cardStyle": "border", "emptyText": "Community spaces open to members."}),
+    sessions = section([
         heading_group("Coming up", "Next live sessions"),
         el("live_sessions", {"limit": 3, "layout": "grid", "emptyText": "The next workshop will be announced soon."}),
-    ], name="Community")
+    ], name="Sessions")
 
     listen = section([
         cols([
@@ -272,7 +270,7 @@ def membership(ctx: dict) -> dict:
             {"quote": "Generous, talented people. I've found collaborators and friends.", "author": "Sofía Vargas", "role": "Motion designer"},
         ]}),
     ], name="Join", anchor="join")
-    return page(th, [hero, inside, community, listen, join], title=f"{org} — a membership for makers", description="Workshops, courses and critique circles for creative people.")
+    return page(th, [hero, inside, sessions, listen, join], title=f"{org} — a membership for makers", description="Workshops, courses and critique circles for creative people.")
 
 
 # ─── 13. B2B partner academy ──────────────────────────────────────────────────

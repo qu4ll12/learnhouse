@@ -1,6 +1,6 @@
 import { useOrg } from '@components/Contexts/OrgContext'
 import { getUriWithOrg } from '@services/config/config'
-import { Books, FolderSimple, Headphones, Lightning, ShoppingBag, Circuitry, VideoCamera, Garage, ChalkboardSimple } from '@phosphor-icons/react'
+import { Books, FolderSimple, Lightning, ShoppingBag, Circuitry, VideoCamera, ChalkboardSimple } from '@phosphor-icons/react'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { menuIcon } from '@components/Objects/Menus/menuIcons'
 import Link from 'next/link'
@@ -22,16 +22,14 @@ const BUILTIN: Record<string, Builtin> = {
   courses: { feature: 'courses', link: '/courses', labelKey: 'courses.courses', Icon: Books },
   paths: { feature: 'paths', link: '/paths', labelKey: 'paths.title', Icon: Circuitry },
   library: { feature: 'folders', link: '/library', labelKey: 'library.library', Icon: FolderSimple },
-  podcasts: { feature: 'podcasts', link: '/podcasts', labelKey: 'podcasts.podcasts', Icon: Headphones },
   live: { feature: 'live_sessions', link: '/live', labelKey: 'live_sessions.nav', Icon: VideoCamera },
-  communities: { feature: 'communities', link: '/communities', labelKey: 'communities.title', Icon: Garage },
   playgrounds: { feature: 'playgrounds', link: '/playgrounds', labelKey: 'common.playgrounds', Icon: Lightning },
   boards: { feature: 'boards', link: '/boards', labelKey: 'common.boards', Icon: ChalkboardSimple, requiresAuth: true },
   store: { feature: 'payments', link: '/store', labelKey: 'common.store', Icon: ShoppingBag },
 }
 
 // Default order when an org has no custom menu config.
-const DEFAULT_ORDER = ['courses', 'paths', 'library', 'podcasts', 'live', 'communities', 'playgrounds', 'boards', 'store']
+const DEFAULT_ORDER = ['courses', 'paths', 'library', 'live', 'playgrounds', 'boards', 'store']
 
 // Builtins added after orgs started saving custom menus. A saved menu predates
 // them, so they are appended (as the menu editor does) instead of staying hidden.

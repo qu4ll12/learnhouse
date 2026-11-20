@@ -9,7 +9,6 @@ export const PERSONAL_CATEGORIES = [
   'assignments',
   'courses',
   'live',
-  'community',
   'groups',
   'billing',
   'boards',
