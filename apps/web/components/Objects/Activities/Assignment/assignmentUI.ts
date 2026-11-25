@@ -15,13 +15,14 @@ export const answerKeyPanelClass = 'flex flex-col gap-1.5 rounded-xl border bord
 
 // Whether a saved task submission holds an actual answer. Covers every task
 // payload shape: free text / number ({ answer }), quiz ({ submissions }),
-// file ({ fileUUID }), code ({ code }) and fill-in forms ({ submissions }).
+// file ({ fileUUID }), code ({ code }), fill-in forms ({ submissions }) and math steps ({ steps }).
 export function taskSubmissionHasAnswer(taskSubmission: any): boolean {
   const ts = taskSubmission?.task_submission ?? taskSubmission
   if (!ts || typeof ts !== 'object') return false
   if (typeof ts.answer === 'string' && ts.answer.trim()) return true
   if (typeof ts.answer === 'number') return true
   if (ts.fileUUID) return true
+  if (Array.isArray(ts.steps) && ts.steps.length > 0) return true
   if (typeof ts.code === 'string' && ts.code.trim()) return true
   if (Array.isArray(ts.submissions)) {
     return ts.submissions.some(

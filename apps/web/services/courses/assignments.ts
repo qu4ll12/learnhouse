@@ -180,6 +180,22 @@ export async function updateAssignmentTask(
   return res
 }
 
+// Live feedback for one MATH_STEPS step; the grade is re-computed server-side.
+export async function checkMathStep(
+  previous: string,
+  current: string,
+  assignmentTaskUUID: string,
+  assignmentUUID: string,
+  access_token: string
+) {
+  const result: any = await fetch(
+    `${getAPIUrl()}assignments/${assignmentUUID}/tasks/${assignmentTaskUUID}/check_step`,
+    RequestBodyWithAuthHeader('POST', { previous, current }, null, access_token)
+  )
+  const res = await getResponseMetadata(result)
+  return res
+}
+
 export async function reorderAssignmentTasks(
   taskUUIDs: string[],
   assignmentUUID: string,

@@ -9,6 +9,7 @@ import TaskFormObject from 'app/orgs/[orgslug]/dash/assignments/[assignmentuuid]
 import TaskCodeObject from 'app/orgs/[orgslug]/dash/assignments/[assignmentuuid]/_components/TaskEditor/Subs/TaskTypes/TaskCodeObject'
 import TaskShortAnswerObject from 'app/orgs/[orgslug]/dash/assignments/[assignmentuuid]/_components/TaskEditor/Subs/TaskTypes/TaskShortAnswerObject'
 import TaskNumberAnswerObject from 'app/orgs/[orgslug]/dash/assignments/[assignmentuuid]/_components/TaskEditor/Subs/TaskTypes/TaskNumberAnswerObject'
+import TaskMathStepsObject from 'app/orgs/[orgslug]/dash/assignments/[assignmentuuid]/_components/TaskEditor/Subs/TaskTypes/TaskMathStepsObject'
 import toast from 'react-hot-toast';
 import { AlarmClockOff, BookOpenCheck, Calendar, Check, CheckCircle2, Circle, ClipboardCheck, ClipboardList, Download, Hourglass, Lightbulb, ListChecks, Lock, MessageSquare, PencilLine, RotateCcw, Send, Trophy, X } from 'lucide-react';
 import Link from 'next/link';
@@ -437,6 +438,7 @@ function AssignmentStudentActivity() {
               {task.assignment_type === 'CODE' && <TaskCodeObject key={`${task.assignment_task_uuid}-${currentAttempt}`} view='student' assignmentTaskUUID={task.assignment_task_uuid} />}
               {task.assignment_type === 'SHORT_ANSWER' && <TaskShortAnswerObject key={`${task.assignment_task_uuid}-${currentAttempt}`} view='student' assignmentTaskUUID={task.assignment_task_uuid} />}
               {task.assignment_type === 'NUMBER_ANSWER' && <TaskNumberAnswerObject key={`${task.assignment_task_uuid}-${currentAttempt}`} view='student' assignmentTaskUUID={task.assignment_task_uuid} />}
+              {task.assignment_type === 'MATH_STEPS' && <TaskMathStepsObject key={`${task.assignment_task_uuid}-${currentAttempt}`} view='student' assignmentTaskUUID={task.assignment_task_uuid} />}
             </div>
           </section>
         )

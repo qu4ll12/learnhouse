@@ -9403,6 +9403,10 @@
           "number_answer": {
             "title": "Number answer",
             "description": "Students enter a number graded with tolerance"
+          },
+          "math_steps": {
+            "title": "Math steps",
+            "description": "Students solve an equation step by step; every step is checked"
           }
         },
         "toasts": {
@@ -9573,6 +9577,38 @@
             "no_test_cases": "No test cases defined",
             "hidden_from_students": "Hidden from students",
             "visible_to_students": "Visible to students"
+          },
+          "math_steps": {
+            "equation_label": "Equation to solve",
+            "equation_hint": "A linear equation in x, e.g. 2(x + 3) = 10. Students write one equivalent equation per step.",
+            "equation_invalid": "This is not a supported linear equation in x.",
+            "equation_is_answer": "This equation is already an answer; give one that needs solving.",
+            "explanation_label": "Worked solution (optional)",
+            "explanation_placeholder": "Shown after grading when correct answers are revealed",
+            "instructions": "Write one equivalent equation per step and press Enter. Finish with x = … (or a statement like 0 = 4 / 0 = 0).",
+            "step_placeholder": "Next step, e.g. 2x + 6 = 10",
+            "take_back": "Take back last step",
+            "fix_last_hint": "Take back the last step to fix it.",
+            "completed": "Solved: every step is valid",
+            "example": "Example",
+            "check_failed": "Could not check this step, try again",
+            "worked_solution_label": "Worked solution",
+            "no_steps": "No steps submitted",
+            "correct": "Solved correctly",
+            "incorrect": "Not solved",
+            "degree_label": "Equation type",
+            "degree_linear": "Linear",
+            "degree_quadratic": "Quadratic (STACK pilot)",
+            "coefficients_label": "Coefficients of a·x² + b·x + c = 0",
+            "coefficients_hint": "Whole numbers from -1000 to 1000 with a ≠ 0. The roots must be rational (e.g. 2 and 3, or 1/2); a double root is fine.",
+            "coefficients_invalid": "Enter whole numbers from -1000 to 1000, with a ≠ 0.",
+            "preview_label": "Preview",
+            "server_invalid": "The server rejected this equation",
+            "instructions_stack": "Write one equivalent equation per step and press Enter. Use * for multiplication and ^ for powers, e.g. (x-1)*(x+4)=0. Finish with every root, e.g. x=1 or x=-4.",
+            "step_placeholder_stack": "Next step, e.g. (x-1)*(x+4)=0",
+            "valid_partial": "Valid step. Keep going until every root is found.",
+            "restore_failed": "Could not re-check your saved steps.",
+            "retry": "Retry"
           }
         },
         "generate_ai": "Generate tasks with AI",
@@ -9648,7 +9684,8 @@
           "form": "Form",
           "code": "Code",
           "short_answer": "Short answer",
-          "number_answer": "Number"
+          "number_answer": "Number",
+          "math_steps": "Math steps"
         },
         "untitled_task": "Untitled task",
         "not_available": "n/a",

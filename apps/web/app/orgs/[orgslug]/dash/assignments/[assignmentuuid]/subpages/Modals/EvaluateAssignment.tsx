@@ -11,6 +11,7 @@ import TaskFormObject from '../../_components/TaskEditor/Subs/TaskTypes/TaskForm
 import TaskCodeObject from '../../_components/TaskEditor/Subs/TaskTypes/TaskCodeObject';
 import TaskShortAnswerObject from '../../_components/TaskEditor/Subs/TaskTypes/TaskShortAnswerObject';
 import TaskNumberAnswerObject from '../../_components/TaskEditor/Subs/TaskTypes/TaskNumberAnswerObject';
+import TaskMathStepsObject from '../../_components/TaskEditor/Subs/TaskTypes/TaskMathStepsObject';
 import { useOrg } from '@components/Contexts/OrgContext';
 import { getTaskRefFileDir } from '@services/media/media';
 import { deleteUserSubmission, getFinalGrade, markActivityAsDoneForUser, putFinalGrade } from '@services/courses/assignments';
@@ -398,6 +399,7 @@ function EvaluateAssignment({
                                     {task.assignment_type === 'CODE' && <TaskCodeObject key={`${task.assignment_task_uuid}-${taskReloadKey}`} view='grading' user_id={user_id} assignmentTaskUUID={task.assignment_task_uuid} onGraded={refreshGradePreview} />}
                                     {task.assignment_type === 'SHORT_ANSWER' && <TaskShortAnswerObject key={`${task.assignment_task_uuid}-${taskReloadKey}`} view='grading' user_id={user_id} assignmentTaskUUID={task.assignment_task_uuid} onGraded={refreshGradePreview} />}
                                     {task.assignment_type === 'NUMBER_ANSWER' && <TaskNumberAnswerObject key={`${task.assignment_task_uuid}-${taskReloadKey}`} view='grading' user_id={user_id} assignmentTaskUUID={task.assignment_task_uuid} onGraded={refreshGradePreview} />}
+                                    {task.assignment_type === 'MATH_STEPS' && <TaskMathStepsObject key={`${task.assignment_task_uuid}-${taskReloadKey}`} view='grading' user_id={user_id} assignmentTaskUUID={task.assignment_task_uuid} onGraded={refreshGradePreview} />}
                                 </div>
                             </section>
                         );

@@ -1,6 +1,6 @@
 import { useAssignments } from '@components/Contexts/Assignments/AssignmentContext'
 import Modal from '@components/Objects/StyledElements/Modal/Modal';
-import { Code, FileArrowUp, DotsSixVertical, Hash, ListChecks, PencilSimple, Plus, TextT } from '@phosphor-icons/react'
+import { Code, FileArrowUp, DotsSixVertical, Hash, ListChecks, MathOperations, PencilSimple, Plus, TextT } from '@phosphor-icons/react'
 import { AIButton, AIMark } from '@components/Objects/AI/AIBrand'
 import React, { useEffect } from 'react'
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
@@ -26,6 +26,7 @@ export const TASK_TYPE_META: Record<string, { label: string; labelKey?: string; 
     CODE: { label: 'Code', labelKey: 'dashboard.assignments.editor.task_type_labels.code', Icon: Code },
     SHORT_ANSWER: { label: 'Short answer', labelKey: 'dashboard.assignments.editor.task_type_labels.short_answer', Icon: PencilSimple },
     NUMBER_ANSWER: { label: 'Number', labelKey: 'dashboard.assignments.editor.task_type_labels.number_answer', Icon: Hash },
+    MATH_STEPS: { label: 'Math steps', labelKey: 'dashboard.assignments.editor.task_type_labels.math_steps', Icon: MathOperations },
 }
 
 // "Add task" + "Generate with AI". Each instance owns its modal state, so the

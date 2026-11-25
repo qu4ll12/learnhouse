@@ -2,7 +2,7 @@ import { useAssignments } from '@components/Contexts/Assignments/AssignmentConte
 import { useAssignmentSubmission } from '@components/Contexts/Assignments/AssignmentSubmissionContext'
 import { useAssignmentDirtyTasks } from '@components/Contexts/Assignments/AssignmentDirtyTasksContext'
 import { useAutoSave, type SaveResult } from './useAutoSave'
-import { BookPlus, BookUser, Check, Code2, FileUp, Hash, ListTodo, Loader2, MessageSquare, Pencil, Save, TriangleAlert, Type } from 'lucide-react'
+import { BookPlus, BookUser, Check, Code2, FileUp, Hash, ListTodo, Loader2, MessageSquare, Pencil, Save, Sigma, TriangleAlert, Type } from 'lucide-react'
 import React from 'react'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { useTranslation } from 'react-i18next'
@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 export type TaskSubmitOptions = { silent?: boolean }
 
 type AssignmentBoxProps = {
-    type: 'quiz' | 'file' | 'form' | 'code' | 'short' | 'number'
+    type: 'quiz' | 'file' | 'form' | 'code' | 'short' | 'number' | 'steps'
     view?: 'teacher' | 'student' | 'grading' | 'custom-grading'
     maxPoints?: number
     currentPoints?: number
@@ -173,13 +173,14 @@ function AssignmentBoxUI({ type, view, currentPoints, currentFeedback, maxPoints
         )
     }
 
-    const TypeIcon = { quiz: ListTodo, file: FileUp, code: Code2, short: Pencil, number: Hash, form: Type }[type]
+    const TypeIcon = { quiz: ListTodo, file: FileUp, code: Code2, short: Pencil, number: Hash, form: Type, steps: Sigma }[type]
     const typeLabel = {
         quiz: t('activities.quiz'),
         file: t('activities.file_submission'),
         code: t('activities.code'),
         short: t('dashboard.assignments.editor.task_type_labels.short_answer', { defaultValue: 'Short answer' }),
         number: t('dashboard.assignments.editor.task_type_labels.number_answer', { defaultValue: 'Number' }),
+        steps: t('dashboard.assignments.editor.task_type_labels.math_steps', { defaultValue: 'Math steps' }),
         form: t('activities.form'),
     }[type]
 

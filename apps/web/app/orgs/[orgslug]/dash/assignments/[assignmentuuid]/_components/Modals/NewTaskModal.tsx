@@ -6,6 +6,7 @@ import {
   FileArrowUp,
   Hash,
   ListChecks,
+  MathOperations,
   PencilSimple,
   TextAa,
 } from '@phosphor-icons/react'
@@ -90,6 +91,16 @@ const TASK_TYPES: TaskTypeConfig[] = [
     titleColor: 'text-amber-900',
     bgClass: 'bg-amber-50',
     stripeRgb: '253, 230, 138',
+  },
+  {
+    value: 'MATH_STEPS',
+    Icon: MathOperations,
+    labelKey: 'dashboard.assignments.editor.task_types.math_steps.title',
+    descKey: 'dashboard.assignments.editor.task_types.math_steps.description',
+    iconColor: 'text-indigo-500',
+    titleColor: 'text-indigo-900',
+    bgClass: 'bg-indigo-50',
+    stripeRgb: '199, 210, 254',
   },
 ]
 

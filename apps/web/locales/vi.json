@@ -9383,6 +9383,10 @@
           "number_answer": {
             "title": "Câu trả lời số",
             "description": "Học sinh nhập một số được chấm điểm với dung sai"
+          },
+          "math_steps": {
+            "title": "Giải từng bước",
+            "description": "Học sinh giải phương trình từng bước; mỗi bước đều được kiểm tra"
           }
         },
         "toasts": {
@@ -9553,6 +9557,38 @@
             "no_test_cases": "Chưa định nghĩa ca kiểm thử nào",
             "hidden_from_students": "Ẩn với học viên",
             "visible_to_students": "Hiển thị với học viên"
+          },
+          "math_steps": {
+            "equation_label": "Phương trình cần giải",
+            "equation_hint": "Phương trình bậc nhất ẩn x, ví dụ 2(x + 3) = 10. Học sinh viết mỗi bước một phương trình tương đương.",
+            "equation_invalid": "Đây không phải phương trình bậc nhất ẩn x được hỗ trợ.",
+            "equation_is_answer": "Phương trình này đã là đáp án; hãy nhập phương trình cần giải.",
+            "explanation_label": "Lời giải mẫu (tùy chọn)",
+            "explanation_placeholder": "Hiển thị sau khi chấm nếu cho phép xem đáp án",
+            "instructions": "Mỗi bước viết một phương trình tương đương rồi nhấn Enter. Kết thúc bằng x = … (hoặc 0 = 4 / 0 = 0).",
+            "step_placeholder": "Bước tiếp theo, ví dụ 2x + 6 = 10",
+            "take_back": "Lấy lại bước cuối",
+            "fix_last_hint": "Lấy lại bước cuối để sửa.",
+            "completed": "Đã giải xong: mọi bước đều hợp lệ",
+            "example": "Ví dụ",
+            "check_failed": "Chưa kiểm tra được bước này, hãy thử lại",
+            "worked_solution_label": "Lời giải mẫu",
+            "no_steps": "Chưa nộp bước nào",
+            "correct": "Giải đúng",
+            "incorrect": "Chưa giải xong",
+            "degree_label": "Loại phương trình",
+            "degree_linear": "Bậc nhất",
+            "degree_quadratic": "Bậc hai (thử nghiệm STACK)",
+            "coefficients_label": "Hệ số của a·x² + b·x + c = 0",
+            "coefficients_hint": "Số nguyên từ -1000 đến 1000, a ≠ 0. Nghiệm phải là số hữu tỉ (ví dụ 2 và 3, hoặc 1/2); nghiệm kép được chấp nhận.",
+            "coefficients_invalid": "Nhập số nguyên từ -1000 đến 1000, với a ≠ 0.",
+            "preview_label": "Xem trước",
+            "server_invalid": "Máy chủ từ chối phương trình này",
+            "instructions_stack": "Mỗi bước viết một phương trình tương đương rồi nhấn Enter. Dùng * cho phép nhân và ^ cho lũy thừa, ví dụ (x-1)*(x+4)=0. Kết thúc bằng đủ các nghiệm, ví dụ x=1 or x=-4.",
+            "step_placeholder_stack": "Bước tiếp theo, ví dụ (x-1)*(x+4)=0",
+            "valid_partial": "Bước hợp lệ. Tiếp tục cho đến khi tìm đủ nghiệm.",
+            "restore_failed": "Chưa kiểm tra lại được các bước đã lưu.",
+            "retry": "Thử lại"
           }
         },
         "generate_ai": "Tạo bài tập bằng AI",
@@ -9628,7 +9664,8 @@
           "form": "Biểu mẫu",
           "code": "Mã",
           "short_answer": "Trả lời ngắn",
-          "number_answer": "Số"
+          "number_answer": "Số",
+          "math_steps": "Giải từng bước"
         },
         "untitled_task": "Nhiệm vụ chưa đặt tên",
         "not_available": "không có",
