@@ -2,6 +2,7 @@ import asyncio
 import copy
 import logging
 import math
+import os
 import re
 from datetime import datetime, timedelta
 from typing import Optional, Sequence
@@ -56,6 +57,23 @@ from src.security.features_utils.usage import (
     increase_feature_usage,
 )
 from src.security.submission_file_access import submission_files_belong_to
+from src.services.courses.activities.math_steps import (
+    is_valid_exercise,
+    public_check,
+    steps_completed,
+)
+from src.services.courses.activities.math_steps.stack_v1 import (
+    MAX_STACK_LINE_CHARS,
+    StackCheck,
+    StackConfigurationError,
+    StackTechnicalError,
+    StackStudentInputError,
+    check_stack_step as check_stack_v1_step,
+    grade_stack_steps,
+    public_stack_check,
+    validate_math_steps_task_config,
+    validate_stack_submission,
+)
 from src.security.rbac import (
     authorization_verify_based_on_roles,
     authorization_verify_api_token_permissions,
@@ -228,7 +246,9 @@ def _is_assignment_past_due(assignment: Assignment) -> bool:
     return parsed < datetime.now()
 
 
-def _strip_answer_key(contents, keep_answer_keys: bool = False):
+def _strip_answer_key(
+    contents, keep_answer_keys: bool = False, assignment_type=None
+):
     """Remove answer-key fields from a task's ``contents`` so students can't read
     the correct answers out of the task GET payload before submitting.
 
@@ -250,6 +270,12 @@ def _strip_answer_key(contents, keep_answer_keys: bool = False):
     if not isinstance(contents, dict):
         return contents
     c = copy.deepcopy(contents)
+
+    if getattr(assignment_type, "value", assignment_type) == "MATH_STEPS":
+        # stack_* is teacher-only STACK input; checker_version stays so the client knows to send the full chain.
+        for key in tuple(c):
+            if key.startswith("stack_"):
+                c.pop(key, None)
 
     # Stamp the resolved quiz response mode onto this COPY before anything is
     # removed. A question authored before `response_type` existed carries no
@@ -505,6 +531,7 @@ AUTO_GRADABLE_TASK_TYPES = frozenset(
         AssignmentTaskTypeEnum.CODE,
         AssignmentTaskTypeEnum.SHORT_ANSWER,
         AssignmentTaskTypeEnum.NUMBER_ANSWER,
+        AssignmentTaskTypeEnum.MATH_STEPS,
     }
 )
 
@@ -524,6 +551,7 @@ SERVER_VERIFIED_TASK_TYPES = frozenset(
         AssignmentTaskTypeEnum.QUIZ,
         AssignmentTaskTypeEnum.FORM,
         AssignmentTaskTypeEnum.CODE,
+        AssignmentTaskTypeEnum.MATH_STEPS,
     }
 )
 
@@ -893,8 +921,8 @@ async def _server_verified_task_grade(task, task_submission):
     """
     If this task type is in SERVER_VERIFIED_TASK_TYPES, re-compute its
     grade from the stored task contents + submission data and return it.
-    Returns ``None`` for task types we don't verify, or when the CODE
-    grader can't reach Judge0; the caller should fall back to
+    Returns ``None`` for task types we don't verify, or when an external
+    verifier is unavailable; the caller should fall back to
     ``task_submission.grade`` in both cases.
     """
     if task.assignment_type not in SERVER_VERIFIED_TASK_TYPES:
@@ -921,6 +949,31 @@ async def _server_verified_task_grade(task, task_submission):
             contents.get("tolerance"),
         )
         return task_max if passed else 0
+
+    if task.assignment_type == AssignmentTaskTypeEnum.MATH_STEPS:
+        try:
+            coefficients = validate_math_steps_task_config(
+                AssignmentTaskTypeEnum.MATH_STEPS, contents
+            )
+        except StackConfigurationError:
+            logger.warning(
+                "STACK config unavailable for MATH_STEPS task %s",
+                getattr(task, "assignment_task_uuid", "?"),
+            )
+            return None
+        if coefficients is None:
+            passed = steps_completed(contents.get("equation"), submission_data.get("steps"))
+            return task_max if passed else 0
+        try:
+            steps = submission_data.get("steps") if isinstance(submission_data, dict) else None
+            result = await grade_stack_steps(contents["equation"], coefficients, steps)
+        except StackTechnicalError:
+            logger.warning(
+                "STACK grading unavailable for MATH_STEPS task %s",
+                getattr(task, "assignment_task_uuid", "?"),
+            )
+            return None
+        return task_max if result.status == "valid" and result.terminal else 0
 
     if task.assignment_type == AssignmentTaskTypeEnum.QUIZ:
         return _grade_quiz_task(contents, submission_data, task_max)
@@ -1609,6 +1662,36 @@ async def delete_assignment_from_activity_uuid(
 ## > Assignments Tasks CRUD
 
 
+def _validate_math_steps_config(assignment_type, contents, stored_contents=None) -> None:
+    """400 on a bad MATH_STEPS config. A linear (v1) equation is only checked when
+    it is new or changed, so legacy stored equations stay editable."""
+    try:
+        coefficients = validate_math_steps_task_config(assignment_type, contents)
+    except StackConfigurationError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid MATH_STEPS checker configuration: {exc}",
+        ) from None
+    if coefficients is not None and not (os.getenv("STACK_API_URL") or "").strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid MATH_STEPS checker configuration: STACK is not configured on this server",
+        )
+    if coefficients is not None or getattr(assignment_type, "value", assignment_type) != "MATH_STEPS":
+        return
+    equation = contents.get("equation") if isinstance(contents, dict) else None
+    stored = (
+        stored_contents.get("equation")
+        if isinstance(stored_contents, dict) and stored_contents.get("checker_version") is None
+        else None
+    )
+    if isinstance(equation, str) and equation and equation != stored and not is_valid_exercise(equation):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid MATH_STEPS equation: not a supported linear equation in x, or already an answer",
+        )
+
+
 async def create_assignment_task(
     request: Request,
     assignment_uuid: str,
@@ -1638,6 +1721,10 @@ async def create_assignment_task(
 
     # RBAC check
     await authorize_assignment_access(request, db_session, current_user, course.course_uuid, AccessAction.CREATE)
+
+    _validate_math_steps_config(
+        assignment_task_object.assignment_type, assignment_task_object.contents
+    )
 
     # Create Assignment Task
     assignment_task = AssignmentTask(**assignment_task_object.model_dump())
@@ -1734,10 +1821,66 @@ async def read_assignment_tasks(
             apply_to_task(read, extra)
         if not is_instructor:
             read.contents = _strip_answer_key(
-                read.contents, keep_answer_keys=reveal_to_student
+                read.contents,
+                keep_answer_keys=reveal_to_student,
+                assignment_type=read.assignment_type,
             )
         result.append(read)
     return result
+
+
+async def check_math_step(
+    request: Request,
+    assignment_task_uuid: str,
+    previous: str,
+    current: str,
+    current_user: PublicUser | AnonymousUser | APITokenUser,
+    db_session: AsyncSession,
+):
+    """Live feedback for one step of a MATH_STEPS task. Grading never trusts
+    this: _server_verified_task_grade re-checks the stored steps."""
+    task_read = await read_assignment_task(
+        request, assignment_task_uuid, current_user, db_session
+    )
+    if task_read.assignment_type != AssignmentTaskTypeEnum.MATH_STEPS:
+        raise HTTPException(status_code=400, detail="Not a MATH_STEPS task")
+
+    # read_assignment_task performs the normal course/activity ACL checks and
+    # returns learner-safe contents. Fetch the trusted internal config only
+    # after that check; it is never included in the response.
+    task = (await db_session.execute(
+        select(AssignmentTask).where(
+            AssignmentTask.assignment_task_uuid == assignment_task_uuid
+        )
+    )).scalars().first()
+    if task is None:
+        raise HTTPException(status_code=404, detail="Assignment Task not found")
+    if task.assignment_type != AssignmentTaskTypeEnum.MATH_STEPS:
+        raise HTTPException(status_code=400, detail="Not a MATH_STEPS task")
+    contents = task.contents if isinstance(task.contents, dict) else {}
+    try:
+        coefficients = validate_math_steps_task_config(task.assignment_type, contents)
+    except StackConfigurationError:
+        logger.error("Invalid persisted MATH_STEPS checker config for task %s", assignment_task_uuid)
+        return public_stack_check(StackCheck("check_failed"))
+
+    if coefficients is None:
+        if len(previous) > MAX_STACK_LINE_CHARS:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Previous step must be at most {MAX_STACK_LINE_CHARS} characters",
+            )
+        return public_check(previous, current)
+    if isinstance(current_user, AnonymousUser):
+        raise HTTPException(status_code=401, detail="Authentication required")
+    try:
+        result = await check_stack_v1_step(
+            contents["equation"], coefficients, previous, current
+        )
+    except (StackConfigurationError, StackTechnicalError):
+        logger.warning("STACK check unavailable for MATH_STEPS task %s", assignment_task_uuid)
+        return public_stack_check(StackCheck("check_failed"))
+    return public_stack_check(result)
 
 
 async def read_assignment_task(
@@ -1793,7 +1936,9 @@ async def read_assignment_task(
             current_user, assignment, db_session
         )
         read.contents = _strip_answer_key(
-            read.contents, keep_answer_keys=reveal_to_student
+            read.contents,
+            keep_answer_keys=reveal_to_student,
+            assignment_type=read.assignment_type,
         )
     return read
 
@@ -2003,6 +2148,14 @@ async def update_assignment_task(
 
     # RBAC check
     await authorize_assignment_access(request, db_session, current_user, course.course_uuid, AccessAction.UPDATE)
+
+    merged_type = assignment_task_object.assignment_type or assignment_task.assignment_type
+    merged_contents = (
+        assignment_task_object.contents
+        if assignment_task_object.contents is not None
+        else assignment_task.contents
+    )
+    _validate_math_steps_config(merged_type, merged_contents, assignment_task.contents)
 
     # A change to how a task is scored (its type, its answer key/definition, or
     # its max points) invalidates the grades already stored for it. The delete
@@ -2449,6 +2602,31 @@ async def handle_assignment_task_submission(
     else:
         # SECURITY: Instructors/admins need update permission to grade
         await check_resource_access(request, db_session, current_user, course.course_uuid, AccessAction.UPDATE)
+
+    if (
+        assignment_task.assignment_type == AssignmentTaskTypeEnum.MATH_STEPS
+        and assignment_task_submission_object.task_submission is not None
+    ):
+        try:
+            coefficients = validate_math_steps_task_config(
+                assignment_task.assignment_type,
+                assignment_task.contents if isinstance(assignment_task.contents, dict) else {},
+            )
+            if coefficients is not None:
+                validate_stack_submission(
+                    assignment_task.contents,
+                    assignment_task_submission_object.task_submission,
+                )
+        except StackConfigurationError:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid MATH_STEPS checker configuration",
+            ) from None
+        except StackStudentInputError:
+            raise HTTPException(
+                status_code=422,
+                detail="STACK answers must contain at most 50 single lines of 1,024 characters each",
+            ) from None
 
     if assignment_task_submission_uuid:
         statement = select(AssignmentTaskSubmission).where(
@@ -4037,7 +4215,8 @@ async def _apply_grade_and_finalize(
             task_submissions_by_task_id[ts.assignment_task_id] = ts
 
     # Server-side re-verification for task types where we don't trust the
-    # client's computed grade (SHORT_ANSWER, NUMBER_ANSWER, QUIZ, FORM, CODE).
+    # client's computed grade (SHORT_ANSWER, NUMBER_ANSWER, QUIZ, FORM, CODE,
+    # and MATH_STEPS).
     # If the verified grade differs from what the client submitted, overwrite
     # it so tampering is caught and future reads see the correct number.
     #
@@ -4047,13 +4226,12 @@ async def _apply_grade_and_finalize(
     # wrong. This is the per-task replacement for the old whole-pass
     # ``auto_graded`` gate: non-manual tasks are still re-verified even when a
     # teacher is grading the submission, while manual overrides always win.
-    # When a CODE task can't be server-verified (Judge0 down/unconfigured), the
-    # grader returns None. In that case we must NOT finalize an auto-graded
-    # submission; doing so would stamp a bogus 0 on a learner whose code may be
-    # correct. We track it here and leave the submission SUBMITTED (pending) for
-    # a later re-grade instead. Manual grading (auto_graded=False) is unaffected:
-    # the teacher is deliberately grading, so we keep existing per-task grades.
+    # When CODE or opted-in MATH_STEPS verification is unavailable, the grader
+    # returns None. In that case we leave an auto-graded submission SUBMITTED
+    # for a later re-grade instead of finalizing a potentially false zero.
+    # Manual grading (auto_graded=False) keeps existing per-task grades.
     code_unverifiable = False
+    math_steps_unverifiable = False
     for task in assignment_tasks:
         ts = task_submissions_by_task_id.get(task.id)
         if ts is not None and ts.manually_graded:
@@ -4065,6 +4243,17 @@ async def _apply_grade_and_finalize(
             and task.assignment_type == AssignmentTaskTypeEnum.CODE
         ):
             code_unverifiable = True
+        if (
+            verified is None
+            and ts is not None
+            and task.assignment_type == AssignmentTaskTypeEnum.MATH_STEPS
+            and isinstance(task.contents, dict)
+            and (
+                task.contents.get("checker_version") is not None
+                or any(key.startswith("stack_") for key in task.contents)
+            )
+        ):
+            math_steps_unverifiable = True
         if verified is None or ts is None:
             continue
         if int(ts.grade or 0) != verified:
@@ -4076,22 +4265,39 @@ async def _apply_grade_and_finalize(
             )
             db_session.add(ts)
 
-    # Auto-grade + an unverifiable CODE task → don't finalize. Persist any
+    # A teacher finalizing must not persist a false zero for an unverifiable
+    # task; manually_graded tasks are skipped above and stay the escape hatch.
+    if math_steps_unverifiable and not auto_graded:
+        raise HTTPException(
+            status_code=503,
+            detail="STACK is unavailable, so a MATH_STEPS task could not be verified. Retry later or grade that task manually.",
+        )
+
+    # Auto-grade + an unavailable external verifier → don't finalize. Persist any
     # re-verified sibling grades, keep the submission SUBMITTED, and skip the
     # GRADED transition + graded webhook so completion/cert stay withheld until
-    # the CODE task can actually be graded (Judge0 recovers, or a teacher grades
-    # it manually). Returns finalized=False so callers know it stayed pending.
-    if auto_graded and code_unverifiable:
+    # the external checker recovers, or a teacher grades it manually. Returns
+    # finalized=False so callers know it stayed pending.
+    if auto_graded and (code_unverifiable or math_steps_unverifiable):
         db_session.add(assignment_user_submission)
         await db_session.commit()
         await db_session.refresh(assignment_user_submission)
-        logger.warning(
-            "Auto-grade deferred for assignment %s user %s: a CODE task could "
-            "not be server-verified; submission left SUBMITTED (pending grade).",
-            assignment.assignment_uuid,
-            user_id,
-        )
-        return {"finalized": False, "reason": "code_unverifiable"}
+        reason = "code_unverifiable" if code_unverifiable else "math_steps_unverifiable"
+        if code_unverifiable:
+            logger.warning(
+                "Auto-grade deferred for assignment %s user %s: a CODE task could "
+                "not be server-verified; submission left SUBMITTED (pending grade).",
+                assignment.assignment_uuid,
+                user_id,
+            )
+        else:
+            logger.warning(
+                "Auto-grade deferred for assignment %s user %s: a MATH_STEPS task "
+                "could not be server-verified; submission left SUBMITTED (pending grade).",
+                assignment.assignment_uuid,
+                user_id,
+            )
+        return {"finalized": False, "reason": reason}
 
     raw_grade = 0
     for ts in task_submissions_by_task_id.values():

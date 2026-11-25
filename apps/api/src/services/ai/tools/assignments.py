@@ -57,6 +57,7 @@ from src.services.ai.tools import refs, results
 from src.services.ai.tools.base import ActionTier, ToolContext, ToolSpec, require_approval
 from src.services.ai.tools.learners import iso, member_refs
 from src.services.courses.activities.activities import create_activity, delete_activity
+from src.services.courses.activities.math_steps import is_valid_exercise
 from src.services.courses.activities.assignments import (
     _is_assignment_instructor,
     authorize_assignment_access,
@@ -114,6 +115,7 @@ _TYPE_OF = {
     "number_answer": AssignmentTaskTypeEnum.NUMBER_ANSWER,
     "file_submission": AssignmentTaskTypeEnum.FILE_SUBMISSION,
     "custom": AssignmentTaskTypeEnum.CUSTOM,
+    "math_steps": AssignmentTaskTypeEnum.MATH_STEPS,
 }
 
 
@@ -244,6 +246,22 @@ class NumberAnswerContent(BaseModel):
     explanation: str | None = Field(None, max_length=2000, description="Shown after grading when answers are revealed.")
 
 
+class MathStepsContent(BaseModel):
+    type: Literal["math_steps"]
+    equation: str = Field(
+        ..., min_length=3, max_length=1024,
+        description="Linear equation in x that learners solve step by step, e.g. 2(x+3)=10.",
+    )
+    explanation: str | None = Field(None, max_length=2000, description="Worked solution, shown after grading when answers are revealed.")
+
+    @field_validator("equation")
+    @classmethod
+    def _solvable(cls, value: str) -> str:
+        if not is_valid_exercise(value):
+            raise ValueError(f"'{value[:60]}' is not a supported linear equation in x, or is already an answer")
+        return value
+
+
 class FormContent(BaseModel):
     type: Literal["form"]
     questions: list[FormQuestion] = Field(..., min_length=1, max_length=50, description="Fill-in-the-blank questions.")
@@ -317,6 +335,10 @@ class CustomTask(_TaskCommon, CustomContent):
     pass
 
 
+class MathStepsTask(_TaskCommon, MathStepsContent):
+    pass
+
+
 TaskContent = Annotated[
     Union[
         QuizContent,
@@ -326,11 +348,12 @@ TaskContent = Annotated[
         FileSubmissionContent,
         CodeContent,
         CustomContent,
+        MathStepsContent,
     ],
     Field(discriminator="type"),
 ]
 TaskSpec = Annotated[
-    Union[QuizTask, ShortAnswerTask, NumberAnswerTask, FormTask, FileSubmissionTask, CodeTask, CustomTask],
+    Union[QuizTask, ShortAnswerTask, NumberAnswerTask, FormTask, FileSubmissionTask, CodeTask, CustomTask, MathStepsTask],
     Field(discriminator="type"),
 ]
 
@@ -402,6 +425,11 @@ def _storage_contents(content: BaseModel, previous: dict | None = None) -> dict:
             "correct_answers": content.accepted_answers,
             "match_mode": content.match_mode,
         }
+        if content.explanation:
+            out["explanation"] = content.explanation
+        return out
+    if isinstance(content, MathStepsContent):
+        out = {"equation": content.equation}
         if content.explanation:
             out["explanation"] = content.explanation
         return out
@@ -495,6 +523,11 @@ def _simple_contents(task_type: AssignmentTaskTypeEnum, contents: Any, with_keys
             out["accepted_answers"] = [clip(a) for a in c.get("correct_answers") or [] if isinstance(a, str)]
             if c.get("explanation"):
                 out["explanation"] = clip(c["explanation"], results.DETAIL_TEXT)
+        return out
+    if task_type == AssignmentTaskTypeEnum.MATH_STEPS:
+        out = {"equation": c.get("equation")}
+        if with_keys and c.get("explanation"):
+            out["explanation"] = clip(c["explanation"], results.DETAIL_TEXT)
         return out
     if task_type == AssignmentTaskTypeEnum.NUMBER_ANSWER:
         out = {"prompt": clip(c.get("prompt") or "", results.DETAIL_TEXT)}

@@ -137,7 +137,8 @@ class ActivitySpec(BaseModel):
             "assignment: tasks, each {type, title, description?, hint?, points?, ...}; type quiz "
             "{questions:[{text, options:[{text, correct}]}], partial_credit?}, short_answer {prompt, "
             "accepted_answers}, number_answer {prompt, correct_value, tolerance?}, form {questions:[{text, "
-            "blanks:[{answer}]}]}, file_submission {}, code {language_id, tests:[{stdin, expected_output}]}."
+            "blanks:[{answer}]}]}, file_submission {}, code {language_id, tests:[{stdin, expected_output}]}, math_steps {equation} (linear equation in x solved "
+            "step by step, each step checked)."
         ),
     )
 

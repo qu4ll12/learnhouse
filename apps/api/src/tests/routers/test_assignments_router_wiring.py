@@ -119,6 +119,11 @@ _CASES = [
         {"title": "Renamed"}, {"ok": "updated"}, None, {},
     ),
     (
+        "post", "/assignment_x/tasks/task_x/check_step", "check_math_step",
+        {"previous": "2x+6=10", "current": "2x=4"},
+        {"status": "valid"}, ["task_x", "2x+6=10", "2x=4", _USER, _DB], {},
+    ),
+    (
         "post", "/assignment_x/tasks/task_x/ref_file",
         "put_assignment_task_reference_file", None,
         {"ok": "ref"}, [_DB, "task_x", _USER, None], {},

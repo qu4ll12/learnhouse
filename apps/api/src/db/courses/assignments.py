@@ -275,6 +275,12 @@ class AssignmentTaskTypeEnum(str, Enum):
     # manually (or left ungraded), so custom frontends fully control the schema.
     CUSTOM = "CUSTOM"
     OTHER = "OTHER"
+    # Added last: ALTER TYPE ADD VALUE appends, and the model order must match
+    # the database or schema drift is reported.
+    # Step-by-step linear equation solving, checked by the MATHCDT checker
+    # (services/courses/activities/math_steps). contents: {"equation": str},
+    # task_submission: {"steps": [str, ...]}.
+    MATH_STEPS = "MATH_STEPS"
 
 
 class AssignmentTaskBase(SQLModel):

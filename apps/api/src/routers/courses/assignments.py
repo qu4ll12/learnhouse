@@ -1,7 +1,7 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, Request, UploadFile, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from src.db.courses.assignments import (
     AssignmentCreate,
     AssignmentRead,
@@ -62,6 +62,11 @@ from src.services.courses.activities.assignments import (
     update_assignment,
     update_assignment_submission,
     update_assignment_task,
+    check_math_step,
+)
+from src.services.courses.activities.math_steps.stack_v1 import (
+    MAX_STACK_ANSWER_CHARS,
+    MAX_STACK_LINE_CHARS,
 )
 
 
@@ -70,6 +75,13 @@ class GradeSubmissionBody(BaseModel):
     an overall feedback note at the same time they finalize the grade."""
 
     overall_feedback: Optional[str] = None
+
+
+class MathStepCheckBody(BaseModel):
+    # `previous` may carry the full prior chain for stack_v1. For legacy
+    # checker tasks the existing {previous, current} behavior is unchanged.
+    previous: str = Field(..., max_length=MAX_STACK_ANSWER_CHARS)
+    current: str = Field(..., max_length=MAX_STACK_LINE_CHARS)
 
 
 router = APIRouter()
@@ -445,6 +457,30 @@ async def api_update_assignment_tasks(
     """
     return await update_assignment_task(
         request, assignment_task_uuid, assignment_task_object, current_user, db_session
+    )
+
+
+@router.post(
+    "/{assignment_uuid}/tasks/{assignment_task_uuid}/check_step",
+    summary="Check one step of a math steps task",
+    description="Check a MATH_STEPS transformation. For stack_v1 tasks, `previous` may contain the full prior chain. Feedback only; grading replays the saved steps from the task's original equation.",
+    responses={
+        200: {"description": "Check result (status, feedback, reason, example, terminal)."},
+        400: {"description": "The task is not a MATH_STEPS task"},
+        401: {"description": "Authentication required"},
+        403: {"description": "User cannot open this assignment"},
+        404: {"description": "Assignment task not found"},
+    },
+)
+async def api_check_math_step(
+    request: Request,
+    assignment_task_uuid: str,
+    body: MathStepCheckBody,
+    current_user: PublicUser = Depends(get_current_user),
+    db_session=Depends(get_db_session),
+):
+    return await check_math_step(
+        request, assignment_task_uuid, body.previous, body.current, current_user, db_session
     )
 
 
