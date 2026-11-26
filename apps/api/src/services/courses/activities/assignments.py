@@ -56,7 +56,9 @@ from src.security.features_utils.usage import (
     decrease_feature_usage,
     increase_feature_usage,
 )
+from src.security.auth import resolve_acting_user_id
 from src.security.submission_file_access import submission_files_belong_to
+from src.services.security.rate_limiting import check_rate_limit
 from src.services.courses.activities.math_steps import (
     is_valid_exercise,
     public_check,
@@ -1829,6 +1831,9 @@ async def read_assignment_tasks(
     return result
 
 
+STACK_CHECKS_PER_MINUTE = 30
+
+
 async def check_math_step(
     request: Request,
     assignment_task_uuid: str,
@@ -1873,6 +1878,18 @@ async def check_math_step(
         return public_check(previous, current)
     if isinstance(current_user, AnonymousUser):
         raise HTTPException(status_code=401, detail="Authentication required")
+    # Each stack_v1 check is an outbound STACK/Maxima call (~2s); cap per learner.
+    is_allowed, _count, retry_after = check_rate_limit(
+        key=f"math_step_check:{resolve_acting_user_id(current_user)}",
+        max_attempts=STACK_CHECKS_PER_MINUTE,
+        window_seconds=60,
+    )
+    if not is_allowed:
+        raise HTTPException(
+            status_code=429,
+            detail="Too many step checks. Please wait a moment and try again.",
+            headers={"Retry-After": str(retry_after)},
+        )
     try:
         result = await check_stack_v1_step(
             contents["equation"], coefficients, previous, current
