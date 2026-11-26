@@ -308,7 +308,7 @@ function TaskMathStepsObject({ view, assignmentTaskUUID, user_id, onGraded }: Ta
           <li key={i} className="flex flex-col gap-0.5 px-3 py-2 rounded-lg border border-neutral-100">
             <div className="flex items-center gap-2">
               <span className="text-neutral-400 font-mono">⇔</span>
-              <span className="font-mono text-base text-neutral-900 flex-1">{step}</span>
+              <span className="font-mono text-base text-neutral-900 flex-1 min-w-0 break-all">{step}</span>
               {style && <style.Icon size={18} weight="fill" className={style.className} />}
             </div>
             {c && c.status !== 'valid' && (
