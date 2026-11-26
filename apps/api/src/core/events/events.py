@@ -86,6 +86,11 @@ def startup_app(app: FastAPI) -> Callable:
         from src.services.usergroups.scheduler import start_scheduler as start_usergroup_scheduler
         start_usergroup_scheduler()
 
+        # Retries auto-grades deferred while STACK/Judge0 was down, every 10
+        # minutes. Never raises.
+        from src.services.courses.assignment_regrade_scheduler import start_scheduler as start_assignment_regrade
+        start_assignment_regrade()
+
         # Emails about messages that stayed unread (default: after an hour).
         # Never raises.
         from src.services.messaging.scheduler import start_scheduler as start_messaging_emails
@@ -191,6 +196,8 @@ def shutdown_app(app: FastAPI) -> Callable:
         await stop_drip_scheduler()
         from src.services.usergroups.scheduler import stop_scheduler as stop_usergroup_scheduler
         await stop_usergroup_scheduler()
+        from src.services.courses.assignment_regrade_scheduler import stop_scheduler as stop_assignment_regrade
+        await stop_assignment_regrade()
         from src.services.messaging.scheduler import stop_scheduler as stop_messaging_emails
         await stop_messaging_emails()
         from src.services.notifications.scheduler import stop_scheduler as stop_notifications
