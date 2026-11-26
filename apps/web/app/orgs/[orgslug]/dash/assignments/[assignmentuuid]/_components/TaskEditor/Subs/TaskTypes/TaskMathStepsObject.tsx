@@ -20,6 +20,7 @@ import { SegmentedControl } from '@/design'
 import {
   MAX_STACK_COEFFICIENT,
   STACK_VERSION,
+  hasRationalRoots,
   quadraticEquation,
   restoredChecks,
   stackPrevious,
@@ -189,6 +190,10 @@ function TaskMathStepsObject({ view, assignmentTaskUUID, user_id, onGraded }: Ta
       const abc = parseCoefficients(coefficients)
       if (!abc) {
         setEquationError(tk('coefficients_invalid'))
+        return
+      }
+      if (!hasRationalRoots(...abc)) {
+        setEquationError(tk('roots_not_rational'))
         return
       }
       saved = {

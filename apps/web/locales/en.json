@@ -9604,6 +9604,7 @@
             "coefficients_invalid": "Enter whole numbers from -1000 to 1000, with a ≠ 0.",
             "preview_label": "Preview",
             "server_invalid": "The server rejected this equation",
+            "roots_not_rational": "The equation must have rational real roots (discriminant b² − 4ac is a perfect square).",
             "instructions_stack": "Write one equivalent equation per step and press Enter. Use * for multiplication and ^ for powers, e.g. (x-1)*(x+4)=0. Finish with every root, e.g. x=1 or x=-4.",
             "step_placeholder_stack": "Next step, e.g. (x-1)*(x+4)=0",
             "valid_partial": "Valid step. Keep going until every root is found.",

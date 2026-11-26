@@ -12,6 +12,12 @@ export type StepCheck = {
 
 // Same text as the API's stack_v1.quadratic_equation(): the server rejects a
 // learner-facing equation that does not match its coefficients.
+// Mirrors the API's quadratic_roots(): discriminant must be a perfect square >= 0.
+export function hasRationalRoots(a: number, b: number, c: number): boolean {
+  const d = b * b - 4 * a * c
+  return d >= 0 && Number.isInteger(Math.sqrt(d))
+}
+
 export function quadraticEquation(a: number, b: number, c: number): string {
   const terms: string[] = []
   for (const [coefficient, variable] of [[a, 'x^2'], [b, 'x'], [c, '']] as const) {

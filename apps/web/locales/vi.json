@@ -9584,6 +9584,7 @@
             "coefficients_invalid": "Nhập số nguyên từ -1000 đến 1000, với a ≠ 0.",
             "preview_label": "Xem trước",
             "server_invalid": "Máy chủ từ chối phương trình này",
+            "roots_not_rational": "Phương trình phải có nghiệm thực là số hữu tỉ (biệt thức b² − 4ac là số chính phương).",
             "instructions_stack": "Mỗi bước viết một phương trình tương đương rồi nhấn Enter. Dùng * cho phép nhân và ^ cho lũy thừa, ví dụ (x-1)*(x+4)=0. Kết thúc bằng đủ các nghiệm, ví dụ x=1 or x=-4.",
             "step_placeholder_stack": "Bước tiếp theo, ví dụ (x-1)*(x+4)=0",
             "valid_partial": "Bước hợp lệ. Tiếp tục cho đến khi tìm đủ nghiệm.",

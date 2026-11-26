@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { quadraticEquation, restoredChecks, stackPrevious } from "../lib/assignments/mathSteps.ts";
+import { hasRationalRoots, quadraticEquation, restoredChecks, stackPrevious } from "../lib/assignments/mathSteps.ts";
 
 describe("quadraticEquation", () => {
   // Expected strings come from the API's stack_v1.quadratic_equation().
@@ -32,5 +32,16 @@ describe("stack chain", () => {
   test("a checker outage marks nothing", () => {
     expect(restoredChecks(2, result("check_failed"))).toEqual([null, null]);
     expect(restoredChecks(0, result("valid"))).toEqual([]);
+  });
+});
+
+describe("hasRationalRoots", () => {
+  test("mirrors the server's rational-real-root rule", () => {
+    expect(hasRationalRoots(1, -5, 6)).toBe(true);
+    expect(hasRationalRoots(1, 0, 1)).toBe(false);
+    expect(hasRationalRoots(1, 0, -2)).toBe(false);
+    expect(hasRationalRoots(1, -2, 1)).toBe(true);
+    expect(hasRationalRoots(4, -4, 1)).toBe(true);
+    expect(hasRationalRoots(2, 1, 0)).toBe(true);
   });
 });
