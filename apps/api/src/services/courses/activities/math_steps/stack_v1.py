@@ -3,6 +3,7 @@
 Set ``STACK_API_URL`` to the trusted STACK REST ``/grade`` endpoint.
 """
 
+import asyncio
 from dataclasses import dataclass
 from fractions import Fraction
 import httpx
@@ -18,6 +19,19 @@ MAX_STACK_STEPS = 50
 MAX_STACK_ANSWER_CHARS = 10_240
 MAX_STACK_RESPONSE_BYTES = 65_536
 STACK_TIMEOUT_SECONDS = 8.0
+
+
+def _read_max_concurrency() -> int:
+    try:
+        value = int(os.getenv("STACK_MAX_CONCURRENCY", ""))
+    except ValueError:
+        return 10
+    return value if value > 0 else 10
+
+
+# Per API worker process, so total STACK load is workers x this cap.
+STACK_MAX_CONCURRENCY = _read_max_concurrency()
+_stack_slots: asyncio.Semaphore | None = None
 
 _LINE_SEPARATORS = ("\r", "\n", "\v", "\f", "\x1c", "\x1d", "\x1e", "\x85", "\u2028", "\u2029")
 
@@ -285,7 +299,9 @@ def _parse_grade_response(payload) -> StackCheck:
     return StackCheck("valid", terminal="final-answer" in final_notes)
 
 
-async def _grade_lines(problem: str, coefficients, lines: tuple[str, ...]) -> StackCheck:
+async def _grade_lines(
+    problem: str, coefficients, lines: tuple[str, ...], *, wait_for_slot: bool
+) -> StackCheck:
     _validate_stack_problem(problem, coefficients)
     url = (os.getenv("STACK_API_URL") or "").strip()
     if not url:
@@ -294,6 +310,19 @@ async def _grade_lines(problem: str, coefficients, lines: tuple[str, ...]) -> St
         "questionDefinition": _question_definition(coefficients),
         "answers": {"ans1": "\n".join((problem, *lines))},
     }
+    global _stack_slots
+    if _stack_slots is None:
+        _stack_slots = asyncio.Semaphore(STACK_MAX_CONCURRENCY)
+    slots = _stack_slots
+    if wait_for_slot:
+        try:
+            await asyncio.wait_for(slots.acquire(), STACK_TIMEOUT_SECONDS)
+        except asyncio.TimeoutError:
+            raise StackTechnicalError("STACK is busy") from None
+    elif slots.locked():
+        raise StackTechnicalError("STACK is busy")
+    else:
+        await slots.acquire()  # free slot: returns without yielding
     try:
         async with httpx.AsyncClient(timeout=STACK_TIMEOUT_SECONDS) as client:
             response = await client.post(url, json=request_body)
@@ -305,6 +334,8 @@ async def _grade_lines(problem: str, coefficients, lines: tuple[str, ...]) -> St
     except Exception:
         # Do not propagate response bodies, URLs, or transport exception text.
         raise StackTechnicalError("STACK request failed") from None
+    finally:
+        slots.release()
     return _parse_grade_response(payload)
 
 
@@ -334,7 +365,7 @@ async def check_stack_step(
         _validate_stack_problem(problem, coefficients)
     except StackStudentInputError:
         return StackCheck("unsupported")
-    result = await _grade_lines(problem, coefficients, lines)
+    result = await _grade_lines(problem, coefficients, lines, wait_for_slot=False)
     return result
 
 
@@ -344,7 +375,7 @@ async def grade_stack_steps(problem: str, coefficients, steps) -> StackCheck:
         _validate_stack_problem(problem, coefficients)
     except StackStudentInputError:
         return StackCheck("unsupported")
-    return await _grade_lines(problem, coefficients, lines)
+    return await _grade_lines(problem, coefficients, lines, wait_for_slot=True)
 
 
 def public_stack_check(result: StackCheck) -> dict:

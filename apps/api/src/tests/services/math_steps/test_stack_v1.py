@@ -1,5 +1,6 @@
 """STACK pilot: bounded author config and learner-safe REST grading."""
 
+import asyncio
 from fractions import Fraction
 
 import httpx
@@ -545,3 +546,89 @@ class TestLinearEquationValidation:
             contents={"equation": "2(x+3)=10"},
         )
         assert updated.contents == {"equation": "2(x+3)=10"}
+
+
+_OK = {"isgradable": True, "prtresults": {"prt1": {"prtanswernotes": ["chain-valid", "final-answer"]}}}
+_EQ = _CONTENTS["equation"]
+
+
+@pytest.fixture
+def _cap_one(monkeypatch):
+    monkeypatch.setattr(stack_v1, "STACK_MAX_CONCURRENCY", 1)
+    monkeypatch.setattr(stack_v1, "_stack_slots", None)
+
+
+def _install_gated_stack(monkeypatch, gate, calls):
+    async def handler(request):
+        calls.append(request)
+        if len(calls) == 1:
+            await gate.wait()
+        return httpx.Response(200, json=_OK)
+
+    monkeypatch.setattr(
+        stack_v1.httpx,
+        "AsyncClient",
+        lambda **kwargs: _REAL_ASYNC_CLIENT(transport=httpx.MockTransport(handler), **kwargs),
+    )
+
+
+class TestStackConcurrencyCap:
+    @pytest.mark.parametrize("value", ["abc", "0", "-3", ""])
+    def test_invalid_cap_falls_back_to_default(self, monkeypatch, value):
+        monkeypatch.setenv("STACK_MAX_CONCURRENCY", value)
+        assert stack_v1._read_max_concurrency() == 10
+        monkeypatch.setenv("STACK_MAX_CONCURRENCY", "3")
+        assert stack_v1._read_max_concurrency() == 3
+
+    @pytest.mark.asyncio
+    async def test_live_check_fails_fast_when_busy_without_http_call(self, monkeypatch, _cap_one):
+        gate, calls = asyncio.Event(), []
+        _install_gated_stack(monkeypatch, gate, calls)
+        first = asyncio.create_task(stack_v1.check_stack_step(_EQ, (1, -5, 6), _EQ, "x=2"))
+        while not calls:
+            await asyncio.sleep(0)
+
+        with pytest.raises(stack_v1.StackTechnicalError, match="busy"):
+            await stack_v1.check_stack_step(_EQ, (1, -5, 6), _EQ, "x=3")
+        assert len(calls) == 1
+
+        gate.set()
+        assert (await first).status == "valid"
+
+    @pytest.mark.asyncio
+    async def test_grading_waits_for_a_slot(self, monkeypatch, _cap_one):
+        gate, calls = asyncio.Event(), []
+        _install_gated_stack(monkeypatch, gate, calls)
+        first = asyncio.create_task(stack_v1.check_stack_step(_EQ, (1, -5, 6), _EQ, "x=2"))
+        while not calls:
+            await asyncio.sleep(0)
+        graded = asyncio.create_task(stack_v1.grade_stack_steps(_EQ, (1, -5, 6), ["x=2"]))
+        await asyncio.sleep(0.01)
+        assert not graded.done() and len(calls) == 1
+
+        gate.set()
+        assert (await first).status == "valid"
+        assert (await graded).status == "valid"
+
+    @pytest.mark.asyncio
+    async def test_grading_times_out_waiting_for_a_slot(self, monkeypatch, _cap_one):
+        gate, calls = asyncio.Event(), []
+        _install_gated_stack(monkeypatch, gate, calls)
+        monkeypatch.setattr(stack_v1, "STACK_TIMEOUT_SECONDS", 0.05)
+        first = asyncio.create_task(stack_v1.check_stack_step(_EQ, (1, -5, 6), _EQ, "x=2"))
+        while not calls:
+            await asyncio.sleep(0)
+        with pytest.raises(stack_v1.StackTechnicalError):
+            await stack_v1.grade_stack_steps(_EQ, (1, -5, 6), ["x=2"])
+        gate.set()
+        await first
+
+    @pytest.mark.asyncio
+    async def test_slot_is_released_after_http_error(self, monkeypatch, _cap_one):
+        _install_stack_response(monkeypatch, exception=httpx.ConnectError("down"))
+        with pytest.raises(stack_v1.StackTechnicalError):
+            await stack_v1.check_stack_step(_EQ, (1, -5, 6), _EQ, "x=2")
+
+        _install_stack_response(monkeypatch, _OK)
+        result = await stack_v1.check_stack_step(_EQ, (1, -5, 6), _EQ, "x=2")
+        assert result.status == "valid"
