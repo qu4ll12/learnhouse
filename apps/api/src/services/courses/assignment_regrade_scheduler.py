@@ -5,9 +5,10 @@ Same shape as the other in-app schedulers: a Redis lock per slot keeps several
 API workers from each running it. Running twice is harmless anyway: a row that
 finalizes leaves the SUBMITTED set, and one that stays deferred is just retried.
 
-shortcut: the batch is the oldest BATCH_SIZE candidates by id, so more than
-BATCH_SIZE rows stuck behind a long outage can starve newer ones; upgrade by
-tracking a last-attempt timestamp if that ever happens.
+shortcut: BATCH_SIZE bounds regrade attempts, and rows still deferred each tick
+are re-attempted first, oldest first. So more than BATCH_SIZE rows stuck behind
+a long outage can starve newer ones until it ends; upgrade by tracking a
+last-attempt timestamp if that ever happens.
 """
 
 from __future__ import annotations
@@ -26,6 +27,7 @@ logger = logging.getLogger(__name__)
 INTERVAL_SECONDS = 10 * 60
 STARTUP_DELAY_SECONDS = 120
 BATCH_SIZE = 50
+PAGE_SIZE = 200
 _LOCK_TTL_SECONDS = 9 * 60
 
 _task: Optional[asyncio.Task] = None
@@ -49,8 +51,9 @@ async def _claim(key: str, ttl: int) -> bool:
 
 
 async def run_once(db) -> int:
-    """Retry up to BATCH_SIZE deferred submissions, oldest first. Returns how
-    many finalized. Never raises."""
+    """Retry deferred submissions, oldest first, until BATCH_SIZE regrade
+    attempts were made. Rows the checks below skip cost a scan, not an attempt.
+    Returns how many finalized. Never raises."""
     from src.db.courses.assignments import (
         Assignment,
         AssignmentTask,
@@ -69,86 +72,96 @@ async def run_once(db) -> int:
     )
 
     checked_types = (AssignmentTaskTypeEnum.CODE, AssignmentTaskTypeEnum.MATH_STEPS)
-    done = 0
-    try:
-        ids = (await db.execute(
-            select(AssignmentUserSubmission.id)
-            .join(Assignment, Assignment.id == AssignmentUserSubmission.assignment_id)
-            .where(
-                AssignmentUserSubmission.submission_status == AssignmentUserSubmissionStatus.SUBMITTED,
-                Assignment.auto_grading == True,  # noqa: E712
-                Assignment.ungraded == False,  # noqa: E712
-                exists().where(
-                    AssignmentTask.assignment_id == Assignment.id,
-                    AssignmentTask.assignment_type.in_(checked_types),
-                ),
-            )
-            .order_by(AssignmentUserSubmission.id)
-            .limit(BATCH_SIZE)
-        )).scalars().all()
-    except Exception:
-        logger.exception("Assignment regrade: could not list deferred submissions")
-        return 0
-
-    for submission_id in ids:
+    done = attempts = last_id = 0
+    while attempts < BATCH_SIZE:
         try:
-            submission = await db.get(AssignmentUserSubmission, submission_id)
-            assignment = await db.get(Assignment, submission.assignment_id)
-            course = await db.get(Course, assignment.course_id)
-            tasks = (await db.execute(
-                select(AssignmentTask).where(AssignmentTask.assignment_id == assignment.id)
+            ids = (await db.execute(
+                select(AssignmentUserSubmission.id)
+                .join(Assignment, Assignment.id == AssignmentUserSubmission.assignment_id)
+                .where(
+                    AssignmentUserSubmission.id > last_id,
+                    AssignmentUserSubmission.submission_status == AssignmentUserSubmissionStatus.SUBMITTED,
+                    Assignment.auto_grading == True,  # noqa: E712
+                    Assignment.ungraded == False,  # noqa: E712
+                    exists().where(
+                        AssignmentTask.assignment_id == Assignment.id,
+                        AssignmentTask.assignment_type.in_(checked_types),
+                    ),
+                    # Submit only auto-grades when every task is auto-gradable.
+                    ~exists().where(
+                        AssignmentTask.assignment_id == Assignment.id,
+                        AssignmentTask.assignment_type.not_in(list(AUTO_GRADABLE_TASK_TYPES)),
+                    ),
+                )
+                .order_by(AssignmentUserSubmission.id)
+                .limit(PAGE_SIZE)
             )).scalars().all()
-            checked = [
-                t for t in tasks
-                if t.assignment_type == AssignmentTaskTypeEnum.CODE
-                or (
-                    t.assignment_type == AssignmentTaskTypeEnum.MATH_STEPS
-                    and isinstance(t.contents, dict)
-                    and t.contents.get("checker_version") is not None
-                )
-            ]
-            # Mirror the submit path's all-auto-gradable gate, and leave alone
-            # rows whose checked tasks a teacher already graded by hand.
-            if not checked or submission.user_id is None or not all(
-                t.assignment_type in AUTO_GRADABLE_TASK_TYPES for t in tasks
-            ):
-                continue
-            pending = (await db.execute(
-                select(AssignmentTaskSubmission.id).where(
-                    AssignmentTaskSubmission.user_id == submission.user_id,
-                    AssignmentTaskSubmission.assignment_task_id.in_([t.id for t in checked]),
-                    AssignmentTaskSubmission.manually_graded == False,  # noqa: E712
-                )
-            )).first()
-            if pending is None:
-                continue
-            result = await _apply_grade_and_finalize(
-                assignment=assignment,
-                course=course,
-                user_id=int(submission.user_id),
-                assignment_user_submission=submission,
-                db_session=db,
-                overall_feedback=None,
-                auto_graded=True,
-                assignment_tasks=tasks,
-                # The learner left the submit screen long ago: tell them.
-                notify_learner=True,
-            )
-            if result.get("finalized") is False:
-                continue
-            done += 1
-            # Same follow-up as submit: the grade may complete the course and
-            # earn the certificate. No request exists here; the certificate
-            # path does not use it without a current_user.
-            try:
-                await check_course_completion_and_create_certificate(
-                    None, int(submission.user_id), course.id, db  # type: ignore[arg-type]
-                )
-            except Exception:
-                logger.exception("Assignment regrade: certificate check failed for submission %s", submission_id)
         except Exception:
-            await db.rollback()
-            logger.exception("Assignment regrade failed for submission %s", submission_id)
+            logger.exception("Assignment regrade: could not list deferred submissions")
+            return done
+        if not ids:
+            break
+        last_id = ids[-1]
+        for submission_id in ids:
+            if attempts >= BATCH_SIZE:
+                break
+            try:
+                submission = await db.get(AssignmentUserSubmission, submission_id)
+                assignment = await db.get(Assignment, submission.assignment_id)
+                course = await db.get(Course, assignment.course_id)
+                tasks = (await db.execute(
+                    select(AssignmentTask).where(AssignmentTask.assignment_id == assignment.id)
+                )).scalars().all()
+                checked = [
+                    t for t in tasks
+                    if t.assignment_type == AssignmentTaskTypeEnum.CODE
+                    or (
+                        t.assignment_type == AssignmentTaskTypeEnum.MATH_STEPS
+                        and isinstance(t.contents, dict)
+                        and t.contents.get("checker_version") is not None
+                    )
+                ]
+                # Leave alone v1-only rows and rows whose checked tasks a
+                # teacher already graded by hand.
+                if not checked or submission.user_id is None:
+                    continue
+                pending = (await db.execute(
+                    select(AssignmentTaskSubmission.id).where(
+                        AssignmentTaskSubmission.user_id == submission.user_id,
+                        AssignmentTaskSubmission.assignment_task_id.in_([t.id for t in checked]),
+                        AssignmentTaskSubmission.manually_graded == False,  # noqa: E712
+                    )
+                )).first()
+                if pending is None:
+                    continue
+                attempts += 1
+                result = await _apply_grade_and_finalize(
+                    assignment=assignment,
+                    course=course,
+                    user_id=int(submission.user_id),
+                    assignment_user_submission=submission,
+                    db_session=db,
+                    overall_feedback=None,
+                    auto_graded=True,
+                    assignment_tasks=tasks,
+                    # The learner left the submit screen long ago: tell them.
+                    notify_learner=True,
+                )
+                if result.get("finalized") is False:
+                    continue
+                done += 1
+                # Same follow-up as submit: the grade may complete the course and
+                # earn the certificate. No request exists here; the certificate
+                # path does not use it without a current_user.
+                try:
+                    await check_course_completion_and_create_certificate(
+                        None, int(submission.user_id), course.id, db  # type: ignore[arg-type]
+                    )
+                except Exception:
+                    logger.exception("Assignment regrade: certificate check failed for submission %s", submission_id)
+            except Exception:
+                await db.rollback()
+                logger.exception("Assignment regrade failed for submission %s", submission_id)
     return done
 
 
